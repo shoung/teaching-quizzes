@@ -9,7 +9,11 @@ export interface Question {
   optionImages?: (string | null)[];
   referenceAnswers?: number[];
   reflection?: boolean;
-  dimension?: 'hue' | 'light' | 'psychology' | 'harmony';
+  dimension?: string;
+  scenario?: string;
+  evidence?: { label: string; value: string }[];
+  optionScores?: number[];
+  optionFeedback?: string[];
 }
 
 export interface Quiz {
@@ -21,8 +25,8 @@ export interface Quiz {
   category: string;
   minutes: number;
   color: 'sage' | 'peach' | 'lavender';
-  icon: 'web' | 'ai' | 'media' | 'color';
-  mode?: 'assessment';
+  icon: 'web' | 'ai' | 'media' | 'color' | 'briefcase';
+  mode?: 'assessment' | 'consulting';
   cover?: string;
   questions: Question[];
 }

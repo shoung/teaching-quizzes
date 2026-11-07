@@ -4,6 +4,7 @@ import { Catalog } from './components/Catalog';
 import { QuizPage } from './components/QuizPage';
 import { ResultPage } from './components/ResultPage';
 import { Icon } from './components/Icon';
+import { shareLinks } from './components/ShareCard';
 import { newSession, restoreSession, resumeQuestion } from './quiz-engine';
 import type { Quiz, Session } from './types';
 
@@ -60,7 +61,7 @@ export default function App() {
     const url = new URL(window.location.href);
     url.hash = quizPath(activeQuiz, 1).slice(1);
     try {
-      await navigator.clipboard.writeText(url.href);
+      await navigator.clipboard.writeText(shareLinks[activeQuiz.id]?.shortUrl ?? url.href);
       setShareMessage('測驗連結已複製，可分享給同學');
     } catch { setShareMessage(`請複製網址：${url.href}`); }
   }

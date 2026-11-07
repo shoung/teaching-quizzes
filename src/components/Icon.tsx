@@ -18,6 +18,7 @@ export function Icon({ name, className = '' }: { name: string; className?: strin
     media: <><rect x="3" y="3" width="18" height="18" rx="3" /><path d="m10 8 6 4-6 4z" /></>,
     zoom: <><circle cx="10" cy="10" r="7" /><path d="m15 15 6 6M10 6v8M6 10h8" /></>,
     close: <path d="m6 6 12 12M18 6 6 18" />,
+    briefcase: <><rect x="3" y="7" width="18" height="14" rx="2" /><path d="M8 7V3h8v4M3 12c5 4 13 4 18 0M10 13h4v4h-4z" /></>,
   };
   return <svg className={`icon ${className}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name] ?? paths.spark}</svg>;
 }

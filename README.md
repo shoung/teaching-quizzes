@@ -4,7 +4,17 @@
 
 - 網站：<https://shoung.github.io/teaching-quizzes/>
 - **色彩天賦測驗，給同學的獨立網址：<https://shoung.github.io/teaching-quizzes/#/quiz/chromatic-intuition/1>**
+- **AI 企劃測驗，給同學的獨立網址：<https://shoung.github.io/teaching-quizzes/#/quiz/ai-consulting/1>**
 - 專案規則：[AGENTS.md](./AGENTS.md)
+
+## 課堂快速分享
+
+| 測驗 | 短網址 | QR code 原圖 |
+| --- | --- | --- |
+| 色彩天賦測驗 | <https://is.gd/HI9zQA> | [下載 PNG](./public/qr/chromatic-intuition.png) |
+| 你離麥肯錫入職還差多遠？ | <https://is.gd/SpjRZt> | [下載 PNG](./public/qr/ai-consulting.png) |
+
+兩份測驗的第一頁都內建短網址複製與 QR 圖片下載；頂部分享按鈕也會複製短網址。QR 圖片由本機產生並用獨立解碼器驗證，不依賴外部 QR 圖片服務。短網址預先建立及驗證重新導向，瀏覽測驗時不呼叫縮址 API。
 
 ## 開發
 
@@ -29,6 +39,14 @@ npm run preview
 
 原始公開題目和圖片 URL 保存於 `sources/chromatic.json`，圖片對照在 `sources/chromatic-assets.json`；不包含提供連結中的存取權杖或原站帳號資料。`scripts/import-chromatic.py` 可重新下載原始圖片；來源若變更，請先審查差異。
 
+## 第二份測驗：你離麥肯錫入職還差多遠？
+
+為大二企業管理／行銷學生設計的 **28 道原創企劃決策題**。情境是一個廣泛使用企業 AI 的顧問團隊，替校園飲品品牌改善業績。評量六面向：問題拆解（4 題）、數據與實驗（5）、行銷與商業（5）、AI 工作流（6）、查證與責任（4）、提案與協作（4）。
+
+每題 0–3 分，合計滿分 84 再換算為 100；六個雷達面向各依自身滿分換算。結果提供五個職務挑戰層級、必要能力門檻、缺口、兩個優先練習與逐題解析。最高層需總分至少 85、AI 工作流至少 70、查證至少 75，其餘軸至少 60；不能只靠其他強項抵銷 AI 與查證能力的缺口。
+
+層級是自訂教學規則，對應從校園專案到大型企業與國際顧問案例的準備方向，並非真實錄取預測。設計參考 [McKinsey 官方 Lilli 工作方式](https://www.mckinsey.com/capabilities/tech-and-ai/how-we-help-clients/rewiring-the-way-mckinsey-works-with-lilli)與[公開面試能力方向](https://www.mckinsey.com/careers/interviewing)；題目為本專案原創。使用者已確認無須讀取無存取權的 Notion 課程頁。
+
 ## 題庫與頁面
 
 ```text
@@ -36,12 +54,19 @@ src/
   App.tsx                 路由、獨立進度與分享連結
   types.ts                Quiz、Question、Session 型別
   quiz-engine.ts          進度驗證與計分
-  data/quizzes.ts         題庫目錄與知識型示範題
+  data/quizzes.ts         兩份正式題庫目錄
   data/chromatic.ts       色彩測驗資料、教學解析與面向
+  data/consulting.ts      原創 AI 行銷企劃題庫及六面向
+  consulting-engine.ts   分級選項計分、六面向與挑戰層級
+  data/sharing.json       快取短網址、目的地與 QR 圖片
   components/Catalog.tsx  首頁目錄
   components/QuizPage.tsx  一頁一題與圖片放大
   components/ResultPage.tsx 結果與逐題回顧
+  components/ConsultingResult.tsx AI 企劃報告與分級
+  components/RadarChart.tsx 可存取的雷達圖
+  components/ShareCard.tsx 首題分享卡
 public/images/chromatic/ 原始題目照片與色卡
+public/qr/                本機產生的分享 QR 圖片
 ```
 
 `#/quiz/<id>/<題號>` 為獨立可分享子頁。Hash 路由支援 GitHub Pages 專案子路徑與直接重新整理。未答題無法跳題或提前查看結果。結果只在使用者瀏覽器產生。
@@ -56,7 +81,9 @@ public/images/chromatic/ 原始題目照片與色卡
 4. 對既有題目、選項或答案的修改必須遞增 `version`。
 5. 執行測試與建置；新測驗會出現在目錄，並自動取得獨立網址。
 
-色彩專用結果中的四面向需使用 `dimension`。其心境摘要目前依色彩題庫設計；新增其他主題若需自訂評量報告，應建立對應結果元件並以測驗 ID 明確分派，不套用色彩報告。
+色彩報告使用 `mode: 'assessment'`，AI 企劃使用 `mode: 'consulting'`。色彩的心境摘要與 AI 的分級規則各依對應題庫設計；新增其他評量應建立對應報告並明確分派，不直接套用既有報告。
+
+短網址與 QR 資料可以使用 `node scripts/generate-sharing.mjs` 重新驗證並產生；已存在的縮址會重用。新增測驗時先擴充該腳本的測驗 ID，再產生分享資產。`npm test` 會將實際 PNG 解碼，驗證內容與分享目的地。
 
 ## GitHub Pages
 
