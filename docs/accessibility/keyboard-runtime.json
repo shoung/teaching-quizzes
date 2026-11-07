@@ -1,0 +1,33 @@
+[
+  {
+    "check": "first-tab",
+    "text": "跳至主要內容",
+    "outline": "3px",
+    "top": 10
+  },
+  {
+    "check": "skip-content",
+    "active": "main-content"
+  },
+  {
+    "check": "dialog-focus",
+    "inside": false
+  },
+  {
+    "check": "dialog-closed",
+    "closed": true,
+    "returned": "放大圖片：選項 A"
+  },
+  {
+    "check": "next-question-focus",
+    "id": "page-title",
+    "text": "下列四個綠色色塊中，哪一個最接近黃綠色？",
+    "visible": true
+  },
+  {
+    "check": "previous-focus",
+    "id": "page-title",
+    "visible": true,
+    "answer": "1"
+  }
+]

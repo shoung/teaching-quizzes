@@ -35,11 +35,11 @@ describe('教學測驗的真實使用流程', () => {
     render(<App />);
     expect(screen.getByRole('button', { name: /下一頁/ })).toBeDisabled();
     expect(screen.getAllByRole('group')).toHaveLength(1);
-    await user.click(screen.getByLabelText('B'));
+    await user.click(screen.getByRole('radio', { name: '選項 B' }));
     await user.click(screen.getByRole('button', { name: /下一頁/ }));
     await screen.findByRole('heading', { name: '下列四個綠色色塊中，哪一個最接近黃綠色？' });
     await user.click(screen.getByRole('button', { name: /上一頁/ }));
-    expect(await screen.findByLabelText('B')).toBeChecked();
+    expect(await screen.findByRole('radio', { name: '選項 B' })).toBeChecked();
   });
 
   it('完成 AI 企劃的 28 題後產生六軸雷達、分級與解析，重測會清空答案', async () => {
@@ -65,35 +65,35 @@ describe('教學測驗的真實使用流程', () => {
     const user = userEvent.setup();
     navigate('#/quiz/chromatic-intuition/1');
     const first = render(<App />);
-    await user.click(screen.getByLabelText('B'));
+    await user.click(screen.getByRole('radio', { name: '選項 B' }));
     first.unmount();
     render(<App />);
-    expect(screen.getByLabelText('B')).toBeChecked();
+    expect(screen.getByRole('radio', { name: '選項 B' })).toBeChecked();
   });
 
   it('直接連結後續題目會回到第一道未答題，不能直接看結果', async () => {
     navigate('#/quiz/chromatic-intuition/4');
     render(<App />);
-    expect(await screen.findByLabelText('B')).toBeInTheDocument();
+    expect(await screen.findByRole('radio', { name: '選項 B' })).toBeInTheDocument();
     navigate('#/quiz/chromatic-intuition/result');
-    expect(await screen.findByLabelText('B')).toBeInTheDocument();
+    expect(await screen.findByRole('radio', { name: '選項 B' })).toBeInTheDocument();
     expect(screen.queryByLabelText('測驗分數')).not.toBeInTheDocument();
   });
 
-  it('網址錯誤及破損的儲存資料仍有可用的返回目錄操作', async () => {
+  it('網址錯誤提供重新載入提示，破損進度仍可開始答題', async () => {
     localStorage.setItem('learning-lab:quiz:chromatic-intuition:v2', '{broken');
     navigate('#/quiz/no-such-quiz/1');
     render(<App />);
     expect(screen.getByRole('heading', { name: '這份測驗還沒準備好' })).toBeInTheDocument();
     navigate('#/quiz/chromatic-intuition/1');
-    expect(await screen.findByLabelText('B')).toBeInTheDocument();
+    expect(await screen.findByRole('radio', { name: '選項 B' })).toBeInTheDocument();
   });
 
   it('瀏覽器禁止儲存時仍可完成當頁作答', async () => {
     const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('Unavailable'); });
     navigate('#/quiz/chromatic-intuition/1');
     render(<App />);
-    fireEvent.click(screen.getByLabelText('B'));
+    fireEvent.click(screen.getByRole('radio', { name: '選項 B' }));
     fireEvent.click(screen.getByRole('button', { name: /下一頁/ }));
     await waitFor(() => expect(screen.getByRole('heading', { name: '下列四個綠色色塊中，哪一個最接近黃綠色？' })).toBeInTheDocument());
     spy.mockRestore();
@@ -106,11 +106,11 @@ describe('教學測驗的真實使用流程', () => {
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(screen.getAllByRole('radio')).toHaveLength(4);
     expect(screen.getAllByRole('img', { name: /^選項/ })).toHaveLength(4);
-    await user.click(screen.getByLabelText('B'));
+    await user.click(screen.getByRole('radio', { name: '選項 B' }));
     navigate('#/quiz/ai-consulting/1');
     expect(screen.getByRole('button', { name: /下一頁/ })).toBeDisabled();
     navigate('#/quiz/chromatic-intuition/1');
-    expect(screen.getByLabelText('B')).toBeChecked();
+    expect(screen.getByRole('radio', { name: '選項 B' })).toBeChecked();
   });
   it('完成 28 道原題與兩道複選後，產生四面向報告及不計對錯的偏好紀錄', async () => {
     const user = userEvent.setup();

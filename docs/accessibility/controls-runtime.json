@@ -1,0 +1,237 @@
+[
+  {
+    "state": "search-default",
+    "controls": [
+      {
+        "class": "search-field",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(250, 250, 245)",
+        "borderContrast": 4.82,
+        "outline": "3px"
+      }
+    ]
+  },
+  {
+    "state": "search-hover-focus",
+    "controls": [
+      {
+        "class": "search-field",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(250, 250, 245)",
+        "borderContrast": 4.82,
+        "outline": "3px"
+      }
+    ]
+  },
+  {
+    "state": "question-default",
+    "controls": [
+      {
+        "class": "share-button",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(247, 247, 240)",
+        "borderContrast": 4.69,
+        "outline": "3px"
+      },
+      {
+        "class": "copy-short-link",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(249, 251, 245)",
+        "borderContrast": 4.84,
+        "outline": "3px"
+      },
+      {
+        "class": "answer-option  with-image",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "zoom-button",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgba(255, 254, 250, 0.91)",
+        "borderContrast": 5,
+        "outline": "3px"
+      },
+      {
+        "class": "choice-indicator",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "answer-option  with-image",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "zoom-button",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgba(255, 254, 250, 0.91)",
+        "borderContrast": 5,
+        "outline": "3px"
+      },
+      {
+        "class": "choice-indicator",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "answer-option  with-image",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "zoom-button",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgba(255, 254, 250, 0.91)",
+        "borderContrast": 5,
+        "outline": "3px"
+      },
+      {
+        "class": "choice-indicator",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "answer-option  with-image",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "zoom-button",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgba(255, 254, 250, 0.91)",
+        "borderContrast": 5,
+        "outline": "3px"
+      },
+      {
+        "class": "choice-indicator",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      }
+    ]
+  },
+  {
+    "state": "question-hover-focus",
+    "controls": [
+      {
+        "class": "share-button",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(247, 247, 240)",
+        "borderContrast": 4.69,
+        "outline": "3px"
+      },
+      {
+        "class": "copy-short-link",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(249, 251, 245)",
+        "borderContrast": 4.84,
+        "outline": "3px"
+      },
+      {
+        "class": "answer-option  with-image",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "zoom-button",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgba(255, 254, 250, 0.91)",
+        "borderContrast": 5,
+        "outline": "3px"
+      },
+      {
+        "class": "choice-indicator",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "answer-option  with-image",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "zoom-button",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgba(255, 254, 250, 0.91)",
+        "borderContrast": 5,
+        "outline": "3px"
+      },
+      {
+        "class": "choice-indicator",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "answer-option  with-image",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "zoom-button",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgba(255, 254, 250, 0.91)",
+        "borderContrast": 5,
+        "outline": "3px"
+      },
+      {
+        "class": "choice-indicator",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "answer-option  with-image",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      },
+      {
+        "class": "zoom-button",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgba(255, 254, 250, 0.91)",
+        "borderContrast": 5,
+        "outline": "3px"
+      },
+      {
+        "class": "choice-indicator",
+        "border": "rgb(101, 115, 93)",
+        "background": "rgb(251, 252, 247)",
+        "borderContrast": 4.89,
+        "outline": "3px"
+      }
+    ]
+  },
+  {
+    "state": "image-modal",
+    "violations": [],
+    "modal": true
+  }
+]

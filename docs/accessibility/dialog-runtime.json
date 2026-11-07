@@ -1,0 +1,30 @@
+[
+  {
+    "tag": "BUTTON",
+    "name": "關閉放大圖片",
+    "modal": true,
+    "backgroundControlFocused": false
+  },
+  {
+    "tag": "BODY",
+    "name": null,
+    "modal": true,
+    "backgroundControlFocused": false
+  },
+  {
+    "tag": "DIALOG",
+    "name": "放大檢視：選項 A",
+    "modal": true,
+    "backgroundControlFocused": false
+  },
+  {
+    "check": "background-focus-blocked",
+    "blocked": true,
+    "modal": true
+  },
+  {
+    "check": "escape-restores-trigger",
+    "active": "放大圖片：選項 A",
+    "closed": true
+  }
+]

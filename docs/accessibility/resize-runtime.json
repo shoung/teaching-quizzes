@@ -1,0 +1,523 @@
+[
+  {
+    "name": "home",
+    "mode": "200-percent",
+    "title": "學習小測所｜讓理解多走一步",
+    "route": "",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "讓好奇心，多走一步。"
+      },
+      {
+        "level": "H2",
+        "text": "你的眼裡，藏著什麼樣的色彩？"
+      },
+      {
+        "level": "H2",
+        "text": "今天，想探索什麼？02"
+      },
+      {
+        "level": "H3",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H3",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "這裡沒有終點，只有新的起點。"
+      }
+    ],
+    "homeLinks": [
+      "學習小測所A LITTLE TEST, A LITTLE GROWTH.",
+      "測驗目錄"
+    ],
+    "clipped": []
+  },
+  {
+    "name": "home",
+    "mode": "text-spacing",
+    "title": "學習小測所｜讓理解多走一步",
+    "route": "",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 16,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "讓好奇心，多走一步。"
+      },
+      {
+        "level": "H2",
+        "text": "你的眼裡，藏著什麼樣的色彩？"
+      },
+      {
+        "level": "H2",
+        "text": "今天，想探索什麼？02"
+      },
+      {
+        "level": "H3",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H3",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "這裡沒有終點，只有新的起點。"
+      }
+    ],
+    "homeLinks": [
+      "學習小測所A LITTLE TEST, A LITTLE GROWTH.",
+      "測驗目錄"
+    ]
+  },
+  {
+    "name": "chromatic-intuition-question",
+    "mode": "200-percent",
+    "title": "色彩天賦測驗｜第 1 / 28 題",
+    "route": "#/quiz/chromatic-intuition/1",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H2",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H2",
+        "text": "色塊中，哪一個最接近標準正紅色？"
+      }
+    ],
+    "homeLinks": [],
+    "clipped": []
+  },
+  {
+    "name": "chromatic-intuition-question",
+    "mode": "text-spacing",
+    "title": "色彩天賦測驗｜第 1 / 28 題",
+    "route": "#/quiz/chromatic-intuition/1",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 16,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H2",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H2",
+        "text": "色塊中，哪一個最接近標準正紅色？"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "chromatic-intuition-result",
+    "mode": "200-percent",
+    "title": "色彩天賦測驗｜測驗結果",
+    "route": "#/quiz/chromatic-intuition/result",
+    "width": 322,
+    "scrollWidth": 322,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H2",
+        "text": "你的色彩，自有光芒。"
+      },
+      {
+        "level": "H2",
+        "text": "細節觀察者"
+      },
+      {
+        "level": "H2",
+        "text": "把觀察，畫成一張圖"
+      },
+      {
+        "level": "H2",
+        "text": "四個面向，看見你的觀察方式"
+      },
+      {
+        "level": "H3",
+        "text": "色相敏銳度"
+      },
+      {
+        "level": "H3",
+        "text": "明度與飽和度"
+      },
+      {
+        "level": "H3",
+        "text": "色彩心理與聯想"
+      },
+      {
+        "level": "H3",
+        "text": "色彩搭配邏輯"
+      },
+      {
+        "level": "H2",
+        "text": "下一次，從「明度與飽和度」開始"
+      },
+      {
+        "level": "H2",
+        "text": "你選擇的，是你此刻的風景。"
+      },
+      {
+        "level": "H3",
+        "text": "哪張照片同時讓你感到「孤獨」與「平靜」？"
+      },
+      {
+        "level": "H3",
+        "text": "若要講述一個「離別」的故事，你會選哪張照片？(可複選）"
+      },
+      {
+        "level": "H3",
+        "text": "哪張照片最符合你此刻的心境？"
+      },
+      {
+        "level": "H2",
+        "text": "把理解再加深一點"
+      },
+      {
+        "level": "H3",
+        "text": "關於這份教學回饋"
+      }
+    ],
+    "homeLinks": [],
+    "clipped": []
+  },
+  {
+    "name": "chromatic-intuition-result",
+    "mode": "text-spacing",
+    "title": "色彩天賦測驗｜測驗結果",
+    "route": "#/quiz/chromatic-intuition/result",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 16,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H2",
+        "text": "你的色彩，自有光芒。"
+      },
+      {
+        "level": "H2",
+        "text": "細節觀察者"
+      },
+      {
+        "level": "H2",
+        "text": "把觀察，畫成一張圖"
+      },
+      {
+        "level": "H2",
+        "text": "四個面向，看見你的觀察方式"
+      },
+      {
+        "level": "H3",
+        "text": "色相敏銳度"
+      },
+      {
+        "level": "H3",
+        "text": "明度與飽和度"
+      },
+      {
+        "level": "H3",
+        "text": "色彩心理與聯想"
+      },
+      {
+        "level": "H3",
+        "text": "色彩搭配邏輯"
+      },
+      {
+        "level": "H2",
+        "text": "下一次，從「明度與飽和度」開始"
+      },
+      {
+        "level": "H2",
+        "text": "你選擇的，是你此刻的風景。"
+      },
+      {
+        "level": "H3",
+        "text": "哪張照片同時讓你感到「孤獨」與「平靜」？"
+      },
+      {
+        "level": "H3",
+        "text": "若要講述一個「離別」的故事，你會選哪張照片？(可複選）"
+      },
+      {
+        "level": "H3",
+        "text": "哪張照片最符合你此刻的心境？"
+      },
+      {
+        "level": "H2",
+        "text": "把理解再加深一點"
+      },
+      {
+        "level": "H3",
+        "text": "關於這份教學回饋"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "ai-consulting-question",
+    "mode": "200-percent",
+    "title": "你離麥肯錫入職還差多遠？｜第 1 / 28 題",
+    "route": "#/quiz/ai-consulting/1",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "接到這個任務，你會先做什麼？"
+      }
+    ],
+    "homeLinks": [],
+    "clipped": []
+  },
+  {
+    "name": "ai-consulting-question",
+    "mode": "text-spacing",
+    "title": "你離麥肯錫入職還差多遠？｜第 1 / 28 題",
+    "route": "#/quiz/ai-consulting/1",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 16,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "接到這個任務，你會先做什麼？"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "ai-consulting-result",
+    "mode": "200-percent",
+    "title": "你離麥肯錫入職還差多遠？｜測驗結果",
+    "route": "#/quiz/ai-consulting/result",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "顧問案例挑戰組"
+      },
+      {
+        "level": "H2",
+        "text": "下一個值得挑戰的工作情境"
+      },
+      {
+        "level": "H2",
+        "text": "AI 時代，你的六面向能力圖"
+      },
+      {
+        "level": "H2",
+        "text": "會用 AI，也要能為產出負責。"
+      },
+      {
+        "level": "H2",
+        "text": "已跨過本課門檻，接下來練真正的開放式案例"
+      },
+      {
+        "level": "H2",
+        "text": "五種起點，都有下一步"
+      },
+      {
+        "level": "H3",
+        "text": "顧問案例挑戰組本次位置"
+      },
+      {
+        "level": "H3",
+        "text": "大型企業企劃培育組"
+      },
+      {
+        "level": "H3",
+        "text": "成長型企業實作組"
+      },
+      {
+        "level": "H3",
+        "text": "行銷執行起步組"
+      },
+      {
+        "level": "H3",
+        "text": "校園基礎培力組"
+      },
+      {
+        "level": "H2",
+        "text": "先完成這兩個小任務。"
+      },
+      {
+        "level": "H3",
+        "text": "問題拆解，從一份可檢查的作品開始。"
+      },
+      {
+        "level": "H3",
+        "text": "數據與實驗，從一份可檢查的作品開始。"
+      },
+      {
+        "level": "H2",
+        "text": "把理解再加深一點"
+      },
+      {
+        "level": "H3",
+        "text": "關於這份評量與企業層級"
+      }
+    ],
+    "homeLinks": [],
+    "clipped": []
+  },
+  {
+    "name": "ai-consulting-result",
+    "mode": "text-spacing",
+    "title": "你離麥肯錫入職還差多遠？｜測驗結果",
+    "route": "#/quiz/ai-consulting/result",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 16,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "顧問案例挑戰組"
+      },
+      {
+        "level": "H2",
+        "text": "下一個值得挑戰的工作情境"
+      },
+      {
+        "level": "H2",
+        "text": "AI 時代，你的六面向能力圖"
+      },
+      {
+        "level": "H2",
+        "text": "會用 AI，也要能為產出負責。"
+      },
+      {
+        "level": "H2",
+        "text": "已跨過本課門檻，接下來練真正的開放式案例"
+      },
+      {
+        "level": "H2",
+        "text": "五種起點，都有下一步"
+      },
+      {
+        "level": "H3",
+        "text": "顧問案例挑戰組本次位置"
+      },
+      {
+        "level": "H3",
+        "text": "大型企業企劃培育組"
+      },
+      {
+        "level": "H3",
+        "text": "成長型企業實作組"
+      },
+      {
+        "level": "H3",
+        "text": "行銷執行起步組"
+      },
+      {
+        "level": "H3",
+        "text": "校園基礎培力組"
+      },
+      {
+        "level": "H2",
+        "text": "先完成這兩個小任務。"
+      },
+      {
+        "level": "H3",
+        "text": "問題拆解，從一份可檢查的作品開始。"
+      },
+      {
+        "level": "H3",
+        "text": "數據與實驗，從一份可檢查的作品開始。"
+      },
+      {
+        "level": "H2",
+        "text": "把理解再加深一點"
+      },
+      {
+        "level": "H3",
+        "text": "關於這份評量與企業層級"
+      }
+    ],
+    "homeLinks": []
+  }
+]
