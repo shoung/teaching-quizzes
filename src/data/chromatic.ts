@@ -3,7 +3,7 @@ import assets from '../../sources/chromatic-assets.json';
 import type { Question, Quiz } from '../types';
 
 const localImage = (url: string) => (assets as Record<string, string>)[url];
-const reflections = new Set([9, 10, 12, 13, 16, 17, 18, 19, 20, 21, 22, 27, 28]);
+const reflections = new Set([9, 10, 12, 13, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]);
 const explanations = [
   '正紅色不明顯偏橙，也不明顯偏紫。比較時先找出偏黃與偏藍的色塊，再觀察剩下色塊的紅色純度。',
   '黃綠位於黃色與綠色之間；相較偏青的綠色，它帶有更多黃色成分。試著在腦中將四個選項排在色相環上。',
@@ -56,7 +56,7 @@ const questions: Question[] = source.questions.map((q, index) => {
 });
 
 export const chromaticQuiz: Quiz = {
-  id: 'chromatic-intuition', version: 1,
+  id: 'chromatic-intuition', version: 2,
   title: '色彩天賦測驗', subtitle: 'CHROMATIC INTUITION',
   description: '從細微的色相到照片裡的情緒，透過 28 道視覺提問，探索你的色彩直覺。',
   category: '視覺美學', minutes: 12, color: 'peach', icon: 'color', mode: 'assessment',

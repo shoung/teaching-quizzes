@@ -124,9 +124,9 @@ describe('教學測驗的真實使用流程', () => {
     }
     expect(await screen.findByRole('heading', { name: '你的色彩，自有光芒。' })).toBeInTheDocument();
     expect(screen.getByLabelText('測驗分數')).toHaveTextContent('100');
-    expect(screen.getByText('參考吻合 15 / 15 題 · 13 題為個人感受，不計對錯')).toBeInTheDocument();
+    expect(screen.getByText('參考吻合 11 / 11 題 · 17 題為個人感受，不計對錯')).toBeInTheDocument();
     expect(screen.getByText('已記錄 7 題感受')).toBeInTheDocument();
-    expect(screen.getAllByText('個人感受')).toHaveLength(13);
+    expect(screen.getAllByText('個人感受')).toHaveLength(17);
     expect(screen.getByRole('heading', { name: '關於這份教學回饋' })).toBeInTheDocument();
   });
 });

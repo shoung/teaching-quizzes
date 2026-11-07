@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { getResult, restoreSession } from './quiz-engine';
 import type { Quiz, Session } from './types';
+import { chromaticQuiz } from './data/chromatic';
 
 const quiz: Quiz = {
   id: 'fixture', version: 2, title: '測試', subtitle: 'Test', description: '測試',
@@ -38,6 +39,11 @@ describe('計分及進度資料邊界', () => {
     const reflectiveQuiz: Quiz = { ...quiz, questions: [quiz.questions[0], { ...quiz.questions[1], reflection: true }] };
     expect(getResult(reflectiveQuiz, { version: 2, answers: [0, 0], completed: true }))
       .toEqual({ correct: 1, total: 1, score: 100 });
+  });
+  it('客廳配色與照片取捨等審美偏好，不會降低色彩觀察的參考分數', () => {
+    const answers = [1, 3, 0, 1, 0, 0, [0, 1, 2, 4], 3, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, [0, 2], 0, 1, 0, 0, 0, 0, 0];
+    expect(getResult(chromaticQuiz, { version: 2, completed: true, answers }))
+      .toEqual({ correct: 11, total: 11, score: 100 });
   });
   it.each([
     null, 'broken', [],
