@@ -1,10 +1,10 @@
 # 教學測驗集 · 學習小測所
 
-為教學而設計的測驗網站。目錄導引 → 每頁一題 → 下一頁 → 完整前端結果與解析。
+為教學而設計的測驗網站。目錄導引 → 專屬介紹頁 → 按開始 → 每頁一題 → 下一頁 → 完整前端結果與解析。
 
 - 網站：<https://shoung.github.io/teaching-quizzes/>
 - **色彩天賦測驗，給同學的獨立網址：<https://shoung.github.io/teaching-quizzes/#/quiz/chromatic-intuition/1>**
-- **AI 企劃測驗，給同學的獨立網址：<https://shoung.github.io/teaching-quizzes/#/quiz/ai-consulting/1>**
+- **顧問入場闖關，給同學的獨立網址：<https://shoung.github.io/teaching-quizzes/#/quiz/ai-consulting/1>**
 - 專案規則：[AGENTS.md](./AGENTS.md)
 
 ## 課堂快速分享
@@ -14,7 +14,7 @@
 | 色彩天賦測驗 | <https://is.gd/HI9zQA> | [下載 PNG](./public/qr/chromatic-intuition.png) |
 | 你離麥肯錫入職還差多遠？ | <https://is.gd/SpjRZt> | [下載 PNG](./public/qr/ai-consulting.png) |
 
-兩份測驗的第一頁都內建短網址複製與 QR 圖片下載；頂部分享按鈕也會複製短網址。QR 圖片由本機產生並用獨立解碼器驗證，不依賴外部 QR 圖片服務。短網址預先建立及驗證重新導向，瀏覽測驗時不呼叫縮址 API。
+兩份測驗的第一頁都是專屬 landing page，包含介紹、題數、時間與開始按鈕，按開始才進入題目；頁面內建短網址複製與 QR 圖片下載；頂部分享按鈕也會複製短網址。QR 圖片由本機產生並用獨立解碼器驗證，不依賴外部 QR 圖片服務。短網址預先建立及驗證重新導向，瀏覽測驗時不呼叫縮址 API。
 
 ## 開發
 
@@ -41,11 +41,13 @@ npm run preview
 
 ## 第二份測驗：你離麥肯錫入職還差多遠？
 
-為大二企業管理／行銷學生設計的 **28 道原創企劃決策題**。情境是一個廣泛使用企業 AI 的顧問團隊，替校園飲品品牌改善業績。評量六面向：問題拆解（4 題）、數據與實驗（5）、行銷與商業（5）、AI 工作流（6）、查證與責任（4）、提案與協作（4）。
+為大二企業管理／行銷學生設計的 **28 道原創顧問入場闖關題**，題庫版本 3。以淺白的校園、店家、數字和面試小挑戰，測試拆題力（4 題）、數字感（5）、商業直覺（5）、AI 助攻（5）、找破綻（5）、說服力（4）。AI 是團隊日常使用的工具，並非整份測驗的唯一主題。
 
-每題 0–3 分，合計滿分 84 再換算為 100；六個雷達面向各依自身滿分換算。結果提供五個職務挑戰層級、必要能力門檻、缺口、兩個優先練習與逐題解析。最高層需總分至少 85、AI 工作流至少 70、查證至少 75，其餘軸至少 60；不能只靠其他強項抵銷 AI 與查證能力的缺口。
+獨立視覺採奶油色、藍黃與粗描邊插畫：1 張入場主圖、5 張章節插畫，加上 8 組可重排的 HTML 圖解。五站依序是腦袋暖機室、數字不騙人、商業街頭戰、AI 隊友上線、最後一道門。原創圖存入 `public/images/ai-consulting/`，提示詞見 `docs/illustration-prompts.md`。
 
-層級是自訂教學規則，對應從校園專案到大型企業與國際顧問案例的準備方向，並非真實錄取預測。設計參考 [McKinsey 官方 Lilli 工作方式](https://www.mckinsey.com/capabilities/tech-and-ai/how-we-help-clients/rewiring-the-way-mckinsey-works-with-lilli)與[公開面試能力方向](https://www.mckinsey.com/careers/interviewing)；題目為本專案原創。使用者已確認無須讀取無存取權的 Notion 課程頁。
+每題依判斷完整度給 0–3 分，合計滿分 84 再換算為 100；六軸各依自己的滿分換算。結果以入場券、技能徽章、雷達與分數表呈現，附五層企業任務練習方向、兩個升級任務和逐題解析。最高層需總分至少 85、AI 助攻至少 70、找破綻至少 75，其餘軸至少 60。
+
+分級是自訂教學規則，不是官方招募或真實錄取資格判定。使用者已確認不需讀取無法存取的 Notion 課程頁。完整設計見 [顧問闖關設計](./docs/ai-consulting-design.md)。
 
 ## 題庫與頁面
 
@@ -56,22 +58,25 @@ src/
   quiz-engine.ts          進度驗證與計分
   data/quizzes.ts         兩份正式題庫目錄
   data/chromatic.ts       色彩測驗資料、教學解析與面向
-  data/consulting.ts      原創 AI 行銷企劃題庫及六面向
+  data/consulting.ts      原創顧問入場闖關題庫及六面向
   consulting-engine.ts   分級選項計分、六面向與挑戰層級
   data/sharing.json       快取短網址、目的地與 QR 圖片
   components/Catalog.tsx  首頁目錄
+  components/QuizLanding.tsx 專屬介紹與開始頁
+  components/ChallengeVisual.tsx 題目圖解
+  quiz-themes.css         各測驗介紹與闖關專用視覺
   components/QuizPage.tsx  一頁一題與圖片放大
   components/ResultPage.tsx 結果與逐題回顧
-  components/ConsultingResult.tsx AI 企劃報告與分級
+  components/ConsultingResult.tsx 顧問入場券與分級
   components/RadarChart.tsx 可存取的雷達圖
-  components/ShareCard.tsx 首題分享卡
+  components/ShareCard.tsx 介紹頁分享卡
 public/images/chromatic/ 原始題目照片與色卡
 public/qr/                本機產生的分享 QR 圖片
 ```
 
-`#/quiz/<id>/<題號>` 為獨立可分享子頁。Hash 路由支援 GitHub Pages 專案子路徑與直接重新整理。未答題無法跳題或提前查看結果。結果只在使用者瀏覽器產生。
+`#/quiz/<id>/1` 為獨立可分享介紹頁；`#/quiz/<id>/play/<題號>` 為答題步驟，`#/quiz/<id>/result` 為結果。Hash 路由支援 GitHub Pages 專案子路徑與直接重新整理。未答題無法跳題或提前查看結果。結果只在使用者瀏覽器產生。
 
-各份測驗使用獨立的 localStorage 鍵 `learning-lab:quiz:<id>:v<version>`。關閉網頁、重整或回到目錄後可繼續；重測只清除該份測驗的答案。沒有後端、追蹤程式或個資表單。禁止瀏覽器儲存時，仍可在當前頁面完成測驗。
+各份測驗使用獨立的 localStorage 鍵 `learning-lab:quiz:<id>:v<version>`。關閉網頁、重整或回到介紹頁後可按「繼續測驗」；重測只清除該份測驗的答案。沒有後端、追蹤程式或個資表單。禁止瀏覽器儲存時，仍可在當前頁面完成測驗。
 
 測驗子頁採完全獨立版型：頁首為該份測驗標題，題目、結果、頁首與頁腳都沒有目錄或首頁連結。只有主頁負責列出測驗，適合將單一測驗連結直接分享給學生。
 
@@ -81,7 +86,7 @@ public/qr/                本機產生的分享 QR 圖片
 
 雷達圖的文字數值以 HTML 圖例呈現，不會隨 SVG 縮成微小字。使用原生單選、複選、展開區塊及圖片對話框；換題時焦點會移至可見題目，初次載入不搶鍵盤焦點。測驗原圖不套用顏色濾鏡。
 
-完整修正前後報告：[無障礙檢查報告](./docs/accessibility/2026-11-07-report.md)。自動化掃描不代表正式認證，螢幕閱讀器及色彩測驗替代教學仍需人工確認。
+本次介紹與闖關回歸：[檢查報告](./docs/accessibility/adventure-report.md)。先前全站修正：[無障礙檢查報告](./docs/accessibility/2026-11-07-report.md)。自動化掃描不代表正式認證，螢幕閱讀器及色彩測驗替代教學仍需人工確認。
 
 可在 Ego Lite 的同一個審查 TaskSpace 透過 `scripts/a11y/full-audit.ego.mjs` 的 `runAudit(task, repoAbsolutePath)` 重跑完整本機流程；此程式只重設 localhost 上的測試進度，拒絕對正式站重設資料。`scripts/a11y/inspect-page.mjs` 提供字級、對比、目標大小與版面量測。
 

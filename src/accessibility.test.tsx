@@ -31,7 +31,7 @@ describe('獨立測驗版型與可存取標籤', () => {
     });
   }
   it('圖片選項的朗讀名稱包含畫面上顯示的文字', () => {
-    go('#/quiz/chromatic-intuition/1'); render(<App />);
+    go('#/quiz/chromatic-intuition/play/1'); render(<App />);
     expect(screen.getByRole('radio', { name: '選項 B' })).toBeInTheDocument();
   });
   it('初次進入不搶焦點，鍵盤可以先使用略過區塊連結', async () => {
@@ -44,13 +44,13 @@ describe('獨立測驗版型與可存取標籤', () => {
   it('首頁仍可由目錄開啟獨立測驗', () => {
     render(<App />);
     expect(screen.getByRole('navigation', { name: '主導覽' })).toBeInTheDocument();
-    expect(screen.getAllByRole('button', { name: '開始測驗' })).toHaveLength(2);
+    expect(screen.getAllByRole('button', { name: '查看測驗介紹' })).toHaveLength(2);
   });
   it('雷達資料有可重排的文字等價內容，不依賴縮小圖中文字', () => {
     const quiz = quizzes[1];
     localStorage.setItem(`learning-lab:quiz:${quiz.id}:v${quiz.version}`, JSON.stringify({ version: quiz.version, answers: quiz.questions.map((q) => q.correctAnswer), completed: true }));
     go(`#/quiz/${quiz.id}/result`); render(<App />);
-    expect(screen.getByRole('img', { name: 'AI 企劃能力雷達圖' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: '顧問闖關能力雷達圖' })).toBeInTheDocument();
     expect(screen.getByRole('list', { name: '雷達圖數值' })).toBeInTheDocument();
   });
 });

@@ -44,6 +44,12 @@ for (const quiz of cases) {
   await page.evaluate((id) => Object.keys(localStorage).filter((key) => key.startsWith(`learning-lab:quiz:${id}:v`)).forEach((key) => localStorage.removeItem(key)), quiz.id);
   await page.goto(`${base}#/quiz/${quiz.id}/1`);
   await page.reload();
+  await audit(`${quiz.id}-landing-320`);
+  await page.cdp('Emulation.setDeviceMetricsOverride', { width: 1360, height: 1000, deviceScaleFactor: 1, mobile: false });
+  await audit(`${quiz.id}-landing-desktop`);
+  await page.click('loc=role:button[name="開始測驗"]');
+  await page.waitForSelector('loc=css:.answer-options');
+  await page.cdp('Emulation.setDeviceMetricsOverride', { width: 320, height: 800, deviceScaleFactor: 1, mobile: true });
   await audit(`${quiz.id}-question`);
   for (let index = 0; index < quiz.answers.length; index++) {
     const current = await page.evaluate(inspectPage);
@@ -57,7 +63,7 @@ for (const quiz of cases) {
     if ([0, 6, 20].includes(index)) await audit(`${quiz.id}-selected-${index + 1}`);
     await page.evaluate(() => document.querySelector('.question-navigation .primary').click());
     if (index < 27) await page.waitForFunction((n) => Number(document.querySelector('.question-progress b')?.textContent) === n, index + 2);
-    else await page.waitForSelector('loc=css:.result-page');
+    else await page.waitForSelector('loc=css:.result-page, .adventure-result');
   }
   await audit(`${quiz.id}-result`);
   await page.evaluate(() => document.querySelectorAll('.review-item').forEach((d) => { d.open = true; }));
@@ -65,8 +71,8 @@ for (const quiz of cases) {
 }
 await page.goto(`${base}#/quiz/does-not-exist/1`);
 await audit('invalid-quiz');
-await fs.writeFile(`${root}/docs/accessibility/after-runtime.json`, JSON.stringify(reports, null, 2) + '\n');
-await fs.writeFile(`${root}/docs/accessibility/all-questions-runtime.json`, JSON.stringify(questions, null, 2) + '\n');
+await fs.writeFile(`${root}/docs/accessibility/adventure-runtime.json`, JSON.stringify(reports, null, 2) + '\n');
+await fs.writeFile(`${root}/docs/accessibility/adventure-questions-runtime.json`, JSON.stringify(questions, null, 2) + '\n');
 const failed = reports.filter((r) => r.axe.violations.length || r.lowContrast.length || r.smallText.length || r.smallTargets.length || r.scrollWidth > r.width);
 const failedQuestions = questions.filter((q) => q.minimumFont < 16 || q.lowContrast.length || q.overflow || q.homeLinks.length || q.smallTargets.length);
 console.log({ auditedStates: reports.length, auditedQuestions: questions.length, failedStates: failed.length, failedQuestions: failedQuestions.length });

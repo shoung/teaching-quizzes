@@ -1,0 +1,29 @@
+[
+  {
+    "step": "first-tab",
+    "text": "跳至主要內容",
+    "outline": "rgb(143, 60, 0) solid 3px",
+    "top": 10
+  },
+  {
+    "step": "skip",
+    "id": "main-content"
+  },
+  {
+    "step": "start",
+    "hash": "#/quiz/ai-consulting/play/1",
+    "id": "page-title",
+    "top": 532.78125
+  },
+  {
+    "step": "radio",
+    "checked": 1,
+    "active": "INPUT"
+  },
+  {
+    "step": "previous",
+    "checked": 1,
+    "title": "你離麥肯錫入職還差多遠？｜第 1 / 28 題",
+    "id": "page-title"
+  }
+]

@@ -1,0 +1,555 @@
+[
+  {
+    "name": "color-intro",
+    "mode": "200%",
+    "title": "色彩天賦測驗｜測驗介紹",
+    "route": "#/quiz/chromatic-intuition/1",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H2",
+        "text": "你的眼裡，藏著哪一種色彩天賦？"
+      },
+      {
+        "level": "H2",
+        "text": "這趟色彩探索，怎麼玩？"
+      },
+      {
+        "level": "H2",
+        "text": "把這一頁，帶進教室。"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "color-intro",
+    "mode": "spacing",
+    "title": "色彩天賦測驗｜測驗介紹",
+    "route": "#/quiz/chromatic-intuition/1",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 16,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H2",
+        "text": "你的眼裡，藏著哪一種色彩天賦？"
+      },
+      {
+        "level": "H2",
+        "text": "這趟色彩探索，怎麼玩？"
+      },
+      {
+        "level": "H2",
+        "text": "把這一頁，帶進教室。"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "consulting-intro",
+    "mode": "200%",
+    "title": "你離麥肯錫入職還差多遠？｜測驗介紹",
+    "route": "#/quiz/ai-consulting/1",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "你的顧問入場券，準備好了嗎？"
+      },
+      {
+        "level": "H2",
+        "text": "從「等等，讓我想一下」到「這題我來」。"
+      },
+      {
+        "level": "H3",
+        "text": "腦袋暖機室"
+      },
+      {
+        "level": "H3",
+        "text": "數字不騙人？"
+      },
+      {
+        "level": "H3",
+        "text": "商業街頭戰"
+      },
+      {
+        "level": "H3",
+        "text": "AI 隊友上線"
+      },
+      {
+        "level": "H3",
+        "text": "最後一道門"
+      },
+      {
+        "level": "H2",
+        "text": "把這一頁，帶進教室。"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "consulting-intro",
+    "mode": "spacing",
+    "title": "你離麥肯錫入職還差多遠？｜測驗介紹",
+    "route": "#/quiz/ai-consulting/1",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 16,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "你的顧問入場券，準備好了嗎？"
+      },
+      {
+        "level": "H2",
+        "text": "從「等等，讓我想一下」到「這題我來」。"
+      },
+      {
+        "level": "H3",
+        "text": "腦袋暖機室"
+      },
+      {
+        "level": "H3",
+        "text": "數字不騙人？"
+      },
+      {
+        "level": "H3",
+        "text": "商業街頭戰"
+      },
+      {
+        "level": "H3",
+        "text": "AI 隊友上線"
+      },
+      {
+        "level": "H3",
+        "text": "最後一道門"
+      },
+      {
+        "level": "H2",
+        "text": "把這一頁，帶進教室。"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "consulting-result",
+    "mode": "200%",
+    "title": "你離麥肯錫入職還差多遠？｜測驗結果",
+    "route": "#/quiz/ai-consulting/result",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "顧問入場券，解鎖！"
+      },
+      {
+        "level": "H3",
+        "text": "下一站：策略顧問／大型企業策略部門的案例挑戰"
+      },
+      {
+        "level": "H2",
+        "text": "六種能力，哪一招最亮？"
+      },
+      {
+        "level": "H2",
+        "text": "選擇題破關了，換你開口說。"
+      },
+      {
+        "level": "H3",
+        "text": "拆題力，加一點經驗值。"
+      },
+      {
+        "level": "H3",
+        "text": "數字感，加一點經驗值。"
+      },
+      {
+        "level": "H2",
+        "text": "還沒到麥肯錫，可以先挑戰哪裡？"
+      },
+      {
+        "level": "H3",
+        "text": "顧問入場券，解鎖！本次位置"
+      },
+      {
+        "level": "H3",
+        "text": "已到面試門口，還差一點火候"
+      },
+      {
+        "level": "H3",
+        "text": "企劃潛力股，正在發光"
+      },
+      {
+        "level": "H3",
+        "text": "實戰新手，先累積戰績"
+      },
+      {
+        "level": "H3",
+        "text": "潛力新手，先練這兩招"
+      },
+      {
+        "level": "H2",
+        "text": "答案揭曉時間"
+      },
+      {
+        "level": "H3",
+        "text": "這張入場券，怎麼算？"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "consulting-result",
+    "mode": "spacing",
+    "title": "你離麥肯錫入職還差多遠？｜測驗結果",
+    "route": "#/quiz/ai-consulting/result",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 16,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "顧問入場券，解鎖！"
+      },
+      {
+        "level": "H3",
+        "text": "下一站：策略顧問／大型企業策略部門的案例挑戰"
+      },
+      {
+        "level": "H2",
+        "text": "六種能力，哪一招最亮？"
+      },
+      {
+        "level": "H2",
+        "text": "選擇題破關了，換你開口說。"
+      },
+      {
+        "level": "H3",
+        "text": "拆題力，加一點經驗值。"
+      },
+      {
+        "level": "H3",
+        "text": "數字感，加一點經驗值。"
+      },
+      {
+        "level": "H2",
+        "text": "還沒到麥肯錫，可以先挑戰哪裡？"
+      },
+      {
+        "level": "H3",
+        "text": "顧問入場券，解鎖！本次位置"
+      },
+      {
+        "level": "H3",
+        "text": "已到面試門口，還差一點火候"
+      },
+      {
+        "level": "H3",
+        "text": "企劃潛力股，正在發光"
+      },
+      {
+        "level": "H3",
+        "text": "實戰新手，先累積戰績"
+      },
+      {
+        "level": "H3",
+        "text": "潛力新手，先練這兩招"
+      },
+      {
+        "level": "H2",
+        "text": "答案揭曉時間"
+      },
+      {
+        "level": "H3",
+        "text": "這張入場券，怎麼算？"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "color-result",
+    "mode": "200%",
+    "title": "色彩天賦測驗｜測驗結果",
+    "route": "#/quiz/chromatic-intuition/result",
+    "width": 322,
+    "scrollWidth": 322,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H2",
+        "text": "你的色彩，自有光芒。"
+      },
+      {
+        "level": "H2",
+        "text": "細節觀察者"
+      },
+      {
+        "level": "H2",
+        "text": "把觀察，畫成一張圖"
+      },
+      {
+        "level": "H2",
+        "text": "四個面向，看見你的觀察方式"
+      },
+      {
+        "level": "H3",
+        "text": "色相敏銳度"
+      },
+      {
+        "level": "H3",
+        "text": "明度與飽和度"
+      },
+      {
+        "level": "H3",
+        "text": "色彩心理與聯想"
+      },
+      {
+        "level": "H3",
+        "text": "色彩搭配邏輯"
+      },
+      {
+        "level": "H2",
+        "text": "下一次，從「明度與飽和度」開始"
+      },
+      {
+        "level": "H2",
+        "text": "你選擇的，是你此刻的風景。"
+      },
+      {
+        "level": "H3",
+        "text": "哪張照片同時讓你感到「孤獨」與「平靜」？"
+      },
+      {
+        "level": "H3",
+        "text": "若要講述一個「離別」的故事，你會選哪張照片？(可複選）"
+      },
+      {
+        "level": "H3",
+        "text": "哪張照片最符合你此刻的心境？"
+      },
+      {
+        "level": "H2",
+        "text": "把理解再加深一點"
+      },
+      {
+        "level": "H3",
+        "text": "關於這份教學回饋"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "color-result",
+    "mode": "spacing",
+    "title": "色彩天賦測驗｜測驗結果",
+    "route": "#/quiz/chromatic-intuition/result",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 16,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "色彩天賦測驗"
+      },
+      {
+        "level": "H2",
+        "text": "你的色彩，自有光芒。"
+      },
+      {
+        "level": "H2",
+        "text": "細節觀察者"
+      },
+      {
+        "level": "H2",
+        "text": "把觀察，畫成一張圖"
+      },
+      {
+        "level": "H2",
+        "text": "四個面向，看見你的觀察方式"
+      },
+      {
+        "level": "H3",
+        "text": "色相敏銳度"
+      },
+      {
+        "level": "H3",
+        "text": "明度與飽和度"
+      },
+      {
+        "level": "H3",
+        "text": "色彩心理與聯想"
+      },
+      {
+        "level": "H3",
+        "text": "色彩搭配邏輯"
+      },
+      {
+        "level": "H2",
+        "text": "下一次，從「明度與飽和度」開始"
+      },
+      {
+        "level": "H2",
+        "text": "你選擇的，是你此刻的風景。"
+      },
+      {
+        "level": "H3",
+        "text": "哪張照片同時讓你感到「孤獨」與「平靜」？"
+      },
+      {
+        "level": "H3",
+        "text": "若要講述一個「離別」的故事，你會選哪張照片？(可複選）"
+      },
+      {
+        "level": "H3",
+        "text": "哪張照片最符合你此刻的心境？"
+      },
+      {
+        "level": "H2",
+        "text": "把理解再加深一點"
+      },
+      {
+        "level": "H3",
+        "text": "關於這份教學回饋"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "diagram-9",
+    "mode": "200%",
+    "title": "你離麥肯錫入職還差多遠？｜第 28 / 28 題",
+    "route": "#/quiz/ai-consulting/play/28",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "一關一關，走到面試門口。"
+      },
+      {
+        "level": "H2",
+        "text": "最後一題：哪句最像能帶隊往前走的人？"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "diagram-11",
+    "mode": "200%",
+    "title": "你離麥肯錫入職還差多遠？｜第 11 / 28 題",
+    "route": "#/quiz/ai-consulting/play/11",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "一關一關，走到面試門口。"
+      },
+      {
+        "level": "H2",
+        "text": "AI 說銷量「翻倍」，你看到哪個破綻？"
+      }
+    ],
+    "homeLinks": []
+  },
+  {
+    "name": "diagram-20",
+    "mode": "200%",
+    "title": "你離麥肯錫入職還差多遠？｜第 20 / 28 題",
+    "route": "#/quiz/ai-consulting/play/20",
+    "width": 320,
+    "scrollWidth": 320,
+    "minimumFont": 32,
+    "smallText": [],
+    "lowContrast": [],
+    "smallTargets": [],
+    "headings": [
+      {
+        "level": "H1",
+        "text": "你離麥肯錫入職還差多遠？"
+      },
+      {
+        "level": "H2",
+        "text": "一關一關，走到面試門口。"
+      },
+      {
+        "level": "H2",
+        "text": "AI 說「全校九成都愛」，這結論穩嗎？"
+      }
+    ],
+    "homeLinks": []
+  }
+]

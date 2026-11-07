@@ -14,11 +14,11 @@ export interface ConsultingReport {
   tier: CareerTier; gaps: { label: string; current: number; target: number }[];
 }
 export const careerTiers: CareerTier[] = [
-  { id: 'consulting', minScore: 85, label: '顧問案例挑戰組', target: '國際策略顧問／大型企業策略部門的案例練習', description: '本次展現較完整的分析與 AI 協作判斷。下一步可挑戰接近麥肯錫等策略顧問情境的口頭案例、開放式分析與專案實習，練習在追問下清楚論證。' },
-  { id: 'enterprise', minScore: 70, label: '大型企業企劃培育組', target: '大型企業行銷企劃、商業分析或儲備幹部的專案練習', description: '本次已能處理多數企劃判斷，適合練習跨部門提案與較完整的商業分析。先補上較弱面向，再以可追溯的作品集準備大型企業相關實習。' },
-  { id: 'growth', minScore: 55, label: '成長型企業實作組', target: '成長型企業／專業代理商的企劃助理與專案實習練習', description: '本次具備部分分析基礎，下一步是把單點想法串成可執行企劃。可從中型或成長型企業、專業代理商的實務任務練習，累積指標與作品。' },
-  { id: 'execution', minScore: 40, label: '行銷執行起步組', target: '在地品牌、電商團隊的行銷執行與專案助理任務練習', description: '本次仍需要較明確的工作範圍與指導。適合先從素材整理、社群成效紀錄、顧客訪談與小活動執行開始，逐步練習獨立判斷。' },
-  { id: 'foundation', minScore: 0, label: '校園基礎培力組', target: '校園社團／課堂品牌專案的基礎任務練習', description: '現在最值得投入的是基本功。先在有老師或同學協助的校園專案練習定義問題、手算指標與查證 AI 產出，再逐步挑戰企業實習任務。' },
+  { id: 'consulting', minScore: 85, label: '顧問入場券，解鎖！', target: '下一站：策略顧問／大型企業策略部門的案例挑戰', description: '你這次不只會找答案，也會問問題、抓數字和接住 AI 的球。已跨過本次顧問挑戰線！接下來試試口頭案例：讓同學一直追問「為什麼」，看看你的理由能站多穩。' },
+  { id: 'enterprise', minScore: 70, label: '已到面試門口，還差一點火候', target: '可練習：大型企業行銷企劃、商業分析與儲備幹部專案', description: '大部分關卡你都接得住，顧問大門已經在眼前。下一步是補上較弱的一角，把好直覺變成別人也聽得懂的理由；大型企業的企劃實習題會是很好的練習場。' },
+  { id: 'growth', minScore: 55, label: '企劃潛力股，正在發光', target: '可練習：成長型企業／行銷代理商的企劃與分析任務', description: '你有幾招已經很有感，只是還沒連成完整招式。可以先挑成長型企業、代理商常見的小專案練手，從看懂顧客、算對數字到說清楚建議，做出一份拿得出手的作品。' },
+  { id: 'execution', minScore: 40, label: '實戰新手，先累積戰績', target: '可練習：在地品牌／電商團隊的行銷執行與專案助理任務', description: '幾道陷阱讓你跌了一跤，但這正是練習的用途。先從範圍清楚的小任務開始：幫品牌整理回饋、記錄成效、試一場小活動，讓每次判斷都有實際結果可以對照。' },
+  { id: 'foundation', minScore: 0, label: '潛力新手，先練這兩招', target: '可練習：校園社團／課堂品牌專案，和隊友一起打底', description: '入場券還在集點中，別急著替自己貼標籤。先練下方兩項技能，在社團或課堂專案找一個小問題試做。能把一件小事想清楚、做出來，就是下一次闖關的裝備。' },
 ];
 
 export function getCareerTier(score: number, axes: { id: string; score: number }[]): CareerTier {

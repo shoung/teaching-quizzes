@@ -31,7 +31,7 @@ describe('教學測驗的真實使用流程', () => {
 
   it('一頁一題，未答不能前進，返回上一頁會保留選擇', async () => {
     const user = userEvent.setup();
-    navigate('#/quiz/chromatic-intuition/1');
+    navigate('#/quiz/chromatic-intuition/play/1');
     render(<App />);
     expect(screen.getByRole('button', { name: /下一頁/ })).toBeDisabled();
     expect(screen.getAllByRole('group')).toHaveLength(1);
@@ -44,26 +44,27 @@ describe('教學測驗的真實使用流程', () => {
 
   it('完成 AI 企劃的 28 題後產生六軸雷達、分級與解析，重測會清空答案', async () => {
     const user = userEvent.setup();
-    navigate('#/quiz/ai-consulting/1');
+    navigate('#/quiz/ai-consulting/play/1');
     render(<App />);
     for (const answer of [2, 0, 3, 1, 2, 0, 1, 3, 2, 1, 3, 0, 2, 1, 3, 0, 2, 1, 0, 3, 1, 2, 0, 3, 2, 0, 3, 1]) {
       await user.click(screen.getAllByRole('radio')[answer]);
       await user.click(screen.getByRole('button', { name: /下一頁|查看結果/ }));
     }
-    expect(await screen.findByRole('heading', { name: '顧問案例挑戰組' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: '顧問入場券，解鎖！' })).toBeInTheDocument();
     expect(screen.getByLabelText('測驗分數')).toHaveTextContent('100');
-    expect(screen.getByText('84 / 84 情境積分')).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: 'AI 企劃能力雷達圖' })).toBeInTheDocument();
+    expect(screen.getByText('84 / 84 闖關積分')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: '顧問闖關能力雷達圖' })).toBeInTheDocument();
     expect(screen.getByRole('table', { name: '六面向能力分數' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: '把理解再加深一點' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '答案揭曉時間' })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /重新測驗/ }));
-    expect(await screen.findByRole('button', { name: /下一頁/ })).toBeDisabled();
+    await user.click(await screen.findByRole('button', { name: '開始測驗' }));
+    expect(screen.getByRole('button', { name: /下一頁/ })).toBeDisabled();
     expect(screen.getAllByRole('radio').every((radio) => !(radio as HTMLInputElement).checked)).toBe(true);
   });
 
   it('重新掛載後可以繼續作答，不會遺失已選答案', async () => {
     const user = userEvent.setup();
-    navigate('#/quiz/chromatic-intuition/1');
+    navigate('#/quiz/chromatic-intuition/play/1');
     const first = render(<App />);
     await user.click(screen.getByRole('radio', { name: '選項 B' }));
     first.unmount();
@@ -85,36 +86,36 @@ describe('教學測驗的真實使用流程', () => {
     navigate('#/quiz/no-such-quiz/1');
     render(<App />);
     expect(screen.getByRole('heading', { name: '這份測驗還沒準備好' })).toBeInTheDocument();
-    navigate('#/quiz/chromatic-intuition/1');
+    navigate('#/quiz/chromatic-intuition/play/1');
     expect(await screen.findByRole('radio', { name: '選項 B' })).toBeInTheDocument();
   });
 
   it('瀏覽器禁止儲存時仍可完成當頁作答', async () => {
     const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('Unavailable'); });
-    navigate('#/quiz/chromatic-intuition/1');
+    navigate('#/quiz/chromatic-intuition/play/1');
     render(<App />);
     fireEvent.click(screen.getByRole('radio', { name: '選項 B' }));
     fireEvent.click(screen.getByRole('button', { name: /下一頁/ }));
     await waitFor(() => expect(screen.getByRole('heading', { name: '下列四個綠色色塊中，哪一個最接近黃綠色？' })).toBeInTheDocument());
     spy.mockRestore();
   });
-  it('色彩測驗直接顯示第一題，不蒐集姓名及 Email，並與其他測驗隔離', async () => {
+  it('色彩測驗答題頁不蒐集個資，不蒐集姓名及 Email，並與其他測驗隔離', async () => {
     const user = userEvent.setup();
-    navigate('#/quiz/chromatic-intuition/1');
+    navigate('#/quiz/chromatic-intuition/play/1');
     render(<App />);
     expect(screen.getByRole('heading', { name: /色塊中，哪一個最接近標準正紅色/ })).toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(screen.getAllByRole('radio')).toHaveLength(4);
     expect(screen.getAllByRole('img', { name: /^選項/ })).toHaveLength(4);
     await user.click(screen.getByRole('radio', { name: '選項 B' }));
-    navigate('#/quiz/ai-consulting/1');
+    navigate('#/quiz/ai-consulting/play/1');
     expect(screen.getByRole('button', { name: /下一頁/ })).toBeDisabled();
-    navigate('#/quiz/chromatic-intuition/1');
+    navigate('#/quiz/chromatic-intuition/play/1');
     expect(screen.getByRole('radio', { name: '選項 B' })).toBeChecked();
   });
   it('完成 28 道原題與兩道複選後，產生四面向報告及不計對錯的偏好紀錄', async () => {
     const user = userEvent.setup();
-    navigate('#/quiz/chromatic-intuition/1');
+    navigate('#/quiz/chromatic-intuition/play/1');
     render(<App />);
     const answers = [1, 3, 0, 1, 0, 0, [0, 1, 2, 4], 3, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, [0, 2], 0, 0, 3, 1, 3, 0, 0];
     for (const answer of answers) {
