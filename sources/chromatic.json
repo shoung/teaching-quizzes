@@ -1,0 +1,833 @@
+{
+  "title": "色彩天賦測驗 Chromatic Intuition Test",
+  "sourceUrl": "https://jsj.top/f/Fpa3XK",
+  "headerImage": "https://gd-pub.jinshujufiles.com/hi/VeJtN51iSV/20260219161848_a79c6f@hixlarge",
+  "questions": [
+    {
+      "id": "field_39",
+      "prompt": "1. 色塊中，哪一個最接近標準正紅色？",
+      "type": "single",
+      "notes": "",
+      "images": [],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210221400_4d9bb1",
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210221407_230f41",
+          "sourceScore": 3
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210233221_c59ae3",
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210233015_2395b5",
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_4",
+      "prompt": "2. 下列四個綠色色塊中，哪一個最接近黃綠色？",
+      "type": "single",
+      "notes": "",
+      "images": [],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210222243_2c40d3",
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210222410_b33c16",
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210222250_25e63e",
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210222253_8b3f49",
+          "sourceScore": 3
+        }
+      ]
+    },
+    {
+      "id": "field_40",
+      "prompt": "3. 觀察兩張白色背景的靜物照片，哪一張白色略微偏暖？",
+      "type": "single",
+      "notes": "",
+      "images": [],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210233128_34c952",
+          "sourceScore": 3
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210222942_70e3f8",
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_43",
+      "prompt": "4. 這張夜景照片呈現何種整體色彩傾向？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260210230617_5f85f9"
+      ],
+      "options": [
+        {
+          "label": "A 冷紫色",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210230620_cc3a27",
+          "sourceScore": 0
+        },
+        {
+          "label": "B 深藍色",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210230825_92ef1b",
+          "sourceScore": 3
+        },
+        {
+          "label": "C 深青色",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210230711_8cab34",
+          "sourceScore": 0
+        },
+        {
+          "label": "D 深灰色",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210230732_49b9b9",
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_44",
+      "prompt": "5. 下圖由黃色過渡至洋紅色，第 4 個空白色塊最可能是哪種顏色？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260210232532_42d5b6"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210233556_c525d5",
+          "sourceScore": 3
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210232632_f0874b",
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210232554_5de3f0",
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210232602_89927d",
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_42",
+      "prompt": "6. 以下膚色色卡，請依「紅潤」至「偏黃」排序。",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260210224333_a781cf"
+      ],
+      "options": [
+        {
+          "label": "ADCB",
+          "image": null,
+          "sourceScore": 4
+        },
+        {
+          "label": "ACBD",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_58",
+      "prompt": "7. 在這張照片中，除了白色與紅色，你還看見哪些顏色？（可複選）",
+      "type": "multiple",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211033249_6473de"
+      ],
+      "options": [
+        {
+          "label": "A 蓝色",
+          "image": null,
+          "sourceScore": 2
+        },
+        {
+          "label": "B 橄榄灰色",
+          "image": null,
+          "sourceScore": 2
+        },
+        {
+          "label": "C 黄色",
+          "image": null,
+          "sourceScore": 4
+        },
+        {
+          "label": "D 紫色",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "E 粉色",
+          "image": null,
+          "sourceScore": 4
+        }
+      ]
+    },
+    {
+      "id": "field_9",
+      "prompt": "8. 下圖四朵花中，哪一朵顏色最鮮豔？",
+      "type": "single",
+      "notes": "",
+      "images": [],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211003637_46e876",
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211003419_1b5c5a",
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211003635_e8a201",
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211003654_f58a76",
+          "sourceScore": 3
+        }
+      ]
+    },
+    {
+      "id": "field_10",
+      "prompt": "9. 如果這是你的未來客廳，哪種設計最讓你感到平靜舒適？",
+      "type": "single",
+      "notes": "",
+      "images": [],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211004706_eabd45",
+          "sourceScore": 3
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211004843_891dbc",
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211031304_b21a80",
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_11",
+      "prompt": "10. 哪一張照片的色彩最自然、最舒適？",
+      "type": "single",
+      "notes": "",
+      "images": [],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211170156_ce65b1",
+          "sourceScore": 3
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211170126_d84011",
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211164834_1f39ab",
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_56",
+      "prompt": "11. 從青色過渡到深藍色的色帶中，第 3 個空白色塊應為：",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260210231540_4df360"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210232936_63ff23",
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210231531_857ca2",
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210231527_756719",
+          "sourceScore": 4
+        },
+        {
+          "label": "D",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260210231856_d63ccc",
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_57",
+      "prompt": "12. 僅從色彩感知出發，哪種顏色最能讓旅行箱顯得輕盈？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260218231749_73fe0d"
+      ],
+      "options": [
+        {
+          "label": "A 黃色",
+          "image": null,
+          "sourceScore": 1
+        },
+        {
+          "label": "B 白色",
+          "image": null,
+          "sourceScore": 3
+        },
+        {
+          "label": "C 紅色",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "D 深灰",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_47",
+      "prompt": "13. 若要將照片印出掛在家中，你最想選哪一張？",
+      "type": "single",
+      "notes": "",
+      "images": [],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211172614_ed5fbf",
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211172616_a9ffde",
+          "sourceScore": 3
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211172619_8b4838",
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211172622_ac3716",
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_59",
+      "prompt": "14. 下圖中央的綠色圓形，哪一個看起來更亮？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211175436_7d44f4"
+      ],
+      "options": [
+        {
+          "label": "A.  左邊更亮",
+          "image": null,
+          "sourceScore": 2
+        },
+        {
+          "label": "B. 右邊更亮",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "C.一樣亮",
+          "image": null,
+          "sourceScore": 6
+        },
+        {
+          "label": "D. 無明顯差異",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_60",
+      "prompt": "15. 下圖中央兩塊藍色，哪一塊看起來更飽和？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211222704_894e74"
+      ],
+      "options": [
+        {
+          "label": "A. 左邊",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "B. 右邊",
+          "image": null,
+          "sourceScore": 2
+        },
+        {
+          "label": "C. 一樣飽和",
+          "image": null,
+          "sourceScore": 6
+        },
+        {
+          "label": "D. 無明顯差異",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_61",
+      "prompt": "16. 長時間處於哪種顏色環境中，你最容易感到焦慮？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211174611_5dd18d"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "image": null,
+          "sourceScore": 4
+        },
+        {
+          "label": "B",
+          "image": null,
+          "sourceScore": 2
+        },
+        {
+          "label": "C",
+          "image": null,
+          "sourceScore": 3
+        },
+        {
+          "label": "D",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_62",
+      "prompt": "17.哪張照片同時讓你感到「孤獨」與「平靜」？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260218175605_ca4a11"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": null,
+          "sourceScore": 3
+        },
+        {
+          "label": "C",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_64",
+      "prompt": "18. 哪張照片的色彩讓你感受到最強烈的情緒？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211182018_dbf1a4"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "image": null,
+          "sourceScore": 3
+        },
+        {
+          "label": "B",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_65",
+      "prompt": "19. 哪張照片讓你感到「時間彷彿靜止」？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211182038_6b26a5"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "image": null,
+          "sourceScore": 4
+        },
+        {
+          "label": "B",
+          "image": null,
+          "sourceScore": 2
+        },
+        {
+          "label": "C",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_66",
+      "prompt": "20. 當你很餓時，走進哪種色調的餐廳最可能讓你瞬間食慾下降？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211184008_f4c3bb"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": null,
+          "sourceScore": 3
+        }
+      ]
+    },
+    {
+      "id": "field_21",
+      "prompt": "21. 若要講述一個「離別」的故事，你會選哪張照片？(可複選）",
+      "type": "multiple",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211185619_1805cf"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "image": null,
+          "sourceScore": 2
+        },
+        {
+          "label": "B",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": null,
+          "sourceScore": 2
+        },
+        {
+          "label": "D",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_22",
+      "prompt": "22. 哪張香水照片讓你覺得最昂貴？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211222112_4379d2"
+      ],
+      "options": [
+        {
+          "label": "A",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": null,
+          "sourceScore": 3
+        },
+        {
+          "label": "C",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_68",
+      "prompt": "23. 如果這是你的客廳，你會為沙發選擇哪種抱枕顏色？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211232123_f540f3"
+      ],
+      "options": [
+        {
+          "label": "A黄色",
+          "image": null,
+          "sourceScore": 3
+        },
+        {
+          "label": "B 红色",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "C 绿色",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "D 紫色",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_51",
+      "prompt": "24. 如果下面都是你拍的照片，你最不想保留哪一張？",
+      "type": "single",
+      "notes": "单选或多选",
+      "images": [],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211194722_9eb72d",
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211194725_05fad1",
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211194819_853ae8",
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211222909_b23ffc",
+          "sourceScore": 3
+        }
+      ]
+    },
+    {
+      "id": "field_52",
+      "prompt": "25. 如果下面都是你拍的照片，你最不想保留哪一張？",
+      "type": "single",
+      "notes": "单选或多选",
+      "images": [],
+      "options": [
+        {
+          "label": "A",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260218180613_3d9505",
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260218180617_83087e",
+          "sourceScore": 3
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260218180618_f60da7",
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260218180624_098c65",
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_67",
+      "prompt": "26 在此場景拍攝時，模特兒穿哪種顏色最顯輕盈與和諧？",
+      "type": "single",
+      "notes": "",
+      "images": [
+        "https://gd-pub.jinshujufiles.com/di/VeJtN51iSV/20260211231046_98772d"
+      ],
+      "options": [
+        {
+          "label": "A 蓝色",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "B 红色",
+          "image": null,
+          "sourceScore": 1
+        },
+        {
+          "label": "C 紫色",
+          "image": null,
+          "sourceScore": 0
+        },
+        {
+          "label": "D 白色",
+          "image": null,
+          "sourceScore": 3
+        }
+      ]
+    },
+    {
+      "id": "field_54",
+      "prompt": "27. 哪張照片最符合你此刻的心境？",
+      "type": "single",
+      "notes": "单选或多选",
+      "images": [],
+      "options": [
+        {
+          "label": "A.",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211234126_7c35f7",
+          "sourceScore": 0
+        },
+        {
+          "label": "B",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260211235456_dd2b62",
+          "sourceScore": 0
+        },
+        {
+          "label": "C",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260212000708_1bf8fa",
+          "sourceScore": 0
+        },
+        {
+          "label": "D",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260212000301_d4d079",
+          "sourceScore": 0
+        },
+        {
+          "label": "E",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260212000714_4e09f5",
+          "sourceScore": 0
+        },
+        {
+          "label": "F",
+          "image": "https://gd-pub.jinshujufiles.com/ic/VeJtN51iSV/20260212001609_04d788",
+          "sourceScore": 0
+        }
+      ]
+    },
+    {
+      "id": "field_69",
+      "prompt": "28. 你認為色彩感知與配色能力可以透過學習提升嗎？",
+      "type": "single",
+      "notes": "",
+      "images": [],
+      "options": [
+        {
+          "label": "A. 相信。通過系統學習、觀察練習和審美積累，一定會帶來提升。",
+          "image": null,
+          "sourceScore": 2
+        },
+        {
+          "label": "B. 不太相信。感知力更多來自基因和天賦，後天的提升空間有限。",
+          "image": null,
+          "sourceScore": 1
+        },
+        {
+          "label": "C. 不確定",
+          "image": null,
+          "sourceScore": 0
+        }
+      ]
+    }
+  ]
+}
