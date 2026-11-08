@@ -13,8 +13,8 @@ describe('路易斯依經營結果提供引導', () => {
     expect(getMentorAdvice(badSession, bad)).toContain('知名度由 50 降至 47');
   });
 
-  it('新手先認識自由配置與四個準備時段', () => {
-    expect(getMentorAdvice(initialSeason(), fresh())).toContain('四個');
+  it('新手先認識依助手人數分配工作', () => {
+    expect(getMentorAdvice(initialSeason(), fresh())).toContain('助手人數');
   });
   it('現金不足時說明恢復選項，不強迫增加宣傳', () => {
     const replay = fresh(); replay.assets.cash = 3;

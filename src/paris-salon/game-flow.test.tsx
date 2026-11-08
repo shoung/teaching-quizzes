@@ -84,19 +84,22 @@ describe('RPG 進度與限制',()=>{
     await finishDialogue(user);
     expect(screen.getByRole('button',{name:'沙龍計劃'})).toBeDisabled();
   });
-  it('準備時段不足時拒絕加牌，選好的牌仍能收回',async()=>{
+  it('助手不足時可增聘；移除支援卡前必須收回超額工作',async()=>{
     const user=userEvent.setup();const ready=heardSeasonNpc(startSeason(initialSeason()),2);
     localStorage.setItem(SEASON_STORAGE_KEY,JSON.stringify(ready));render(<SalonGame/>);
     await user.click(screen.getByRole('button',{name:'沙龍計劃'}));
     await user.click(screen.getByRole('button',{name:'選擇：培訓固定助手'}));
-    await user.click(screen.getByRole('button',{name:'選擇：添置座椅'}));
-    const blocked=screen.getByRole('button',{name:'選擇：邀請畫家合作'});
-    expect(blocked).toHaveAttribute('aria-disabled','true');
-    await user.click(blocked);
-    expect(screen.queryByRole('button',{name:'移回手牌：邀請畫家合作'})).not.toBeInTheDocument();
+    expect(screen.getByRole('button',{name:'選擇：邀請畫家合作'})).toHaveAttribute('aria-disabled','true');
+    await user.click(screen.getByRole('button',{name:'選擇：增聘固定助手'}));
+    await user.click(screen.getByRole('button',{name:'選擇：聘請臨時助手'}));
+    await user.click(screen.getByRole('button',{name:'選擇：邀請畫家合作'}));
+    expect(screen.getByRole('button',{name:'移回手牌：邀請畫家合作'})).toBeInTheDocument();
+    await user.click(screen.getByRole('button',{name:'移回手牌：聘請臨時助手'}));
+    expect(screen.getByRole('button',{name:'移回手牌：聘請臨時助手'})).toBeInTheDocument();
     expect(screen.getByRole('button',{name:'舉辦沙龍'})).toBeEnabled();
-    await user.click(screen.getByRole('button',{name:'移回手牌：添置座椅'}));
-    expect(screen.getByRole('button',{name:'選擇：邀請畫家合作'})).not.toHaveAttribute('aria-disabled');
+    await user.click(screen.getByRole('button',{name:'移回手牌：培訓固定助手'}));
+    await user.click(screen.getByRole('button',{name:'移回手牌：聘請臨時助手'}));
+    expect(screen.getByRole('button',{name:'選擇：聘請臨時助手'})).toBeInTheDocument();
   });
   it('儲存失效仍可完成一場，損壞進度不會影響其他測驗',async()=>{
     const user=userEvent.setup();localStorage.setItem('learning-lab:quiz:other:v1','保留');
@@ -106,6 +109,6 @@ describe('RPG 進度與限制',()=>{
     const set=vi.spyOn(Storage.prototype,'setItem').mockImplementation(()=>{throw Error('blocked');});
     render(<SalonGame/>);await user.click(screen.getByRole('button',{name:'翻開故事'}));await finishDialogue(user);await hearGuest(user);
     await user.click(screen.getByRole('button',{name:'沙龍計劃'}));await user.click(screen.getByRole('button',{name:'舉辦沙龍'}));await user.click(screen.getByRole('button',{name:'略過演出'}));
-    expect(screen.getByRole('dialog')).toHaveTextContent('經營資產變化');get.mockRestore();set.mockRestore();
+    expect(screen.getByRole('dialog')).toHaveTextContent('這場的變化');get.mockRestore();set.mockRestore();
   });
 });

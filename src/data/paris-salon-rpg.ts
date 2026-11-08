@@ -40,11 +40,11 @@ export const seasonScenes: RoundScene[] = [
 
 const names: Record<SalonNpcId, string> = { 1: '艾米爾', 2: '茱莉葉', 3: '馬塞爾', 4: '安東', 5: '露易斯夫人', 6: '維克多' };
 const guestClues: Record<string, string> = {
-  '1-1': '兩位畫家想談未完成作品，日期仍待確認。', '1-2': '展廳有人好奇創作過程，回函尚未可知。',
-  '2-4': '散場觀眾談起新展，來訪日期還沒消息。', '2-6': '觀眾想聽作品故事，邀請尚未送到手上。',
-  '3-3': '街坊擔心陌生詞，簡單邀請或許更親切。', '3-2': '展廳有人想知道如何開始看畫。',
-  '4-4': '兩位畫家願帶新作，日期和流程待確認。', '4-1': '畫家有意分享新作，仍得留心接待安排。',
-  '5-2': '熟客願轉告展訊，朋友是否預約仍未知。', '5-6': '可以代為介紹畫家，聚會安排仍要合宜。',
+  '1-1': '兩位畫家想聊未完成的作品，還在等他們回覆。', '1-2': "有人想聽畫家聊創作，還沒收到回覆。",
+  '2-4': '散場觀眾談起新展，來訪日期還沒消息。', '2-6': "觀眾想聽作品故事，還得把消息送給他們。",
+  '3-3': "街坊怕聽不懂，邀請可以寫得簡單些。", '3-2': '展廳有人想知道如何開始看畫。',
+  '4-4': '兩位畫家願帶新作來，聚會內容和交流方式還在確認。', '4-1': '畫家有意分享新作，仍得留心接待安排。',
+  '5-2': "熟客願意介紹朋友，還要等朋友回覆。", '5-6': "維克多願意介紹畫家，先和他談好聚會內容。",
   '6-3': '住戶詢問能否帶朋友，尚無確定人數。', '6-1': '鄰居對聚會好奇，還沒回覆是否同行。',
 };
 
@@ -53,7 +53,7 @@ export function getNpcConversation(eventNumber: number, npcId: SalonNpcId, conte
   if (!Number.isInteger(eventNumber) || eventNumber < 1 || eventNumber > 6) throw new RangeError('eventNumber must be 1..6');
   if (!seasonScenes[eventNumber - 1].npcs.some((npc) => npc.id === npcId)) throw new Error(`NPC ${npcId} is not present in round ${eventNumber}`);
   if (npcId === 5) {
-    return { npcId, clue: '把上場數字、可用資源與準備時段一起放進帳冊。', lines: getMentorDialogue(eventNumber, context) };
+    return { npcId, clue: "看看上場回饋、手頭經費和助手人數，再安排這場。", lines: getMentorDialogue(eventNumber, context) };
   }
   const texts = guestTalk[eventNumber]?.[npcId];
   if (!texts) throw new Error(`No conversation for round ${eventNumber}, NPC ${npcId}`);
@@ -74,7 +74,7 @@ export function getOpeningDialogue(): DialogueLine[] {
     line('露易斯夫人', '我頭一回也忙得團團轉。來，一件一件弄。', 5),
     line('克萊爾夫人', '畫家們會喜歡這裡嗎？'),
     line('露易斯夫人', '去和他們聊聊呀，今天幾位朋友都到了。', 5),
-    line('克萊爾夫人', '開門前就這點工夫，我得想想先張羅哪幾樣。'),
+    line('克萊爾夫人', '艾米爾和另一位助手都到了，我先想想請他們幫什麼。'),
     line('露易斯夫人', '錢和來客的回應記在帳上，下回張羅就有底。', 5),
     line('克萊爾夫人', '好，那我先去打聲招呼。'),
     line('露易斯夫人', '去吧，我在這兒喝杯茶，等妳的消息。', 5),
@@ -212,11 +212,12 @@ export function getEventVoices(event: SeasonEvent): EventVoices {
 }
 
 export const metricHelp: Record<HudMetricKey, MetricHelp> = {
-  cash: { label: '現金', incoming: '到場支持、熟客往來與符合條件的贊助會增加結餘。', outgoing: '場租規模與行動會扣款；現金決定哪些組合付得起。' },
-  regulars: { label: '熟客', incoming: '滿意的新來客可成為熟客；留住舊客會增加下次回訪與支持。', outgoing: '未留住的舊客會流失；熟客數不等於本場到場數。' },
-  reputation: { label: '口碑', incoming: '滿意體驗會累積口碑，並提高往後詢問活動的比例。', outgoing: '失望和等待會降低口碑；宣傳不能替差的體驗補分。' },
-  awareness: { label: '知名度', incoming: '宣傳與良好表現可提升知名度，讓更多人可能看到邀請。', outgoing: '接待失誤、失望或未服務需求會拉低知名度與後續觸及。' },
-  seats: { label: '座位', incoming: '添置座椅永久加八席，增加可入場上限，仍受活動規模限制。', outgoing: '座位不是需求或舒適量；人手不足仍會令體驗受壓。' },
-  training: { label: '培訓', incoming: '每級從下場起增加三人舒適接待力，也略增預約與到場率。', outgoing: '培訓花現金和時段；本場人手與接待上限不變。' },
-  ambience: { label: '環境', incoming: '改善環境從下場起提升基礎滿意度，幫助口碑與留存。', outgoing: '改善花費現金；不增加觸及、需求、座位或人手。' },
+  cash: { label: '現金', incoming: "客人的支持、熟客往來和談成的贊助會帶來收入。", outgoing: "聚會規模和卡牌都可能花錢。準備前要有足夠現金，收入在散場後入帳。" },
+  regulars: { label: '熟客', incoming: "新朋友玩得開心，可能成為熟客；老朋友留下來，後面的場次也更容易獲得支持。", outgoing: "來得不開心的老朋友可能離開。熟客名單上的人，每場也會有各自的出席安排。" },
+  reputation: { label: '口碑', incoming: "客人喜歡這次的聚會，口碑就會提高，之後看到消息的人也更願意詢問。", outgoing: "客人久等或玩得失望，口碑會下降。先看看現場哪裡沒照顧好。" },
+  awareness: { label: '知名度', incoming: "宣傳和好評能讓更多人知道沙龍，之後看到消息的人也會增加。", outgoing: "接待忙亂、客人失望或有人進不來，都可能拉低知名度，之後看到消息的人會減少。" },
+  seats: { label: '座位', incoming: "添置座椅一次多 8 席，最多 48 席。這場能進幾人，還得看選的聚會規模。", outgoing: "想多接待客人，先把座位和助手一起安排好。人手不夠時，客人可能等不到招呼。" },
+  assistants: { label: '助手', incoming: '初始有 2 位固定助手。增聘後立即加入，最多 6 人，每場可安排更多準備工作。', outgoing: '固定助手每多 1 人，舒適接待量增加 4 人。22 點含本季報酬；臨時助手另計，只幫本場。' },
+  training: { label: '培訓', incoming: "每級從下一場起增加 3 人舒適接待量，也略微提高預約和到場比例。", outgoing: "培訓要付費並安排助手，效果從下一場開始；助手人數維持不變。" },
+  ambience: { label: '環境', incoming: "從下一場起提升滿意度，客人更容易留下來，也能幫口碑加分。", outgoing: "整理環境要付費並安排助手。座位、人手和知道消息的人數維持不變。" },
 };

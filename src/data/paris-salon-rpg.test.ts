@@ -8,10 +8,10 @@ const expected = [
   [5, 2, 1], [5, 4, 6], [5, 3, 2], [5, 4, 1], [5, 2, 6], [5, 3, 1],
 ];
 const context: ConversationContext = {
-  assets: { cash: 44, regulars: 7, reputation: 62, awareness: 51, seats: 24, training: 1, ambience: 0, insight: 0, tested: false },
+  assets: { cash: 44, regulars: 7, reputation: 62, awareness: 51, seats: 24, assistants: 2, training: 1, ambience: 0, insight: 0, tested: false },
   previous: { number: 2, plan: { audience: 'enthusiasts', theme: 'exhibition', scale: 'standard', actions: [] },
-    before: { cash: 45, regulars: 7, reputation: 62, awareness: 51, seats: 24, training: 1, ambience: 0, insight: 0, tested: false },
-    after: { cash: 44, regulars: 7, reputation: 62, awareness: 51, seats: 24, training: 1, ambience: 0, insight: 0, tested: false },
+    before: { cash: 45, regulars: 7, reputation: 62, awareness: 51, seats: 24, assistants: 2, training: 1, ambience: 0, insight: 0, tested: false },
+    after: { cash: 44, regulars: 7, reputation: 62, awareness: 51, seats: 24, assistants: 2, training: 1, ambience: 0, insight: 0, tested: false },
     reach: 20, inquiries: 16, reservations: 12, attendance: 12, waiting: 2, returning: 4, newGuests: 8, retained: 5, newRegulars: 2,
     satisfaction: 70, awarenessChange: -1, safeCapacity: 10, seatCapacity: 24, income: { support: 0, members: 0, sponsor: 0, total: 0 },
     costs: { base: 0, actions: 0, total: 0 }, profit: 0, notes: [], lessons: [] },
@@ -144,6 +144,6 @@ describe('Paris salon RPG story data', () => {
       ...adviceCases.flatMap((caseEvent) => Object.values(getEventVoices(caseEvent))),
     ].join(' ');
     expect(allSpoken).not.toMatch(/不是|而是|不等於|不代表|還得看|不能只|別把|不只是|不表示/);
-    expect(Object.keys(metricHelp).sort()).toEqual(['ambience', 'awareness', 'cash', 'regulars', 'reputation', 'seats', 'training']);
+    expect(Object.keys(metricHelp).sort()).toEqual(['ambience', 'assistants', 'awareness', 'cash', 'regulars', 'reputation', 'seats', 'training']);
   });
 });

@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const SALON_MUSIC_CREDIT = {
-  title: 'Gymnopédies – la 1ére. lent et douloureux (Gymnopédie No. 1)',
-  creator: 'Erik Satie 作曲；Robin Alciatore 演奏',
-  sourceUrl: 'https://commons.wikimedia.org/wiki/File:Erik_Satie_-_gymnopedies_-_la_1_ere._lent_et_douloureux.ogg',
-  licenseName: 'Public domain（錄音者釋出；Musopen 請求禮貌署名）',
-  licenseUrl: 'https://commons.wikimedia.org/wiki/File:Erik_Satie_-_gymnopedies_-_la_1_ere._lent_et_douloureux.ogg',
+  title: '降 G 大調圓舞曲，Op. 70 No. 1',
+  creator: 'Frédéric Chopin 作曲；Olga Gurevich 鋼琴演奏；Musopen／Wikimedia Commons',
+  sourceUrl: 'https://commons.wikimedia.org/wiki/File:Chopin_Waltz_Op._70_no._1_in_G_flat_major_Olga_Gurevich.mp3',
+  licenseName: 'CC BY 4.0（已調整播放響度）',
+  licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
 } as const;
 
 type SalonSound = 'click' | 'move' | 'confirm' | 'page' | 'success' | 'error';
 type AudioContextConstructor = typeof AudioContext;
 
-const MUSIC_PATH = `${import.meta.env.BASE_URL}audio/paris-salon/background-v4.mp3`;
+const MUSIC_PATH = `${import.meta.env.BASE_URL}audio/paris-salon/chopin-waltz-op70-no1.mp3`;
 const FOOTSTEP_INTERVAL_MS = 190;
 
 const SOUND_NOTES: Record<Exclude<SalonSound, 'error'>, number[]> = {

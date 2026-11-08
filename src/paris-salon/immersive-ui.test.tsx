@@ -28,7 +28,7 @@ describe('沙龍六場經營主界面', () => {
     expect(String(writeText.mock.calls[0][0])).not.toContain('result');
     const trigger = screen.getByRole('button', { name: '設定與操作' });
     await user.click(trigger);
-    expect(screen.getByRole('dialog')).toHaveTextContent('Erik Satie');
+    expect(screen.getByRole('dialog')).toHaveTextContent('Olga Gurevich');
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();

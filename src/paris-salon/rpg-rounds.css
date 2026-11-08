@@ -36,7 +36,7 @@
   .rpg-world-actor:is(button,[role="button"]):focus-visible { outline:3px solid #f3d58f; outline-offset:7px; }
 
   .floating-hud.rpg-hud {
-    z-index:5;
+    z-index:6;
     align-items:flex-start;
     gap:12px;
     pointer-events:none;
@@ -59,7 +59,7 @@
     position:relative;
     z-index:6;
     display:grid;
-    grid-template-columns:repeat(7,minmax(66px,1fr));
+    grid-template-columns:repeat(8,minmax(66px,1fr));
     gap:4px;
     padding:6px;
     max-width:min(780px,64vw);
@@ -178,7 +178,7 @@
   }
 
   /* RPG dialogue floats above the world controls; the dialogue component
-     owns its internal typography and ornamental frame. */
+     owns its internal typography and frame. */
   .rpg-dialogue {
     position:fixed;
     z-index:18;
@@ -338,16 +338,12 @@
     font-weight:700;
     white-space:nowrap;
   }
-  .rpg-hold-ornament { position:absolute; top:50%; left:50%; width:min(180px,calc(100% - 42px)); height:22px; color:#8f6b33; opacity:.35; transform:translate(-50%,-50%); pointer-events:none; }
-  .rpg-hold:before,.rpg-hold:after { position:absolute; content:"❧"; top:50%; color:#77572d; font-size:1.2rem; transform:translateY(-50%); }
-  .rpg-hold:before { left:7px; }
-  .rpg-hold:after { right:7px; transform:translateY(-50%) scaleX(-1); }
   .rpg-hold:hover:not(:disabled) { background:linear-gradient(135deg,#fff0b6,#dfbf68 56%,#f1dda0); }
   .rpg-hold:disabled { opacity:.68; }
 
   .rpg-review .rpg-review-hero { padding:14px 18px; border:1px solid #c7b794; background:#f8f2e3; }
   .rpg-review-hero h2,.rpg-review-hero h3 { color:#354b3b; }
-  .rpg-deltas,.rpg-asset-deltas { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:8px; margin:12px 0 15px; }
+  .rpg-deltas,.rpg-asset-deltas { display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:8px; margin:12px 0 15px; }
   .rpg-delta,.rpg-asset-deltas>div { min-width:0; padding:9px 7px; border:1px solid #b8a578; background:#f6efdc; text-align:center; }
   .rpg-delta dt,.rpg-asset-deltas dt { color:#56594c; font-size:1rem; line-height:1.35; }
   .rpg-delta dd,.rpg-asset-deltas dd { margin:4px 0 0; color:#304335; font-family:var(--display); font-size:1.125rem; font-weight:700; line-height:1.3; overflow-wrap:anywhere; }
@@ -371,7 +367,7 @@
   .rpg-report .rpg-deltas { margin-top:0; }
 
   @media (max-width:1100px) {
-    .rpg-hud-assets { grid-template-columns:repeat(7,minmax(52px,1fr)); gap:2px; padding:5px; }
+    .rpg-hud-assets { grid-template-columns:repeat(8,minmax(52px,1fr)); gap:2px; padding:5px; }
     .rpg-metric { padding-inline:3px; }
     .rpg-hud .hud-story { flex-basis:190px; }
     .rpg-deltas { grid-template-columns:repeat(4,minmax(0,1fr)); }

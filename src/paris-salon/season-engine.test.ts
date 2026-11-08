@@ -27,9 +27,9 @@ function hearRoundNonMentor(session: ReturnType<typeof initialSeason>, round = s
 const quietPlan = (): SeasonPlan => ({ ...defaultPlan(), scale: 'small', actions: [] });
 
 describe('沙龍六場：規劃與財務', () => {
-  it('新季使用 v4 儲存欄位，知名度以 50 起步', () => {
+  it('新季使用 v5 儲存欄位，知名度以 50 起步', () => {
     expect(initialSeason()).toEqual({
-      version: 4,
+      version: 5,
       started: false,
       plans: [],
       acknowledged: 0,
@@ -38,7 +38,7 @@ describe('沙龍六場：規劃與財務', () => {
       endingSeen: false,
     });
     expect(replaySeason([])?.assets.awareness).toBe(50);
-    expect(SEASON_STORAGE_KEY).toBe('learning-lab:quiz:paris-salon:v4');
+    expect(SEASON_STORAGE_KEY).toBe('learning-lab:quiz:paris-salon:v5');
   });
 
   it('初始知名度不會造成首場必然候補，良好體驗累積推薦而宣傳不能抵銷失望', () => {
@@ -54,17 +54,17 @@ describe('沙龍六場：規劃與財務', () => {
   it('初始資產可支撐低成本恢復方案，預測列出實際限制且不改動存檔', () => {
     const fresh = initialSeason();
     const forecast = forecastSeason(fresh, quietPlan());
-    expect(fresh).toMatchObject({ version: 4, started: false, plans: [], acknowledged: 0 });
+    expect(fresh).toMatchObject({ version: 5, started: false, plans: [], acknowledged: 0 });
     expect(forecast.cost).toBe(0);
-    expect(forecast.time).toBe(0);
-    expect(forecast.timeLimit).toBe(4);
+    expect(forecast.staffRequired).toBe(0);
+    expect(forecast.staffAvailable).toBe(2);
     expect(forecast.seats).toBe(24);
     expect(forecast.safeCapacity).toBeLessThanOrEqual(12);
     expect(forecast.attendance[0]).toBeLessThanOrEqual(forecast.attendance[1]);
     expect(fresh.plans).toEqual([]);
   });
 
-  it('拒絕超預算、超準備時間、重複行動與超資產上限的配置', () => {
+  it('拒絕超預算、人手不足、重複行動與超資產上限的配置', () => {
     let session = hearRoundNonMentor(startSeason(initialSeason()));
     const highCost: SeasonPlan = { ...defaultPlan(), scale: 'grand', actions: seasonActions.map(a => a.id) };
     const tooMany = { ...defaultPlan(), actions: ['training', 'training', 'training', 'training'] as ActionId[] };
@@ -134,7 +134,7 @@ describe('沙龍六場：規劃與財務', () => {
   });
 
   it('預測分開估算需求、可入場與候補，並揭露研究後的小型場地候補風險', () => {
-    const researchPlan: SeasonPlan = { ...quietPlan(), actions: ['research', 'sponsor'] };
+    const researchPlan: SeasonPlan = { ...quietPlan(), actions: ['research', 'sponsor', 'helpers'] };
     const secondPlan: SeasonPlan = {
       audience: 'enthusiasts', theme: 'exhibition', scale: 'small', actions: ['participation', 'membership'],
     };

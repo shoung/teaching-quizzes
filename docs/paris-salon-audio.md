@@ -1,5 +1,22 @@
 # 巴黎沙龍遊戲音訊
 
+## 目前背景音樂（2026-11-08 更換）
+
+- 曲名：蕭邦《降 G 大調圓舞曲，Op. 70 No. 1》（Waltz in G-flat major）。
+- 作曲：Frédéric Chopin；鋼琴演奏：Olga Gurevich。
+- 來源：Musopen／IMSLP，經 Wikimedia Commons 提供。
+- [錄音來源與授權頁](https://commons.wikimedia.org/wiki/File:Chopin_Waltz_Op._70_no._1_in_G_flat_major_Olga_Gurevich.mp3)；[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)。Commons 原始頁的 Author 欄明列 Olga Gurevich, piano，Permission 欄為 CC-BY-4.0；這是本次實際下載錄音的授權，沒有只憑作曲年代判斷。
+- [原始 MP3](https://upload.wikimedia.org/wikipedia/commons/4/4c/Chopin_Waltz_Op._70_no._1_in_G_flat_major_Olga_Gurevich.mp3)，100.867 秒，2,340,352 bytes。
+- 遊戲檔案：`public/audio/paris-salon/chopin-waltz-op70-no1.mp3`。未加速、未改旋律，僅統一響度並轉為 44.1 kHz／192 kbps MP3；檔名更新以避免沿用舊曲快取。
+- 成品響度：-18.44 LUFS，true peak -2.24 dBTP。保留原有音量滑桿、靜音與背景暫停；預設滑桿 0.75、音樂倍率 0.8。
+- 遊戲設定頁顯示曲名、作曲與演奏者、來源、授權連結及「已調整播放響度」。MP3 亦保留對應署名及修改說明。
+- 原檔 SHA-256：`28b8c77da4ca9827b51218162b08a137d086810cb665a83325b9d7acb629d5fd`。
+- 成品 SHA-256：`992918bca467c3f80fabb0d34022e725a6977489bdd593ae8737f4e639fefd00`。
+
+## 先前版本紀錄
+
+以下為舊版本音樂與音量調整的來源紀錄；目前遊戲已使用上述華爾茲。
+
 ## 背景音樂
 
 - 曲名：*Gymnopédies – la 1ére. lent et douloureux*（Gymnopédie No. 1）

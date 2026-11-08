@@ -4,7 +4,6 @@ import { seasonActions, seasonGame } from '../data/paris-salon-season';
 import { getEndingDialogue, getNpcConversation, getOpeningDialogue, metricHelp, seasonScenes } from '../data/paris-salon-rpg';
 import { Glyph, Sprite } from '../paris-salon-preview/PreviewPrimitives';
 import { GameShare } from './GamePanels';
-import { SalonOrnament } from './SalonOrnament';
 import { RpgDialogue } from './RpgDialogue';
 import { HostingSequence } from './HostingSequence';
 import { useSalonAudio } from './use-salon-audio';
@@ -139,7 +138,7 @@ export default function SalonGame() {
       {(storageFailed||artFailed)&&<p className="season-visible-notice" role="status">{storageFailed?'目前無法儲存；仍可在這個分頁完成遊戲。':'場景圖片暫時無法顯示。'}</p>}
       {route.kind==='intro'?<section className="intro-overlay season-intro" style={{visibility:conversation?.kind==='opening'?'hidden':undefined}} aria-labelledby="salon-intro-title" inert={blocked}>
         <div className="intro-brand"><img src={`${import.meta.env.BASE_URL}images/paris-salon/logo.png`} alt="沙龍夫人的經營筆記"/><h2 id="salon-intro-title" className="sr-only" tabIndex={-1}>沙龍夫人的經營筆記：巴黎 1900</h2></div>
-        <p className="intro-tagline">六場沙龍，一季巴黎故事。</p><p className="season-intro-summary">傾聽來客，安排資源，讓克萊爾夫人的沙龍慢慢成長。</p>
+        <p className="intro-tagline">在巴黎，辦起自己的沙龍。</p><p className="season-intro-summary">聊聊客人想做什麼，安排助手和經費，辦完再看看下場能怎麼改。</p>
         <div className="intro-menu"><button className="button primary" onClick={start}>{session.started?'繼續這一季':'翻開故事'} <Glyph name="arrow"/></button>{session.started&&<button className="button ghost-light" onClick={()=>open('restart')}>重新開始一季</button>}<button className="button ghost-light" onClick={()=>open('settings')}>設定與操作</button></div>
         <div className="season-public-share"><GameShare compact/></div>
       </section>:route.kind==='result'?<section className="season-result-overlay" aria-label="六場經營報告" inert={blocked}><SeasonPanels {...panels} panel="report" onRestart={()=>open('restart')} onTitle={()=>open('title')}/></section>:<>
@@ -158,6 +157,6 @@ export default function SalonGame() {
       {conversation&&<div className="rpg-dialogue-layer"><RpgDialogue key={`${conversation.kind}-${conversation.round}-${conversation.npcId??''}`} lines={conversation.lines} reducedMotion={reducedMotion} onComplete={finishDialogue} onClose={conversation.kind==='npc'?()=>setConversation(null):undefined}/></div>}
       {hosting&&<div className="rpg-hosting-layer"><HostingSequence eventNumber={hosting} reducedMotion={reducedMotion} onComplete={()=>{setHosting(null);setPanel('outcome');sound.play('success');}}/></div>}
     </main>
-    {panel&&<div className="salon-modal-backdrop season-modal-backdrop"><div className={`paper-panel salon-modal season-modal panel-${panel}`} ref={layer} role="dialog" aria-modal="true" aria-labelledby="salon-panel-title"><SalonOrnament className="salon-modal-ornament"/><button className="close-panel" aria-label="關閉面板" onClick={closePanel}><Glyph name="close"/></button><div className="salon-letter-content"><SeasonPanels {...panels} panel={panel}/></div></div></div>}
+    {panel&&<div className="salon-modal-backdrop season-modal-backdrop"><div className={`paper-panel salon-modal season-modal panel-${panel}`} ref={layer} role="dialog" aria-modal="true" aria-labelledby="salon-panel-title"><button className="close-panel" aria-label="關閉面板" onClick={closePanel}><Glyph name="close"/></button><div className="salon-letter-content"><SeasonPanels {...panels} panel={panel}/></div></div></div>}
   </div>;
 }

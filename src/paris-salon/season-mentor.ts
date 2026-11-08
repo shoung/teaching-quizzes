@@ -12,6 +12,6 @@ export function getMentorAdvice(session: SeasonSession, replay: SeasonReplay): s
   if (last && last.waiting > 0) return `上一場有 ${last.waiting} 人候補。擴座可改善入場限制，但先比對人手與需求，免得把門外的等待換成場內的失望。`;
   if (last && last.attendance < last.seatCapacity / 2) return `上一場只用了 ${last.attendance}／${last.seatCapacity} 席。先看主題是否切合來客，再比較研究與宣傳；擴座目前未必解決問題。`;
   if (last && last.satisfaction < 65) return `上一場體驗回饋 ${last.satisfaction}／100。試著核對主題承諾、來客需求與接待負荷，找出值得調整的一環。`;
-  if (!last) return '先選主題、受眾和規模，再分配四個準備時段。你可以自由組合；研究、體驗、人手與宣傳都會占用不同資源。';
+  if (!last) return '先選主題、受眾和規模，再看看助手人數，分配準備工作。你可以自由組合；研究、體驗、人手與宣傳都會占用不同資源。';
   return `上一場留下 ${last.retained}／${last.before.regulars} 位既有熟客，另有 ${last.newRegulars} 位新熟客。人數、體驗與結餘要一起看；這場想延續什麼，又想改變什麼？`;
 }

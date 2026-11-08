@@ -15,7 +15,7 @@ describe('RPG 故事與角色場景',()=>{
     let clicks=0;while(screen.queryByRole('button',{name:'繼續對話'})&&clicks++<40)await user.click(screen.getByRole('button',{name:'繼續對話'}));
     expect(window.location.hash).toBe(SEASON_PLAY);
     expect(screen.getByRole('button',{name:'沙龍計劃'})).toBeDisabled();
-    await waitFor(()=>expect(JSON.parse(localStorage.getItem(SEASON_STORAGE_KEY)!).version).toBe(4));
+    await waitFor(()=>expect(JSON.parse(localStorage.getItem(SEASON_STORAGE_KEY)!).version).toBe(5));
     expect(localStorage.getItem('learning-lab:quiz:paris-salon:v3')).toBe('舊季');
   });
   it('每場只出現三位 NPC，角色深度與面向不同，沒有側邊名單或場內分享',()=>{

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { Sprite } from '../paris-salon-preview/PreviewPrimitives';
-import { SalonOrnament } from './SalonOrnament';
 import type { RpgDialogueProps } from './rpg-types';
 import './rpg-dialogue.css';
 
@@ -134,7 +133,7 @@ export function RpgDialogue({ lines, reducedMotion, onComplete, onClose, onAdvan
   };
 
   return <section className="rpg-dialogue" role="dialog" aria-modal="true" aria-label={label ?? page.speaker} onKeyDown={handleKeyDown} onClick={event => { if (!(event.target as HTMLElement).closest('button')) advance(); }}>
-    <SalonOrnament className="rpg-dialogue-ornament" />
+
     <div className="rpg-dialogue-portrait"><Sprite index={page.portrait} className="rpg-dialogue-sprite" /><span className="rpg-dialogue-speaker">{page.speaker}</span></div>
     <button ref={copyRef} className="rpg-dialogue-copy" type="button" aria-label={done ? '對話已結束' : '繼續對話'} onClick={advance}>
       <span ref={visibleRef} className="rpg-dialogue-visible" aria-hidden="true">{pageCharacters.slice(0, visibleCount).join('')}</span>
