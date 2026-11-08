@@ -4,6 +4,7 @@ import type { MarketingNpcId } from '../types';
 import { buildOffice } from './build-office';
 import { moveWithinOffice, officeTargets, planWalk } from './navigation';
 import type { WalkDirection, WalkPoint } from './navigation';
+import { classifyOfficeActorClick, raycastOfficeActor } from './scene-interaction';
 
 export interface OfficeControls {
   goToTarget: () => void;
@@ -37,8 +38,13 @@ export default forwardRef<OfficeControls, Props>(function OfficeScene(props, ref
   const control = useRef<(OfficeControls & { wake: () => void; resetTarget: () => void }) | null>(null);
   const [status, setStatus] = useState<'loading'|'ready'|'failed'>('loading');
   const [hint, setHint] = useState('');
+  const talkLocked = useRef(false);
   const npcId = props.npcId ?? 'lead';
-  const talk = () => (live.current.onInteract ?? live.current.onTalk)?.();
+  const talk = () => {
+    if (live.current.paused || talkLocked.current) return;
+    talkLocked.current = true;
+    (live.current.onInteract ?? live.current.onTalk)?.();
+  };
 
   useImperativeHandle(ref, () => ({
     goToTarget: () => control.current ? control.current.goToTarget() : talk(),
@@ -191,8 +197,25 @@ export default forwardRef<OfficeControls, Props>(function OfficeScene(props, ref
       onClick = event => {
         if (live.current.paused) return;
         const rect=renderer!.domElement.getBoundingClientRect();
-        const ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1),camera);
+        const ndc = new THREE.Vector2((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1);
+        const actorHit = raycastOfficeActor(scene, camera, ndc, office!.actors);
+        const actorClick = classifyOfficeActorClick(actorHit, live.current.npcId ?? 'lead');
+        if (actorClick === 'current') {
+          setHint('');
+          const approach = target().approach, p = point();
+          if (Math.hypot(p.x-approach.x,p.z-approach.z) <= .65) {
+            live.current.onWorldClick?.(true); stopWalking(); talk();
+          } else live.current.onWorldClick?.(walkTo(approach,true));
+          return;
+        }
+        if (actorClick === 'other') {
+          stopWalking();
+          setHint(`這不是目前任務人物，請先找${live.current.targetName ?? names[live.current.npcId ?? 'lead']}。`);
+          live.current.onWorldClick?.(false);
+          return;
+        }
         const hit=new THREE.Vector3();
+        const ray=new THREE.Raycaster();ray.setFromCamera(ndc,camera);
         if (ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0,1,0),0),hit)) {
           live.current.onWorldClick?.(walkTo({x:hit.x,z:hit.z},false));
         } else live.current.onWorldClick?.(false);
@@ -220,7 +243,7 @@ export default forwardRef<OfficeControls, Props>(function OfficeScene(props, ref
   }, [props.forceFallback]);
 
   useEffect(() => { control.current?.resetTarget(); }, [npcId]);
-  useEffect(() => { control.current?.wake(); }, [props.paused]);
+  useEffect(() => { if (!props.paused) talkLocked.current = false; control.current?.wake(); }, [props.paused]);
   const fallback=props.forceFallback||status==='failed';
   return <div className="md-scene" aria-busy={!fallback&&status==='loading'}>
     <div ref={host} className="md-scene-canvas" hidden={fallback}/>
