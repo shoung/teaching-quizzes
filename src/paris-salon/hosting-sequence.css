@@ -1,0 +1,17 @@
+.hosting-sequence{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 18px;align-items:center;width:100%;padding:18px;border:1px solid #b29a65;background:#f3ecd9;box-shadow:inset 0 0 0 4px #fff9e9;color:#36473a}
+.hosting-sequence-scene{position:relative;grid-column:1/-1;min-height:clamp(180px,30vh,310px);overflow:hidden;border:1px solid #a49772;background-position:center;background-size:cover;background-color:#ded3b5;isolation:isolate}
+.hosting-sequence-scene:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#1d2d22a8,transparent 65%)}
+.hosting-sequence-lamp{position:absolute;top:8%;left:50%;color:#f3d36c;font-size:clamp(2rem,7vw,5rem);text-shadow:0 0 20px #ffeaa3;animation:hosting-lamp 1.5s ease-in-out infinite alternate}
+.hosting-sequence-guests{position:absolute;left:50%;bottom:0;display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,4vw,48px);width:min(80%,660px);height:84%;transform:translateX(-50%)}
+.hosting-sequence-guest{width:clamp(48px,9vw,100px);height:auto;max-height:100%;aspect-ratio:1/2;filter:drop-shadow(0 5px 5px #161e18a3)}
+.hosting-sequence-phase{position:absolute;right:14px;bottom:14px;margin:0;padding:7px 15px;border:1px solid #dfc477;background:#20382de8;color:#fff5dd;font-family:Georgia,"Noto Serif TC",serif;font-size:1.2rem;line-height:1.5}
+.hosting-sequence-progress-wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:5px 12px;min-width:0;font-size:1rem}
+.hosting-sequence-progress-wrap label{grid-column:1/-1;font-size:1rem;line-height:1.5}
+.hosting-sequence-progress{grid-column:1;width:100%;height:18px;accent-color:#5d724f}
+.hosting-sequence-percent{min-width:4ch;text-align:right;font-variant-numeric:tabular-nums}
+.hosting-sequence-skip{min-height:46px;padding:10px 16px;border:1px solid #806b40;background:#f9f2de;color:#344438;font-size:1rem;cursor:pointer}
+.hosting-sequence-skip:hover{background:#eee1bc}.hosting-sequence-skip:focus-visible{outline:3px solid #8b593c;outline-offset:3px}
+@keyframes hosting-lamp{to{opacity:.65;transform:translate(-50%,4px)}}
+.hosting-sequence-reduced .hosting-sequence-lamp{animation:none}
+@media(max-width:540px){.hosting-sequence{grid-template-columns:1fr;padding:12px}.hosting-sequence-skip{width:100%}.hosting-sequence-scene{min-height:190px}.hosting-sequence-guest{width:clamp(43px,16vw,76px)}}
+@media(prefers-reduced-motion:reduce){.hosting-sequence-lamp{animation:none}}

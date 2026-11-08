@@ -5,6 +5,8 @@ export function getMentorAdvice(session: SeasonSession, replay: SeasonReplay): s
   const { assets, events } = replay;
   const last = events.at(-1);
   if (session.plans.length === 5) return `這是本季最後一場。${assets.cash < 20 ? `錢袋只剩 ${assets.cash} 點，可選免費小聚。` : ''}新培訓與環境改善要下場才受益；比較當場接待和擴座的需要，別只因還有錢就投資。`;
+  if (last && last.after.awareness < last.before.awareness) return `上一場知名度由 ${last.before.awareness} 降至 ${last.after.awareness}；${last.attendance} 位到場，舒適接待量是 ${last.safeCapacity}，另有 ${last.waiting} 位候補。宣傳沒有抵銷接待壓力或等待的失望；錢袋還有 ${assets.cash} 點，先調整人手與規模，再決定是否宣傳。`;
+  if (last && last.after.awareness > last.before.awareness) return `上一場回饋帶動知名度由 ${last.before.awareness} 升至 ${last.after.awareness}。這是口耳推薦的訊號，不代表每位聽過消息的人都會預約；仍要按本場容量安排接待。`;
   if (assets.cash < 20) return `錢袋剩 ${assets.cash} 點。免費小聚能保留周轉並取得來客支持；先比較本場必要支出，再決定哪些投資可以等一等。`;
   if (last && last.attendance > last.safeCapacity) return `上一場來了 ${last.attendance} 人，舒適接待量只有 ${last.safeCapacity} 人。人手或規模需要重新搭配；座位再多也不能代替服務。`;
   if (last && last.waiting > 0) return `上一場有 ${last.waiting} 人候補。擴座可改善入場限制，但先比對人手與需求，免得把門外的等待換成場內的失望。`;

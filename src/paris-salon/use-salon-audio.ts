@@ -11,7 +11,7 @@ export const SALON_MUSIC_CREDIT = {
 type SalonSound = 'click' | 'move' | 'confirm' | 'page' | 'success' | 'error';
 type AudioContextConstructor = typeof AudioContext;
 
-const MUSIC_PATH = `${import.meta.env.BASE_URL}audio/paris-salon/background.ogg`;
+const MUSIC_PATH = `${import.meta.env.BASE_URL}audio/paris-salon/background-v4.mp3`;
 const FOOTSTEP_INTERVAL_MS = 190;
 
 const SOUND_NOTES: Record<Exclude<SalonSound, 'error'>, number[]> = {
@@ -35,14 +35,14 @@ function createNoiseBuffer(context: AudioContext): AudioBuffer {
 export function useSalonAudio(moving: boolean) {
   const [unlocked, setUnlocked] = useState(false);
   const [muted, setMuted] = useState(false);
-  const [volume, setVolumeState] = useState(0.42);
+  const [volume, setVolumeState] = useState(0.75);
   const [musicReady, setMusicReady] = useState(false);
   const [musicError, setMusicError] = useState('');
   const contextRef = useRef<AudioContext | null>(null);
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const unlockedRef = useRef(false);
   const mutedRef = useRef(false);
-  const volumeRef = useRef(0.42);
+  const volumeRef = useRef(0.75);
   const movingRef = useRef(moving);
   const hiddenRef = useRef(false);
   const activeNodesRef = useRef(new Set<AudioScheduledSourceNode>());
@@ -55,7 +55,7 @@ export function useSalonAudio(moving: boolean) {
     const context = contextRef.current;
     const music = musicRef.current;
     if (music) {
-      music.volume = volumeRef.current * 0.22;
+      music.volume = volumeRef.current * 0.8;
       if (mutedRef.current || hiddenRef.current || !unlockedRef.current) {
         music.pause();
       } else if (music.paused) {
@@ -88,7 +88,7 @@ export function useSalonAudio(moving: boolean) {
         const music = new Audio(MUSIC_PATH);
         music.loop = true;
         music.preload = 'auto';
-        music.volume = volumeRef.current * 0.22;
+        music.volume = volumeRef.current * 0.8;
         music.addEventListener('canplay', () => {
           if (mountedRef.current) setMusicReady(true);
         });
@@ -124,7 +124,7 @@ export function useSalonAudio(moving: boolean) {
 
     const now = context.currentTime;
     const gain = context.createGain();
-    gain.gain.setValueAtTime(Math.max(0.0001, volumeRef.current * 0.14), now);
+    gain.gain.setValueAtTime(Math.max(0.0001, volumeRef.current * 0.36), now);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + (kind === 'success' ? 0.52 : 0.13));
     gain.connect(context.destination);
 

@@ -4,6 +4,15 @@ import { getMentorAdvice } from './season-mentor';
 import type { SeasonReplay } from './season-types';
 const fresh = () => replaySeason([])!;
 describe('路易斯依經營結果提供引導', () => {
+  it('以實際接待結果說明知名度升降，不把宣傳當保證', () => {
+    const good = replaySeason([{ ...initialSeason().draft }])!;
+    const bad = replaySeason([{ ...initialSeason().draft, scale: 'grand', actions: ['promotion'] }])!;
+    const goodSession = { ...initialSeason(), plans: good.events.map(event => event.plan), acknowledged: 1 };
+    const badSession = { ...initialSeason(), plans: bad.events.map(event => event.plan), acknowledged: 1 };
+    expect(getMentorAdvice(goodSession, good)).toContain('知名度由 50 升至 53');
+    expect(getMentorAdvice(badSession, bad)).toContain('知名度由 50 降至 47');
+  });
+
   it('新手先認識自由配置與四個準備時段', () => {
     expect(getMentorAdvice(initialSeason(), fresh())).toContain('四個');
   });

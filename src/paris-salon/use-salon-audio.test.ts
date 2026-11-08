@@ -114,6 +114,17 @@ describe('useSalonAudio', () => {
     expect(MockContext.instances[0].oscillators).toHaveLength(1);
   });
 
+  it('provides audible master levels instead of a hidden 22% music ceiling', () => {
+    const { result } = renderHook(() => useSalonAudio(false));
+    expect(result.current.volume).toBe(0.75);
+    act(() => result.current.setVolume(1));
+    act(() => result.current.unlock());
+    expect(MockAudio.instances[0].volume).toBeCloseTo(0.8);
+    expect(MockContext.instances[0].gains[0].gain.setValueAtTime).toHaveBeenCalledWith(0.36, 1);
+    act(() => result.current.setVolume(0));
+    expect(MockAudio.instances[0].volume).toBe(0);
+  });
+
   it('mute pauses music and suppresses all sound effects', () => {
     const { result } = renderHook(() => useSalonAudio(false));
     act(() => result.current.unlock());

@@ -1,0 +1,16 @@
+.rpg-dialogue{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(92px,13%) minmax(0,1fr);align-items:center;gap:clamp(12px,2vw,28px);width:100%;min-height:174px;padding:30px clamp(18px,3vw,44px) 24px;color:#f8f0dc;background:linear-gradient(110deg,#20372f 0%,#294337 56%,#21362f 100%);border:2px solid #c6a653;box-shadow:inset 0 0 0 4px #20362f,inset 0 0 0 5px #a9893d,0 9px 20px #10191266;cursor:pointer}
+.rpg-dialogue:before{content:"";position:absolute;inset:8px;border:1px solid #dfc47780;pointer-events:none}
+.rpg-dialogue-ornament{position:absolute;top:-22px;left:50%;width:min(320px,44vw);height:auto;transform:translateX(-50%);color:#d4b45f;filter:drop-shadow(0 2px 2px #20362f)}
+.rpg-dialogue-portrait{position:relative;z-index:3;display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:flex-end;align-self:end;overflow:visible}
+/* Each atlas cell is 362 × 724. Keep the current 110px width and let the
+   full-height portrait rise above the frame instead of squeezing its cell. */
+.rpg-dialogue .rpg-dialogue-sprite{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:110px;height:220px;max-height:none;aspect-ratio:1/2;flex:none;filter:drop-shadow(0 3px 2px #121b16)}
+.rpg-dialogue-speaker{max-width:100%;padding:3px 10px;border:1px solid #c7aa5b;background:#f5ecd5;color:#463b27;font-size:1rem;line-height:1.5;text-align:center;overflow-wrap:anywhere}
+.rpg-dialogue-copy{position:relative;z-index:1;display:flex;align-items:flex-start;gap:12px;width:100%;min-height:90px;padding:10px 8px;border:0;background:transparent;color:#fff8e8;text-align:left;font:inherit;font-family:Georgia,"Noto Serif TC",serif;font-size:clamp(1.125rem,1.8vw,1.5rem);line-height:1.65;cursor:pointer}
+.rpg-dialogue-copy:focus-visible{outline:3px solid #f2d786;outline-offset:4px;border-radius:2px}
+.rpg-dialogue-visible{display:block;flex:1;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.rpg-dialogue-reader{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.rpg-dialogue-caret{align-self:flex-end;margin-left:auto;color:#f2d786;font-family:system-ui,sans-serif;font-size:1rem;animation:rpg-dialogue-pulse 1.1s ease-in-out infinite}
+@keyframes rpg-dialogue-pulse{50%{transform:translateY(4px);opacity:.65}}
+@media(max-width:560px){.rpg-dialogue{grid-template-columns:74px minmax(0,1fr);gap:12px;min-height:148px;padding:27px 14px 15px}.rpg-dialogue-sprite{width:55px;max-height:100px}.rpg-dialogue-copy{min-height:80px;padding:7px 4px;font-size:1.125rem;line-height:1.65}}
+@media(prefers-reduced-motion:reduce){.rpg-dialogue-caret{animation:none}}

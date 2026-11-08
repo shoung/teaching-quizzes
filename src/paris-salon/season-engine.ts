@@ -1,7 +1,8 @@
 import { seasonActions, seasonAudiences, seasonMarkets, seasonScales, seasonThemes } from '../data/paris-salon-season';
+import { seasonScenes } from '../data/paris-salon-rpg';
 import type { ActionId, Audience, Scale, SeasonAction, SeasonAssets, SeasonEvent, SeasonForecast, SeasonPlan, SeasonReplay, SeasonRoute, SeasonSession, Theme } from './season-types';
-import { SEASON_INTRO, SEASON_LENGTH, SEASON_PLAY, SEASON_RESULT, SEASON_VERSION } from './season-types';
-export { SEASON_INTRO, SEASON_LENGTH, SEASON_PLAY, SEASON_RESULT, SEASON_STORAGE_KEY, SEASON_VERSION } from './season-types';
+import { SEASON_ENDING, SEASON_INTRO, SEASON_LENGTH, SEASON_PLAY, SEASON_RESULT, SEASON_VERSION } from './season-types';
+export { SEASON_ENDING, SEASON_INTRO, SEASON_LENGTH, SEASON_PLAY, SEASON_RESULT, SEASON_STORAGE_KEY, SEASON_VERSION } from './season-types';
 export type { SeasonPlan, SeasonSession } from './season-types';
 
 const actionById = new Map(seasonActions.map(action => [action.id, action]));
@@ -17,11 +18,11 @@ export function defaultPlan(): SeasonPlan {
 }
 
 function freshAssets(): SeasonAssets {
-  return { cash: 100, regulars: 4, reputation: 40, awareness: 12, seats: 24, training: 0, ambience: 0, insight: 0, tested: false };
+  return { cash: 100, regulars: 4, reputation: 40, awareness: 50, seats: 24, training: 0, ambience: 0, insight: 0, tested: false };
 }
 
 export function initialSeason(): SeasonSession {
-  return { version: SEASON_VERSION, started: false, plans: [], acknowledged: 0, draft: defaultPlan() };
+  return { version: SEASON_VERSION, started: false, plans: [], acknowledged: 0, draft: defaultPlan(), heard: {}, endingSeen: false };
 }
 
 function clonePlan(plan: SeasonPlan): SeasonPlan {
@@ -66,7 +67,7 @@ function estimate(before: SeasonAssets, plan: SeasonPlan, eventNumber: number) {
   const artist = hasAction(plan, 'artist');
   const helper = hasAction(plan, 'helpers');
   const experimentalFit = before.tested && promo && (matched || fit);
-  const reach = Math.max(0, Math.round(market.demand + before.awareness * 0.9 + (promo ? 18 : 0) + (artist && fit ? 8 : 0) + (experimentalFit ? 5 : 0)));
+  const reach = Math.max(6, Math.round(market.demand + 12 + (before.awareness - 50) * 0.65 + (promo ? 18 : 0) + (artist && fit ? 8 : 0) + (experimentalFit ? 5 : 0)));
   const inquiryRate = 0.5 + (matched ? 0.1 : 0) + (before.reputation - 40) / 250;
   const inquiries = Math.max(0, Math.round(reach * inquiryRate));
   const reservations = Math.max(0, Math.round(inquiries * (0.6 + (fit ? 0.08 : 0) + before.training * 0.015)));
@@ -85,10 +86,13 @@ function estimate(before: SeasonAssets, plan: SeasonPlan, eventNumber: number) {
   const baseSatisfaction = 58 + (matched ? 9 : -3) + (fit ? 7 : 0) + before.ambience * 4 + before.training * 2;
   const participation = hasAction(plan, 'participation');
   const satisfaction = clamp(baseSatisfaction + (participation ? 9 : 0) + (artist ? 3 : 0) - serviceOverload * 2);
+  const recommendation = satisfaction >= 70 ? 3 : satisfaction >= 60 ? 1 : -2;
+  const awarenessChange = recommendation + (promo && satisfaction >= 70 ? 2 : 0)
+    - Math.ceil(serviceOverload / 3) * 2 - Math.ceil(Math.max(0, arrived + returning - seatCapacity) / 4);
   const retainedRate = clamp(0.48 + (satisfaction - 60) / 100 + (hasAction(plan, 'membership') ? 0.12 : 0), 0.2, 0.9);
   const retained = Math.min(before.regulars, Math.floor(before.regulars * retainedRate));
   const newRegulars = Math.min(newGuests, Math.floor(newGuests * clamp(0.12 + (satisfaction - 55) / 120, 0.05, 0.5)));
-  return { reach, inquiries, reservations, attendance, waiting: Math.max(0, arrived + returning - attendance), returning: returningPresent, newGuests, retained, newRegulars, satisfaction, safeCapacity, seatCapacity, matched, fit, experimentalFit };
+  return { reach, inquiries, reservations, attendance, waiting: Math.max(0, arrived + returning - attendance), returning: returningPresent, newGuests, retained, newRegulars, satisfaction, awarenessChange, safeCapacity, seatCapacity, matched, fit, experimentalFit };
 }
 
 function applyPlan(before: SeasonAssets, plan: SeasonPlan, eventNumber: number): SeasonEvent {
@@ -106,7 +110,7 @@ function applyPlan(before: SeasonAssets, plan: SeasonPlan, eventNumber: number):
     cash: Math.max(0, before.cash - totalCost + totalIncome),
     regulars: clamp(measure.retained + measure.newRegulars, 0, 100),
     reputation: clamp(before.reputation + Math.round((measure.satisfaction - 60) / 8) + (hasAction(plan, 'artist') ? 2 : 0) - Math.ceil(measure.waiting / 4)),
-    awareness: clamp(Math.round(before.awareness + (hasAction(plan, 'promotion') ? 5 : 0) + measure.newGuests * 0.2)),
+    awareness: clamp(before.awareness + measure.awarenessChange),
     seats: before.seats, training: before.training, ambience: before.ambience,
     insight: before.insight + (hasAction(plan, 'research') ? 1 : 0), tested: before.tested || hasAction(plan, 'experiment'),
   };
@@ -216,7 +220,7 @@ export function forecastSeason(session: SeasonSession, plan?: SeasonPlan): Seaso
 
 export function setSeasonDraft(session: SeasonSession, plan: SeasonPlan): SeasonSession {
   const restored = restoreSeason(session);
-  if (!restored || !restored.started || restored.plans.length >= SEASON_LENGTH) return session;
+  if (!restored || !restored.started || restored.plans.length >= SEASON_LENGTH || !canPlanSeason(restored)) return session;
   const assets = replaySeason(restored.plans)!.assets;
   if (restored.acknowledged !== restored.plans.length || !validatePlan(plan, assets).plan) return session;
   return { ...restored, draft: clonePlan(plan) };
@@ -230,7 +234,7 @@ export function startSeason(session: SeasonSession): SeasonSession {
 export function holdSeason(session: SeasonSession, expectedEvent: number): SeasonSession {
   const restored = restoreSeason(session);
   if (!restored || !restored.started || !Number.isInteger(expectedEvent) || expectedEvent < 1 || expectedEvent > SEASON_LENGTH
-    || expectedEvent !== restored.plans.length + 1 || restored.acknowledged !== restored.plans.length) return session;
+    || expectedEvent !== restored.plans.length + 1 || restored.acknowledged !== restored.plans.length || !canPlanSeason(restored)) return session;
   const assets = replaySeason(restored.plans)!.assets;
   const checked = validatePlan(restored.draft, assets);
   if (!checked.plan) return session;
@@ -243,23 +247,66 @@ export function acknowledgeSeason(session: SeasonSession): SeasonSession {
   return { ...restored, acknowledged: restored.acknowledged + 1 };
 }
 
+function availableNpcIds(eventNumber: number): number[] {
+  return seasonScenes.find(scene => scene.number === eventNumber)?.npcs.map(npc => npc.id) ?? [];
+}
+
+function hasRequiredRoundConversation(heard: Record<string, number[]>, eventNumber: number): boolean {
+  const availableNonMentors = availableNpcIds(eventNumber).filter(id => id !== 5);
+  return (heard[String(eventNumber)] ?? []).some(id => id !== 5 && availableNonMentors.includes(id));
+}
+
+export function canPlanSeason(session: SeasonSession): boolean {
+  const restored = restoreSeason(session);
+  if (!restored || !restored.started || restored.plans.length >= SEASON_LENGTH || restored.acknowledged !== restored.plans.length) return false;
+  return hasRequiredRoundConversation(restored.heard, restored.plans.length + 1);
+}
+
+export function heardSeasonNpc(session: SeasonSession, npcId: number): SeasonSession {
+  const restored = restoreSeason(session);
+  if (!restored || !restored.started || restored.plans.length >= SEASON_LENGTH || restored.acknowledged !== restored.plans.length) return session;
+  const eventNumber = restored.plans.length + 1;
+  if (!availableNpcIds(eventNumber).includes(npcId) || (restored.heard[String(eventNumber)] ?? []).includes(npcId)) return session;
+  const heard = { ...restored.heard, [String(eventNumber)]: [...(restored.heard[String(eventNumber)] ?? []), npcId] };
+  return { ...restored, heard };
+}
+
+export function completeSeasonEnding(session: SeasonSession): SeasonSession {
+  const restored = restoreSeason(session);
+  if (!restored || restored.plans.length !== SEASON_LENGTH || restored.acknowledged !== SEASON_LENGTH || restored.endingSeen) return session;
+  return { ...restored, endingSeen: true };
+}
+
 function restoreValue(raw: unknown): SeasonSession | null {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
   const value = raw as Record<string, unknown>;
   if (value.version !== SEASON_VERSION || typeof value.started !== 'boolean' || !Array.isArray(value.plans)
     || !Number.isInteger(value.acknowledged) || (value.acknowledged as number) < 0 || (value.acknowledged as number) > value.plans.length
-    || value.plans.length > SEASON_LENGTH || value.plans.length - (value.acknowledged as number) > 1) return null;
+    || value.plans.length > SEASON_LENGTH || value.plans.length - (value.acknowledged as number) > 1
+    || !value.heard || typeof value.heard !== 'object' || Array.isArray(value.heard) || typeof value.endingSeen !== 'boolean') return null;
   const plans = value.plans as SeasonPlan[];
   const replay = replaySeason(plans);
-  if (!replay || (!value.started && plans.length > 0)) return null;
+  if (!replay || (!value.started && (plans.length > 0 || Object.keys(value.heard as object).length > 0))
+    || (value.endingSeen && (plans.length !== SEASON_LENGTH || value.acknowledged !== SEASON_LENGTH))) return null;
   const acknowledged = value.acknowledged as number;
+  const heardRaw = value.heard as Record<string, unknown>;
+  const heard: Record<string, number[]> = {};
+  for (const [roundKey, roster] of Object.entries(heardRaw)) {
+    const round = Number(roundKey);
+    if (!/^\d+$/.test(roundKey) || !Number.isInteger(round) || String(round) !== roundKey || round < 1 || round > Math.min(SEASON_LENGTH, plans.length + 1)
+      || (round === plans.length + 1 && (!value.started || plans.length >= SEASON_LENGTH)) || !Array.isArray(roster)) return null;
+    const available = availableNpcIds(round);
+    if (roster.some(id => !Number.isInteger(id) || !available.includes(id)) || new Set(roster).size !== roster.length) return null;
+    heard[roundKey] = [...roster] as number[];
+  }
+  for (let round = 1; round <= plans.length; round++) if (!hasRequiredRoundConversation(heard, round)) return null;
   const draftRaw = value.draft;
   let draft = defaultPlan();
   if (draftRaw && typeof draftRaw === 'object' && !Array.isArray(draftRaw) && plans.length < SEASON_LENGTH) {
     const checked = validatePlan(draftRaw, replay.assets);
     if (checked.plan) draft = checked.plan;
   }
-  return { version: SEASON_VERSION, started: value.started, plans: plans.map(clonePlan), acknowledged, draft };
+  return { version: SEASON_VERSION, started: value.started, plans: plans.map(clonePlan), acknowledged, draft, heard, endingSeen: value.endingSeen };
 }
 
 export function restoreSeason(raw: unknown): SeasonSession | null {
@@ -273,11 +320,17 @@ export function resolveSeasonRoute(hash: string, session: SeasonSession): Season
   const restored = restoreSeason(session);
   if (hash === SEASON_INTRO) return { kind: 'intro', canonical: SEASON_INTRO };
   if (!restored?.started) return { kind: 'intro', canonical: SEASON_INTRO };
-  if (hash === SEASON_RESULT) return restored.plans.length === SEASON_LENGTH && restored.acknowledged === SEASON_LENGTH
-    ? { kind: 'result', canonical: SEASON_RESULT }
+  const complete = restored.plans.length === SEASON_LENGTH && restored.acknowledged === SEASON_LENGTH;
+  if (hash === SEASON_ENDING) return complete && !restored.endingSeen
+    ? { kind: 'ending', canonical: SEASON_ENDING }
+    : complete ? { kind: 'result', canonical: SEASON_RESULT } : { kind: 'play', canonical: SEASON_PLAY };
+  if (hash === SEASON_RESULT) return complete
+    ? restored.endingSeen ? { kind: 'result', canonical: SEASON_RESULT } : { kind: 'ending', canonical: SEASON_ENDING }
     : { kind: 'play', canonical: SEASON_PLAY };
   if (hash === SEASON_PLAY || /^#\/quiz\/paris-salon\/play\/\d+$/.test(hash)) {
-    if (restored.plans.length === SEASON_LENGTH && restored.acknowledged === SEASON_LENGTH) return { kind: 'result', canonical: SEASON_RESULT };
+    if (complete) return restored.endingSeen
+      ? { kind: 'result', canonical: SEASON_RESULT }
+      : { kind: 'ending', canonical: SEASON_ENDING };
     return { kind: 'play', canonical: SEASON_PLAY };
   }
   return { kind: 'intro', canonical: SEASON_INTRO };

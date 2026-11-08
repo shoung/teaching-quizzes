@@ -1,14 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { seasonActions, seasonMarkets, seasonThemes } from '../data/paris-salon-season';
+import { seasonScenes } from '../data/paris-salon-rpg';
 import {
-  acknowledgeSeason, defaultPlan, forecastSeason, holdSeason, initialSeason, replaySeason,
-  resolveSeasonRoute, restoreSeason, setSeasonDraft, startSeason,
+  acknowledgeSeason, canPlanSeason, completeSeasonEnding, defaultPlan, forecastSeason, heardSeasonNpc, holdSeason, initialSeason, replaySeason,
+  resolveSeasonRoute, restoreSeason, SEASON_STORAGE_KEY, setSeasonDraft, startSeason,
 } from './season-engine';
 import type { ActionId, Scale, SeasonPlan } from './season-types';
 
 function runSeason(plans: SeasonPlan[]) {
   let session = startSeason(initialSeason());
   for (let i = 0; i < plans.length; i++) {
+    session = hearRoundNonMentor(session, i + 1);
     session = setSeasonDraft(session, plans[i]);
     session = holdSeason(session, i + 1);
     session = acknowledgeSeason(session);
@@ -16,13 +18,43 @@ function runSeason(plans: SeasonPlan[]) {
   return session;
 }
 
+function hearRoundNonMentor(session: ReturnType<typeof initialSeason>, round = session.plans.length + 1) {
+  const guest = seasonScenes.find(scene => scene.number === round)?.npcs.find(npc => npc.id !== 5);
+  if (!guest) throw new Error(`Round ${round} has no non-mentor NPC in test fixture`);
+  return heardSeasonNpc(session, guest.id);
+}
+
 const quietPlan = (): SeasonPlan => ({ ...defaultPlan(), scale: 'small', actions: [] });
 
 describe('沙龍六場：規劃與財務', () => {
+  it('新季使用 v4 儲存欄位，知名度以 50 起步', () => {
+    expect(initialSeason()).toEqual({
+      version: 4,
+      started: false,
+      plans: [],
+      acknowledged: 0,
+      draft: defaultPlan(),
+      heard: {},
+      endingSeen: false,
+    });
+    expect(replaySeason([])?.assets.awareness).toBe(50);
+    expect(SEASON_STORAGE_KEY).toBe('learning-lab:quiz:paris-salon:v4');
+  });
+
+  it('初始知名度不會造成首場必然候補，良好體驗累積推薦而宣傳不能抵銷失望', () => {
+    const quiet = replaySeason([quietPlan()])!;
+    const badService = replaySeason([{ ...quietPlan(), scale: 'grand', actions: ['promotion'] }])!;
+    expect(quiet.events[0].reach).toBe(28);
+    expect(quiet.events[0].waiting).toBe(0);
+    expect(quiet.events[0].after.awareness).toBeGreaterThan(50);
+    expect(badService.events[0].satisfaction).toBeLessThan(65);
+    expect(badService.events[0].after.awareness).toBeLessThan(50);
+  });
+
   it('初始資產可支撐低成本恢復方案，預測列出實際限制且不改動存檔', () => {
     const fresh = initialSeason();
     const forecast = forecastSeason(fresh, quietPlan());
-    expect(fresh).toMatchObject({ version: 3, started: false, plans: [], acknowledged: 0 });
+    expect(fresh).toMatchObject({ version: 4, started: false, plans: [], acknowledged: 0 });
     expect(forecast.cost).toBe(0);
     expect(forecast.time).toBe(0);
     expect(forecast.timeLimit).toBe(4);
@@ -33,7 +65,7 @@ describe('沙龍六場：規劃與財務', () => {
   });
 
   it('拒絕超預算、超準備時間、重複行動與超資產上限的配置', () => {
-    let session = startSeason(initialSeason());
+    let session = hearRoundNonMentor(startSeason(initialSeason()));
     const highCost: SeasonPlan = { ...defaultPlan(), scale: 'grand', actions: seasonActions.map(a => a.id) };
     const tooMany = { ...defaultPlan(), actions: ['training', 'training', 'training', 'training'] as ActionId[] };
     const invalidScale = { ...defaultPlan(), scale: 'palace' } as unknown as SeasonPlan;
@@ -45,7 +77,7 @@ describe('沙龍六場：規劃與財務', () => {
   });
 
   it('每場財務分列且現金不為負；第二次舉辦同一場不會重複結算', () => {
-    let session = startSeason(initialSeason());
+    let session = hearRoundNonMentor(startSeason(initialSeason()));
     session = setSeasonDraft(session, quietPlan());
     const held = holdSeason(session, 1);
     expect(held.plans).toHaveLength(1);
@@ -60,8 +92,9 @@ describe('沙龍六場：規劃與財務', () => {
 
   it('研究只縮窄後續預測並揭露偏好，不加知名度；實驗須被後續行動採用才產生效果', () => {
     const start = startSeason(initialSeason());
+    const heardStart = hearRoundNonMentor(start);
     const research = { ...quietPlan(), actions: ['research'] as ActionId[] };
-    const first = holdSeason(setSeasonDraft(start, research), 1);
+    const first = holdSeason(setSeasonDraft(heardStart, research), 1);
     const researched = replaySeason(first.plans)!;
     expect(researched.assets.insight).toBeGreaterThan(0);
     const quiet = replaySeason([quietPlan()])!;
@@ -122,6 +155,27 @@ describe('沙龍六場：規劃與財務', () => {
 });
 
 describe('沙龍六場：熟客、階段與存檔', () => {
+  it('每場要先聽到當日在場非導師，導師對話可聽但不解鎖規劃', () => {
+    let session = startSeason(initialSeason());
+    expect(canPlanSeason(session)).toBe(false);
+    expect(setSeasonDraft(session, quietPlan())).toBe(session);
+    expect(holdSeason(session, 1)).toBe(session);
+    const firstRoster = seasonScenes.find(scene => scene.number === 1)!.npcs;
+    const mentor = firstRoster.find(npc => npc.id === 5)!;
+    const guest = firstRoster.find(npc => npc.id !== 5)!;
+    session = heardSeasonNpc(session, mentor.id);
+    expect(canPlanSeason(session)).toBe(false);
+    expect(heardSeasonNpc(session, 99)).toBe(session);
+    const futureGuest = seasonScenes.find(scene => scene.number === 2)!.npcs.find(npc => !firstRoster.some(current => current.id === npc.id))!;
+    expect(heardSeasonNpc(session, futureGuest.id)).toBe(session);
+    const unavailableId = [1, 2, 3, 4, 5, 6].find(id => !firstRoster.some(npc => npc.id === id)) ?? 99;
+    expect(heardSeasonNpc(session, unavailableId)).toBe(session);
+    const afterGuest = heardSeasonNpc(session, guest.id);
+    expect(canPlanSeason(afterGuest)).toBe(true);
+    expect(heardSeasonNpc(afterGuest, guest.id)).toBe(afterGuest);
+    expect(setSeasonDraft(afterGuest, quietPlan()).draft).toEqual(quietPlan());
+  });
+
   it('熟客留存分母是前場熟客，新增熟客不混入本場留存率', () => {
     const plans = Array.from({ length: 6 }, () => ({ ...defaultPlan(), actions: ['membership'] as ActionId[] }));
     const replay = replaySeason(plans)!;
@@ -135,8 +189,10 @@ describe('沙龍六場：熟客、階段與存檔', () => {
 
   it('只允許明確開始、逐場確認後舉辦六場，且季末阻擋第七場', () => {
     const fresh = initialSeason();
+    expect(completeSeasonEnding(fresh)).toBe(fresh);
     expect(holdSeason(fresh, 1)).toBe(fresh);
     let session = startSeason(fresh);
+    session = hearRoundNonMentor(session);
     session = setSeasonDraft(session, quietPlan());
     let held = holdSeason(session, 1);
     expect(held.plans).toHaveLength(1);
@@ -144,6 +200,7 @@ describe('沙龍六場：熟客、階段與存檔', () => {
     expect(holdSeason(held, 2)).toBe(held);
     session = acknowledgeSeason(held);
     for (let n = 2; n <= 6; n++) {
+      session = hearRoundNonMentor(session, n);
       session = setSeasonDraft(session, quietPlan());
       held = holdSeason(session, n);
       expect(held.plans).toHaveLength(n);
@@ -151,8 +208,15 @@ describe('沙龍六場：熟客、階段與存檔', () => {
       session = acknowledgeSeason(held);
     }
     expect(holdSeason(session, 7)).toBe(session);
-    expect(resolveSeasonRoute('#/quiz/paris-salon/result', session).kind).toBe('result');
-    expect(resolveSeasonRoute('#/quiz/paris-salon/play/1', session).kind).toBe('result');
+    expect(resolveSeasonRoute('#/quiz/paris-salon/result', session).kind).toBe('ending');
+    expect(resolveSeasonRoute('#/quiz/paris-salon/play/1', session).kind).toBe('ending');
+    expect(resolveSeasonRoute('#/quiz/paris-salon/ending', session).kind).toBe('ending');
+    const ended = completeSeasonEnding(session);
+    expect(ended.endingSeen).toBe(true);
+    expect(completeSeasonEnding(ended)).toBe(ended);
+    expect(restoreSeason(ended)).toEqual(ended);
+    expect(resolveSeasonRoute('#/quiz/paris-salon/ending', ended).kind).toBe('result');
+    expect(resolveSeasonRoute('#/quiz/paris-salon/result', ended).kind).toBe('result');
   });
 
   it('重播六種市場變化的全零行動恢復路線，不透支且每場配置可行', () => {
@@ -195,7 +259,8 @@ describe('沙龍六場：熟客、階段與存檔', () => {
     expect(restoreSeason(JSON.stringify({ ...first, assets: { cash: 999999 }, draft: { actions: ['unknown'] } }))).toMatchObject({ plans: first.plans });
     expect(restoreSeason({ ...first, plans: [quietPlan(), quietPlan()], acknowledged: 0 })).toBeNull();
     expect(restoreSeason({ ...first, plans: [{ ...quietPlan(), audience: 'pirates' }] })).toBeNull();
-    expect(restoreSeason({ ...first, version: 2 })).toBeNull();
+    expect(restoreSeason({ ...first, heard: {} })).toBeNull();
+    expect(restoreSeason({ ...first, version: 3 })).toBeNull();
     expect(restoreSeason('{broken')).toBeNull();
   });
 

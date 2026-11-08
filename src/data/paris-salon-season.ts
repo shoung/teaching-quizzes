@@ -1,10 +1,10 @@
 import type { QuizPreview, SalonStoryBeat } from '../types';
 import type { Audience, Scale, SeasonAction, SeasonMarket, Theme } from '../paris-salon/season-types';
 
-/** V3 的資源數字是簡化的課堂模型點數，不代表巴黎歷史帳目或真實預測。 */
-export const seasonGame: QuizPreview & { version: 3 } = {
+/** V4 的資源數字是簡化的課堂模型點數，不代表巴黎歷史帳目或真實預測。 */
+export const seasonGame: QuizPreview & { version: 4 } = {
   id: 'paris-salon',
-  version: 3,
+  version: 4,
   title: '沙龍夫人的經營筆記',
   subtitle: 'LE SALON DE CLAIRE',
   description: '留在約1900年的巴黎，陪克萊爾夫人籌辦六場沙龍。她從一本神奇手帳讀到2026年的經營方法，逐場觀察現金、熟客、口碑、知名度與場地如何累積。自由搭配準備行動，沒有單一正解。',
@@ -22,7 +22,7 @@ export const seasonPrologue: SalonStoryBeat[] = [
     npc: 0, place: 'salon',
   },
   {
-    id: 'season-opening-2', title: '路易斯的經營筆記', speaker: '路易斯',
+    id: 'season-opening-2', title: '露易斯夫人的經營筆記', speaker: '露易斯夫人',
     text: '我經營沙龍多年，知道好點子也得配合人手、席位與錢袋。每場先看當時消息和上場回饋，再選主題、優先服務的來客與規模；其他準備可以自由組合。',
     npc: 5, place: 'cafe',
   },
@@ -32,7 +32,7 @@ export const seasonPrologue: SalonStoryBeat[] = [
     npc: 0, place: 'study',
   },
   {
-    id: 'season-opening-4', title: '六場都是新的觀察', speaker: '路易斯',
+    id: 'season-opening-4', title: '六場都是新的觀察', speaker: '露易斯夫人',
     text: '接下來六場要一邊經營、一邊學習：每場有四個準備時段，現金、熟客、口碑、知名度與場地投資都會延續。座位和宣傳可能讓你有能力接待或觸及更多人，卻不保證需求或到場；按當時回饋調整就好。',
     npc: 5, place: 'cafe',
   },

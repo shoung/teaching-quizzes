@@ -10,10 +10,10 @@ const actionIds = [
   'ambience', 'experiment', 'promotion', 'membership', 'sponsor',
 ] as const;
 
-describe('V3 沙龍六場內容', () => {
+describe('V4 沙龍六場內容', () => {
   it('保留分享識別並以六場作為遊戲規模', () => {
     expect(seasonGame).toMatchObject({
-      id: 'paris-salon', version: 3, title: '沙龍夫人的經營筆記', scenarioCount: SEASON_LENGTH,
+      id: 'paris-salon', version: 4, title: '沙龍夫人的經營筆記', scenarioCount: SEASON_LENGTH,
     });
     expect(seasonGame.description).toContain('六場');
     expect(seasonGame.description).toContain('沒有單一正解');
@@ -84,11 +84,11 @@ describe('V3 沙龍六場內容', () => {
       .toMatch(/承諾與受眾不合則無贊助.*模型簡化為條件式支持/);
   });
 
-  it('序章建立1900巴黎、2026手帳及路易斯導師關係而不出現媒體穿越', () => {
+  it('序章建立1900巴黎、2026手帳及露易斯夫人導師關係而不出現媒體穿越', () => {
     expect(seasonPrologue).toHaveLength(4);
     expect(new Set(seasonPrologue.map(({ id }) => id)).size).toBe(4);
     expect(seasonPrologue.map(({ speaker }) => speaker)).toContain('克萊爾夫人');
-    expect(seasonPrologue.filter(({ speaker, npc }) => speaker === '路易斯' && npc === 5)).toHaveLength(2);
+    expect(seasonPrologue.filter(({ speaker, npc }) => speaker === '露易斯夫人' && npc === 5)).toHaveLength(2);
     expect(seasonPrologue.map(({ text }) => text).join('')).toMatch(/1900/);
     expect(seasonPrologue.map(({ text }) => text).join('')).toMatch(/2026/);
     expect(seasonPrologue.map(({ text }) => text).join('')).toMatch(/信件、印刷品與面談辦事/);
