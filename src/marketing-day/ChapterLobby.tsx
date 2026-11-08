@@ -6,21 +6,27 @@ export interface ChapterLobbyProps {
   firstCompleted: boolean;
   secondStarted?: boolean;
   secondCompleted?: boolean;
+  thirdStarted?: boolean;
+  thirdCompleted?: boolean;
   onStartFirst: () => void;
   onStartSecond: () => void;
+  onStartThird: () => void;
   onShare: () => void;
   onRestartFirst: () => void;
 }
 
-type Chapter = 'first' | 'second';
+type Chapter = 'first' | 'second' | 'third';
 
 export default function ChapterLobby({
   firstStarted,
   firstCompleted,
   secondStarted=false,
   secondCompleted=false,
+  thirdStarted=false,
+  thirdCompleted=false,
   onStartFirst,
   onStartSecond,
+  onStartThird,
   onShare,
   onRestartFirst,
 }: ChapterLobbyProps) {
@@ -45,6 +51,10 @@ export default function ChapterLobby({
             <span className="md-lobby-choice-number">02</span>
             <span><strong>第二章</strong><small>客戶來訪日</small></span>
           </button>
+          <button type="button" className="md-lobby-choice" aria-pressed={chapter === 'third'} onClick={() => setChapter('third')}>
+            <span className="md-lobby-choice-number">03</span>
+            <span><strong>第三章</strong><small>咖啡店提案日</small></span>
+          </button>
         </div>
 
         {chapter === 'first' ? (
@@ -58,7 +68,7 @@ export default function ChapterLobby({
               {firstStarted && <button type="button" className="md-lobby-secondary" onClick={onRestartFirst}>重新上班</button>}
             </div>
           </article>
-        ) : (
+        ) : chapter === 'second' ? (
           <article className="md-lobby-detail" aria-labelledby="md-chapter-title">
             <div className="md-lobby-detail-head"><span>第二章　／　客戶來訪日</span><span className="md-lobby-state">{secondCompleted?'已提案':secondStarted?'進行中':'可開始'}</span></div>
             <h3 id="md-chapter-title">健身房老闆來了。先聽懂他的需求。</h3>
@@ -68,6 +78,15 @@ export default function ChapterLobby({
             <div className="md-lobby-actions">
               <button type="button" className="md-lobby-primary" onClick={onStartSecond}>{secondCompleted?'查看提案評價':secondStarted?'繼續第二章':'開始第二章'}</button>
             </div>
+          </article>
+        ) : (
+          <article className="md-lobby-detail" aria-labelledby="md-chapter-title">
+            <div className="md-lobby-detail-head"><span>第三章　／　咖啡店提案日</span><span className="md-lobby-state">{thirdCompleted?'已提案':thirdStarted?'進行中':'可開始'}</span></div>
+            <h3 id="md-chapter-title">社區咖啡店想讓尖峰取餐更順。</h3>
+            <p>陳店長希望改善上班尖峰的外帶預訂與取餐流程。走近店長聊聊，再整理顧客需求、服務機會與可執行的提案。</p>
+            <div className="md-lobby-meta"><span>五輪訪談推理 · 每輪最多五問</span><span>預計 10–15 分鐘</span></div>
+            <p className="md-lobby-unlocked">不需先完成前兩章，可直接開始。</p>
+            <div className="md-lobby-actions"><button type="button" className="md-lobby-primary" onClick={onStartThird}>{thirdCompleted?'查看提案評價':thirdStarted?'繼續第三章':'開始第三章'}</button></div>
           </article>
         )}
 

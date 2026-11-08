@@ -12,7 +12,8 @@ import ChapterLobby from './ChapterLobby';
 import { useGameSound } from './use-game-sound';
 import { musicCredit } from './music-credit';
 import { chapterTwoCase } from '../data/marketing-detective';
-import { beginDetectiveSession, newDetectiveSession } from './detective-engine';
+import { chapterThreeCase } from '../data/marketing-coffee';
+import { createDetectiveEngine, beginDetectiveSession, newDetectiveSession } from './detective-engine';
 import type { OfficeControls } from './OfficeScene';
 import type { WalkDirection } from './navigation';
 import './marketing-day.css';
@@ -22,7 +23,9 @@ const DetectiveChapter = lazy(() => import('./DetectiveChapter'));
 type Panel = 'dialogue'|'decision'|'feedback'|'result'|'glossary'|'share'|'help'|'change'|'restart'|'chapters'|null;
 const introPath = '#/quiz/marketing-day/1';
 const chapterTwoPath = '#/quiz/marketing-day/chapter-2/brief';
+const chapterThreePath = '#/quiz/marketing-day/chapter-3/brief';
 const planningViews = ['brief','research','persona','journey','ideas','blueprint','review'];
+const chapterThreeEngine = createDetectiveEngine(chapterThreeCase);
 
 export default function MarketingDayGame() {
   const [session,setSession] = useState(newMarketingSession);
@@ -38,15 +41,19 @@ export default function MarketingDayGame() {
   const [chapterTwoSession,setChapterTwoSession] = useState(newDetectiveSession);
   const [chapterTwoMoving,setChapterTwoMoving] = useState(false);
   const [chapterTwoPaused,setChapterTwoPaused] = useState(false);
+  const [chapterThreeSession,setChapterThreeSession] = useState(()=>chapterThreeEngine.newDetectiveSession());
+  const [chapterThreeMoving,setChapterThreeMoving] = useState(false);
+  const [chapterThreePaused,setChapterThreePaused] = useState(false);
   const [run,setRun] = useState(0);
   const hud = useRef<HTMLElement>(null);
   const scene = useRef<OfficeControls>(null);
   const lastInputCue = useRef<{target:HTMLInputElement}|null>(null);
   const secondChapter = /^#\/quiz\/marketing-day\/chapter-2(?:\/|$)/.test(hash);
+  const thirdChapter = /^#\/quiz\/marketing-day\/chapter-3(?:\/|$)/.test(hash);
   const requestedView = hash.split('/')[4] ?? 'brief';
   const planningView = planningViews.includes(requestedView) ? requestedView : 'brief';
-  const route = resolveMarketingRoute(secondChapter?introPath:hash,session);
-  const sound = useGameSound({moving:secondChapter?chapterTwoMoving:moving,paused:secondChapter?chapterTwoPaused:(panel!==null||route.kind!=='play')});
+  const route = resolveMarketingRoute(secondChapter||thirdChapter?introPath:hash,session);
+  const sound = useGameSound({moving:secondChapter?chapterTwoMoving:thirdChapter?chapterThreeMoving:moving,paused:secondChapter?chapterTwoPaused:thirdChapter?chapterThreePaused:(panel!==null||route.kind!=='play')});
   const question = marketingDayGame.decisions[route.index];
   const selected = drafts[route.index] ?? session.answers[route.index];
   const confirmed = question.options.find(o => o.id===session.answers[route.index]);
@@ -57,13 +64,14 @@ export default function MarketingDayGame() {
   useEffect(() => {
     const sync = () => {
       setHash(window.location.hash);setPanel(null);setReturnPanel(null);setResumePanel('dialogue');
-      setPendingFeedback(null);setActiveTerm(null);setNotice('');setMoving(false);setChapterTwoMoving(false);
+      setPendingFeedback(null);setActiveTerm(null);setNotice('');setMoving(false);setChapterTwoMoving(false);setChapterThreeMoving(false);
     };
     window.addEventListener('hashchange',sync);
     return () => window.removeEventListener('hashchange',sync);
   }, []);
 
-  useEffect(()=>{setChapterTwoSession(current=>current.caseVersion===chapterTwoCase.version?current:newDetectiveSession());},[chapterTwoCase.version]);
+  useEffect(()=>{setChapterTwoSession(current=>current.caseId===chapterTwoCase.id&&current.caseVersion===chapterTwoCase.version?current:newDetectiveSession());},[chapterTwoCase.id,chapterTwoCase.version]);
+  useEffect(()=>{setChapterThreeSession(current=>current.caseId===chapterThreeCase.id&&current.caseVersion===chapterThreeCase.version?current:chapterThreeEngine.newDetectiveSession());},[chapterThreeCase.id,chapterThreeCase.version,chapterThreeEngine]);
 
   function navigate(path: string, replace=false) {
     if(window.location.hash===path)return;
@@ -72,24 +80,25 @@ export default function MarketingDayGame() {
   }
 
   useEffect(() => {
-    if(secondChapter){
-      const canonical=`#/quiz/marketing-day/chapter-2/${planningView}`;
+    if(secondChapter||thirdChapter){
+      const chapterPath=thirdChapter?'chapter-3':'chapter-2';
+      const canonical=`#/quiz/marketing-day/${chapterPath}/${planningView}`;
       if(hash!==canonical)navigate(canonical,true);
       return;
     }
     if(route.canonical!==hash){navigate(route.canonical,true);if(route.notice)setNotice(route.notice);}
-  }, [route.canonical,hash,route.notice,secondChapter,planningView]);
+  }, [route.canonical,hash,route.notice,secondChapter,thirdChapter,planningView]);
   useEffect(() => { if(route.kind==='result')setPanel('result'); }, [route.kind]);
   useEffect(() => {
-    if(secondChapter)return;
+    if(secondChapter||thirdChapter)return;
     document.title=`行銷人的一天｜${route.kind==='intro'?'章節選擇':route.kind==='result'?'當日回顧':`決策 ${route.index+1} / 6`}`;
-  }, [route.kind,route.index,secondChapter]);
+  }, [route.kind,route.index,secondChapter,thirdChapter]);
   useEffect(() => {
     const header=hud.current;
     if(!header)return;
     const observer=new ResizeObserver(() => header.parentElement?.style.setProperty('--md-hud-height',`${header.offsetHeight}px`));
     observer.observe(header);return () => observer.disconnect();
-  }, [secondChapter]);
+  }, [secondChapter,thirdChapter]);
 
   function openInteraction() {
     if(route.kind==='result'){setPanel('result');return;}
@@ -123,6 +132,10 @@ export default function MarketingDayGame() {
   function startSecond() {
     setChapterTwoSession(current=>beginDetectiveSession(current));
     navigate(chapterTwoSession.completed?'#/quiz/marketing-day/chapter-2/review':chapterTwoPath);
+  }
+  function startThird() {
+    setChapterThreeSession(current=>chapterThreeEngine.beginDetectiveSession(current));
+    navigate(chapterThreeSession.completed?'#/quiz/marketing-day/chapter-3/review':chapterThreePath);
   }
   function commit() {
     if(selected===null)return;
@@ -202,7 +215,13 @@ export default function MarketingDayGame() {
     window.setTimeout(()=>{if(lastInputCue.current===cue)lastInputCue.current=null;},0);
   }
 
-  if(secondChapter)return <Suspense fallback={<div className="md-game"><p className="md-scene-status" role="status">提案會議室準備中…</p></div>}><DetectiveChapter key={chapterTwoSession.caseVersion} audio={sound} session={chapterTwoSession} onSessionChange={setChapterTwoSession} view={planningView} onNavigate={view=>navigate(`#/quiz/marketing-day/chapter-2/${planningViews.includes(view)?view:'brief'}`)} onChooseChapters={()=>navigate(introPath)} onMovingChange={setChapterTwoMoving} onPausedChange={setChapterTwoPaused}/></Suspense>;
+  if(secondChapter||thirdChapter){
+    const caseId=thirdChapter?chapterThreeCase.id:chapterTwoCase.id;
+    const caseVersion=thirdChapter?chapterThreeCase.version:chapterTwoCase.version;
+    const activeSession=thirdChapter?chapterThreeSession:chapterTwoSession;
+    const setActiveSession=thirdChapter?setChapterThreeSession:setChapterTwoSession;
+    return <Suspense fallback={<div className="md-game"><p className="md-scene-status" role="status">提案會議室準備中…</p></div>}><DetectiveChapter key={`${caseId}-v${caseVersion}`} audio={sound} session={activeSession} onSessionChange={setActiveSession} view={planningView} detectiveCase={thirdChapter?chapterThreeCase:chapterTwoCase} chapterLabel={thirdChapter?'第三章':'第二章'} onNavigate={view=>navigate(`#/quiz/marketing-day/${thirdChapter?'chapter-3':'chapter-2'}/${planningViews.includes(view)?view:'brief'}`)} onChooseChapters={()=>navigate(introPath)} onMovingChange={thirdChapter?setChapterThreeMoving:setChapterTwoMoving} onPausedChange={thirdChapter?setChapterThreePaused:setChapterTwoPaused}/></Suspense>;
+  }
 
   return <div className="md-game" onClickCapture={playUiCue} onChangeCapture={playInputCue} onKeyDownCapture={playRangeKeyCue}>
     <a href="#md-main" className="md-skip" onClick={event=>{event.preventDefault();document.getElementById('md-main')?.focus();}}>跳至遊戲操作</a>
@@ -213,7 +232,7 @@ export default function MarketingDayGame() {
       <h1>行銷人的一天</h1><div className="md-tools"><button className="md-tool" aria-label="選擇章節" onClick={()=>openUtility('chapters')}><Glyph name="chapters"/><span>章節</span></button><button className="md-icon-button md-sound" aria-label={sound.muted?'音效：關':'音效：開'} aria-pressed={sound.muted} onClick={()=>{sound.unlock();sound.toggle();}}><Glyph name={sound.muted?'mute':'volume'}/></button><button className="md-tool" aria-label="行銷圖鑑" onClick={()=>openUtility('glossary')}><Glyph name="book"/><span>圖鑑</span></button><button className="md-icon-button" aria-label="操作說明" onClick={()=>openUtility('help')}><Glyph name="help"/></button></div>
     </header>
     <main id="md-main" tabIndex={-1} className="md-main">
-      {route.kind==='intro'&&<ChapterLobby firstStarted={session.started} firstCompleted={session.completed} onStartFirst={start} secondStarted={chapterTwoSession.started} secondCompleted={chapterTwoSession.completed} onStartSecond={startSecond} onShare={()=>openUtility('share')} onRestartFirst={()=>openUtility('restart')}/>}
+      {route.kind==='intro'&&<ChapterLobby firstStarted={session.started} firstCompleted={session.completed} onStartFirst={start} secondStarted={chapterTwoSession.started} secondCompleted={chapterTwoSession.completed} onStartSecond={startSecond} thirdStarted={chapterThreeSession.started} thirdCompleted={chapterThreeSession.completed} onStartThird={startThird} onShare={()=>openUtility('share')} onRestartFirst={()=>openUtility('restart')}/>}
       {worldVisible&&<><div className="md-next"><span className="md-next-tag">{route.kind==='result'?'已完成':'下一步'}</span><p>{route.kind==='result'?'今天辛苦了，看看這一天的選擇。':question.task}</p>{route.kind==='play'&&<button onClick={()=>scene.current?scene.current.goToTarget():openInteraction()} disabled={moving}> {moving?'走過去中':'帶我去'} <kbd>G</kbd></button>}</div>
         <div className="md-bottom-hud">{route.kind==='play'&&<div className="md-movement" aria-label="移動角色"><span/><button aria-label="往上走" onClick={()=>scene.current?.step('up')}>↑</button><span/>{(['left','down','right'] as WalkDirection[]).map(direction=><button key={direction} aria-label={direction==='left'?'往左走':direction==='down'?'往下走':'往右走'} onClick={()=>scene.current?.step(direction)}>{direction==='left'?'←':direction==='down'?'↓':'→'}</button>)}</div>}<button className="md-primary md-interact" data-world-interact onClick={interact}>{interactLabel} <kbd>E</kbd></button><span className="md-scene-hint">{route.kind==='play'?'WASD／方向鍵移動 · G 帶我去 · E 直接對話':'六個決策已完成 · 結果只保留在這次開啟的頁面'}</span></div>
       </>}
@@ -227,7 +246,7 @@ export default function MarketingDayGame() {
       {panel==='result'&&result&&<GameResult result={result} titleId={titleId} onRestart={()=>openUtility('restart')} onShare={()=>openUtility('share')}/>}
       {panel==='glossary'&&<GameGlossary titleId={titleId}/>}
       {panel==='share'&&<GameShare titleId={titleId}/>}
-      {panel==='chapters'&&<><span className="md-section-label">自由選章 · 不需解鎖</span><h2 id={titleId} tabIndex={-1} data-initial-focus>今天，想從哪裡開始？</h2><p className="md-note">兩章都能直接開始。第一章答案保留在本次開啟的頁面，重新整理後會清除。</p><div className="md-panel-actions"><button className="md-secondary" onClick={()=>{closePanel();if(route.kind==='intro')start();}}>回到第一章</button><button className="md-primary" onClick={startSecond}>前往第二章</button></div><p className="md-note">第一章：新品上線日 · 第二章：客戶來訪日 · 訪談與推理</p></>}
+      {panel==='chapters'&&<><span className="md-section-label">自由選章 · 不需解鎖</span><h2 id={titleId} tabIndex={-1} data-initial-focus>今天，想從哪裡開始？</h2><p className="md-note">三章都能直接開始。第一章答案保留在本次開啟的頁面，重新整理後會清除。</p><div className="md-panel-actions"><button className="md-secondary" onClick={()=>{closePanel();if(route.kind==='intro')start();}}>回到第一章</button><button className="md-primary" onClick={startSecond}>前往第二章</button><button className="md-primary" onClick={startThird}>前往第三章</button></div><p className="md-note">第一章：新品上線日 · 第二章：客戶來訪日 · 第三章：咖啡店提案日</p></>}
       {panel==='change'&&<><span className="md-section-label">變更已確認的選擇</span><h2 id={titleId} tabIndex={-1} data-initial-focus>重新推演後面的決策？</h2><p className="md-large-copy">修改這一題，會清除後面已做過的選擇與結案。</p><p className="md-note">這一題以前的答案保留；從這裡開始重新走一次，讓回顧與新的取捨一致。</p><div className="md-panel-actions"><button className="md-secondary" onClick={cancelChange}>取消，保留原選擇</button><button className="md-primary" onClick={commit}>確認修改，重新推演</button></div></>}
       {panel==='restart'&&<><span className="md-section-label">開始新的一天</span><h2 id={titleId} tabIndex={-1} data-initial-focus>重新上班？</h2><p className="md-large-copy">本次六個決策與回顧會清空。</p><p className="md-note">不會改動其他測驗的進度。這個遊戲不存檔，無法還原這次結果。</p><div className="md-panel-actions"><button className="md-secondary" onClick={closePanel}>先保留這一天</button><button className="md-primary" onClick={restart}>確認重新開始</button></div></>}
       {panel==='help'&&<><span className="md-section-label">沒有倒數，照自己的節奏</span><h2 id={titleId} tabIndex={-1} data-initial-focus>下一步，就在眼前。</h2><div className="md-help-row"><kbd>G</kbd><p>帶我去<br/><span>自動走到當前同事旁，並打開對話。</span></p></div><div className="md-help-row"><kbd>E</kbd><p>直接互動<br/><span>隨時打開與目前同事的對話，不用先走近。</span></p></div><div className="md-help-row"><kbd>Esc</kbd><p>收合中央視窗<br/><span>草稿保留，再按「繼續目前決策」打開。</span></p></div><p className="md-note">WASD、方向鍵或點地板移動。也可以直接點目前同事的 3D 角色，自動走近後對話。G 會帶路並在抵達後開啟對話；E 或紅色按鈕可直接互動。彈窗開啟時場景暫停。上一頁保留答案；修改較早決策前會先詢問。沒有登入與存檔，重新整理後需重新開始。</p><section className="md-audio-settings" aria-labelledby="md-audio-title"><h3 id="md-audio-title">音效與音樂設定</h3><label className="md-audio-toggle"><input type="checkbox" checked={sound.musicEnabled} onChange={()=>{sound.unlock();sound.toggleMusic();}}/>播放背景音樂</label><label className="md-audio-volume">音樂音量 <span>{Math.round(sound.musicVolume*100)}%</span><input aria-label="音樂音量" type="range" min="0" max="1" step="0.01" value={sound.musicVolume} onChange={event=>sound.setMusicVolume(Number(event.currentTarget.value))} onPointerDown={sound.unlock}/></label><label className="md-audio-volume">音效音量 <span>{Math.round(sound.effectsVolume*100)}%</span><input aria-label="音效音量" type="range" min="0" max="1" step="0.01" value={sound.effectsVolume} onChange={event=>sound.setEffectsVolume(Number(event.currentTarget.value))} onPointerDown={sound.unlock}/></label><p className="md-audio-credit">背景音樂：{musicCredit.title}，{musicCredit.artist}。<a href={musicCredit.sourceUrl} target="_blank" rel="noreferrer">音樂來源</a> · <a href={musicCredit.licenseUrl} target="_blank" rel="noreferrer">{musicCredit.license}</a></p><p className="md-note">音訊狀態：{sound.status==='locked'?'第一次操作後啟用':sound.status==='ready'?'已就緒':'此瀏覽器無法播放音訊'}</p></section></>}

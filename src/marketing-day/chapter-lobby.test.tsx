@@ -10,6 +10,7 @@ function props(overrides:Partial<ComponentProps<typeof ChapterLobby>>={}) {
     firstCompleted:false,
     onStartFirst:vi.fn(),
     onStartSecond:vi.fn(),
+    onStartThird:vi.fn(),
     onShare:vi.fn(),
     onRestartFirst:vi.fn(),
     ...overrides,

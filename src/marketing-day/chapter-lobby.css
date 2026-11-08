@@ -40,7 +40,7 @@
 .md-lobby-kicker>span {width:1.1rem;height:1px;background:currentColor}
 .md-lobby .md-lobby-panel h2 {margin:0;font-size:clamp(2rem,5vw,3.1rem);line-height:1.25;letter-spacing:.04em}
 .md-lobby .md-lobby-lede {margin:.65rem 0 1.25rem;color:#d5dfdf;font-size:1.125rem;line-height:1.7}
-.md-lobby-choices {display:flex;gap:.65rem;border-bottom:1px solid #53676d;padding-bottom:.85rem}
+.md-lobby-choices {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;border-bottom:1px solid #53676d;padding-bottom:.85rem}
 .md-lobby .md-lobby-choice {display:flex;flex:1;align-items:center;gap:.8rem;text-align:left;padding:.55rem .75rem;border:1px solid #53676d;background:#192d35}
 .md-lobby .md-lobby-choice:hover {background:#253d47;border-color:#93a9ac}
 .md-lobby .md-lobby-choice[aria-pressed="true"] {border-color:#d7c79c;background:#314047;box-shadow:inset 0 -2px #edcb81}
@@ -70,8 +70,8 @@
   .md-lobby {place-items:start center;padding:.85rem .7rem 2rem}
   .md-lobby-panel {padding:1.15rem .95rem}
   .md-lobby .md-lobby-panel h2 {font-size:2rem;overflow-wrap:anywhere}
-  .md-lobby-choices {gap:.45rem}
-  .md-lobby-choice {align-items:flex-start;gap:.45rem;padding:.55rem .5rem;min-width:0}
+  .md-lobby-choices {gap:.35rem}
+  .md-lobby .md-lobby-choice {align-items:flex-start;gap:.3rem;padding:.45rem .35rem;min-width:0;min-height:3.4rem}
   .md-lobby-choice-number {display:none}
   .md-lobby-choice strong {font-size:1rem}
   .md-lobby .md-lobby-detail h3 {font-size:1.3rem}

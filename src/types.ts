@@ -94,6 +94,7 @@ export interface DetectiveRoundState {
   submittedIds: string[] | null;
 }
 export interface DetectiveSession {
+  caseId: string;
   caseVersion: number;
   started: boolean;
   rounds: DetectiveRoundState[];
