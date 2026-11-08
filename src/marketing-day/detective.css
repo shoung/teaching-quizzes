@@ -12,12 +12,14 @@
 .dd-dialog-tools { position:sticky; top:-2.25rem; z-index:3; display:flex; flex-wrap:wrap; gap:.5rem; justify-content:flex-end; margin:-.5rem 0 .75rem; padding:.3rem 0 .65rem; background:var(--md-panel); border-bottom:1px solid var(--md-line); }
 .dd-dialog-tools button { min-height:2.7rem; font-size:1rem; }
 .dd-conversation,.dd-result { max-width:39rem; margin:0 auto; }
-.dd-conversation h2,.dd-board-context h2,.dd-result h2 { margin:.45rem 0 1rem; font-size:clamp(1.55rem,4vw,2rem); line-height:1.35; }
+.dd-conversation h2,.dd-board-context h2,.dd-result h2 { text-wrap:balance; margin:.45rem 0 1rem; font-size:clamp(1.55rem,4vw,2rem); line-height:1.35; }
 .dd-section-label,.dd-eyebrow { color:var(--md-gold); font-size:1rem; font-weight:700; letter-spacing:.04em; }
 .dd-speaker { display:flex; align-items:center; gap:1rem; }
 .dd-speaker p { margin:.2rem 0; color:var(--md-muted); font-size:1rem; }
 .dd-conversation blockquote,.dd-quote blockquote { margin:1rem 0; padding:1rem 1.2rem; border-left:3px solid var(--md-gold); background:#1b3039; color:var(--md-ink); font-size:clamp(1.15rem,2.5vw,1.35rem); line-height:1.65; }
-.dd-reply { border-left-color:#8aac9a!important; background:#1a302d!important; }
+.dd-verbatim { white-space:pre-line; overflow-wrap:anywhere; }
+.dd-reply { scroll-margin-block-start:5.5rem; border-left-color:#8aac9a!important; background:#1a302d!important; }
+.dd-reply:focus-visible { outline:3px solid var(--md-gold); outline-offset:3px; }
 .dd-dialog-actions,.dd-board-actions,.dd-result-actions { display:flex; flex-wrap:wrap; gap:.65rem; justify-content:flex-end; align-items:center; margin-top:1rem; }
 .dd-primary,.dd-secondary,.dd-question-list button,.dd-pool li button,.dd-result-tabs button,.dd-glossary-list button { min-height:3rem; padding:.65rem 1rem; border:1px solid var(--md-line); border-radius:4px; font:inherit; font-weight:600; cursor:pointer; }
 .dd-primary { background:var(--md-red); border-color:#ec7380; color:var(--md-ink); }
@@ -36,8 +38,10 @@
 .dd-notes li { margin:.8rem 0; font-size:1.125rem; line-height:1.55; }
 .dd-notes p { margin:.3rem 0; }
 .dd-glossary-list { display:flex; flex-wrap:wrap; gap:.5rem; }
+.dd-glossary-list button { min-width:0; max-width:100%; overflow-wrap:anywhere; background:#1a2d35; color:var(--md-ink); border-color:#78929b; }
+.dd-glossary-list button:hover { background:#243e48; }
 .dd-glossary-list button[aria-pressed="true"],.dd-result-tabs button[aria-pressed="true"] { color:var(--md-gold); border-color:var(--md-gold); background:#20343c; }
-.dd-term-definition { margin:1rem 0; padding:1rem; border:1px solid var(--md-line); border-left:3px solid var(--md-gold); border-radius:4px; background:#182b33; }
+.dd-term-definition { min-width:0; overflow-wrap:anywhere; margin:1rem 0; padding:1rem; border:1px solid var(--md-line); border-left:3px solid var(--md-gold); border-radius:4px; background:#182b33; }
 .dd-term-definition h3 { margin:.2rem 0; color:var(--md-gold); font-size:1.2rem; }
 .dd-term-definition p { font-size:1.125rem; line-height:1.6; }
 .dd-board-context { max-width:60rem; margin:0 auto 1rem; }
@@ -93,6 +97,7 @@
   .dd-interact { min-width:0; max-width:100%; overflow-wrap:anywhere; }
   .dd-dialog { width:calc(100vw - 1rem); max-height:92dvh; padding:1rem; }
   .dd-dialog:has(.dd-board-context) { max-width:calc(100vw - 1rem); }
+  .dd-reply { scroll-margin-block-start:1rem; }
   .dd-dialog-tools { position:static; top:auto; margin:-.2rem 0 .5rem; }
   .dd-pools { grid-template-columns:1fr; }
   .dd-pool { max-height:34vh; }

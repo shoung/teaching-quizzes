@@ -107,6 +107,7 @@ describe('偵探章節互動',()=>{
     expect(audio.play).toHaveBeenCalledTimes(1);
     expect(audio.play).toHaveBeenLastCalledWith('open');
     expect(await screen.findByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByRole('heading',{name:chapterTwoCase.stages[0].title})).toBeInTheDocument();
     expect(pause).toHaveBeenLastCalledWith(true);
     expect(screen.getByRole('dialog')).toHaveTextContent(chapterTwoCase.stages[0].intro[0]);
     await user.click(screen.getByRole('button',{name:'收合視窗'}));
@@ -117,20 +118,20 @@ describe('偵探章節互動',()=>{
     await user.click(screen.getByRole('button',{name:'收合視窗'}));
     await user.click(screen.getByRole('button',{name:'與林老闆對話 E'}));
     expect(screen.getByRole('dialog')).toHaveTextContent(chapterTwoCase.stages[0].intro[1]);
-    await user.click(screen.getByRole('button',{name:'繼續聽'}));
+    for(let line=2;line<chapterTwoCase.stages[0].intro.length;line++)await user.click(screen.getByRole('button',{name:'繼續聽'}));
     await user.click(screen.getByRole('button',{name:'開始追問'}));
-    await user.click(screen.getByRole('button',{name:/目前最想改善什麼/}));
-    expect(screen.getByRole('dialog')).toHaveTextContent(chapterTwoCase.stages[0].questions[0].reply);
+    await user.click(screen.getByRole('button',{name:new RegExp(chapterTwoCase.stages[0].questions[0].label)}));
+    expect(screen.getByRole('dialog')).toHaveTextContent(chapterTwoCase.stages[0].questions[0].reply.replace(/\s+/g,' '));
+    await waitFor(()=>expect(document.querySelector('.dd-reply')).toHaveFocus());
     await user.click(screen.getByRole('button',{name:'重聽客戶說明'}));
     expect(screen.getByRole('dialog')).toHaveTextContent(chapterTwoCase.stages[0].intro[0]);
-    await user.click(screen.getByRole('button',{name:'繼續聽'}));
-    await user.click(screen.getByRole('button',{name:'繼續聽'}));
+    for(let line=1;line<chapterTwoCase.stages[0].intro.length;line++)await user.click(screen.getByRole('button',{name:'繼續聽'}));
     await user.click(screen.getByRole('button',{name:'開始追問'}));
     expect(screen.getByText(/追問額度 · 1／5/)).toBeInTheDocument();
     await user.click(screen.getByRole('button',{name:'收合視窗'}));
     expect(audio.play).toHaveBeenLastCalledWith('close');
     await user.click(screen.getByRole('button',{name:'繼續與林老闆對話 E'}));
-    expect(await screen.findByRole('heading',{name:'你想先問林老闆什麼？'})).toBeInTheDocument();
+    expect(await screen.findByRole('heading',{name:chapterTwoCase.stages[0].title})).toBeInTheDocument();
     expect(screen.getByText(/追問額度 · 1／5/)).toBeInTheDocument();
   });
 
@@ -172,7 +173,7 @@ describe('偵探章節互動',()=>{
     await user.click(screen.getByRole('button',{name:'音訊設定'}));
     await user.click(screen.getByRole('button',{name:'操作說明'}));
     await user.keyboard('{Escape}');
-    expect(screen.getByRole('heading',{name:'先聽老闆說'})).toBeInTheDocument();
+    expect(screen.getByRole('heading',{name:chapterTwoCase.stages[0].title})).toBeInTheDocument();
   });
 
   it('完成結算的原生dialog以實際結算標題關聯',async()=>{

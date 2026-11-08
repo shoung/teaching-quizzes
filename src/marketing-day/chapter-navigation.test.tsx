@@ -57,8 +57,7 @@ describe('行銷遊戲自由選章',()=>{
     window.history.replaceState(null,'','#/quiz/marketing-day/chapter-2/brief');
     const user=userEvent.setup();render(<MarketingDayGame/>);
     await user.click(await screen.findByRole('button',{name:/與林老闆對話/}));
-    await user.click(screen.getByRole('button',{name:'繼續聽'}));
-    await user.click(screen.getByRole('button',{name:'繼續聽'}));
+    for(let line=1;line<chapterTwoCase.stages[0].intro.length;line++)await user.click(screen.getByRole('button',{name:'繼續聽'}));
     await user.click(screen.getByRole('button',{name:'開始追問'}));
     for(const question of chapterTwoCase.stages[0].questions.slice(0,5)) {
       await user.click(screen.getByRole('button',{name:new RegExp(question.label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'))}));

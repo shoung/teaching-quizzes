@@ -1,5 +1,7 @@
 # 第二章「客戶來訪日」試玩與驗證
 
+> 本頁保留v6玩法驗收紀錄；v7圖鑑修訂見[文案修訂紀錄](./marketing-day-dialogue-revision.md)，最新v9文字改稿與模型複核見[Gemini修稿紀錄](./marketing-day-gemini-rewrite.md)。
+
 日期：2026-11-08｜案例版本：6｜本機可試玩，尚未部署。
 
 ## 試玩入口

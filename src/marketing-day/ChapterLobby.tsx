@@ -61,8 +61,8 @@ export default function ChapterLobby({
         ) : (
           <article className="md-lobby-detail" aria-labelledby="md-chapter-title">
             <div className="md-lobby-detail-head"><span>第二章　／　客戶來訪日</span><span className="md-lobby-state">{secondCompleted?'已提案':secondStarted?'進行中':'可開始'}</span></div>
-            <h3 id="md-chapter-title">客戶到了。這次，換你問出關鍵。</h3>
-            <p>走向客戶、有限追問、從線索池選出有根據的判斷，最後聽聽老闆對提案的評價。</p>
+            <h3 id="md-chapter-title">健身房老闆來了。先聽懂他的需求。</h3>
+            <p>林老闆想改善新客第一次來健身房的體驗。走近和他聊聊，再選出顧客痛點、樣貌與服務方案，最後提出你的規劃。</p>
             <div className="md-lobby-meta"><span>五輪訪談推理 · 每輪最多五問</span><span>預計 10–15 分鐘</span></div>
             <p className="md-lobby-unlocked">不需先完成第一章，可直接開始。</p>
             <div className="md-lobby-actions">

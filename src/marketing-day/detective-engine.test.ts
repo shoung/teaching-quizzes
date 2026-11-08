@@ -52,6 +52,16 @@ function finishWithProposal(proposalId: string | null): DetectiveSession {
   return session;
 }
 
+function finishWithChoices(overrides: Record<number, string[]>): DetectiveSession {
+  let session = startedSession();
+  chapterTwoCase.stages.forEach((stage, index) => {
+    const ids = overrides[index] ?? stage.choices.filter(({ correct }) => correct).map(({ id }) => id);
+    session = choose(session, index, ids);
+    session = commitDetectiveRound(session, index);
+  });
+  return session;
+}
+
 const firstQuestion = chapterTwoCase.stages[0].questions[0].id;
 const firstChoice = chapterTwoCase.stages[0].choices[0].id;
 
@@ -192,9 +202,9 @@ describe('偵探提案遊戲評分', () => {
     expect(result!.rounds).toHaveLength(5);
     expect(result!.rounds.every((round) => round.maxPoints === 20 && round.points === 20 && round.wrong.length === 0 && round.missed.length === 0)).toBe(true);
     expect(result!.totalHits).toBe(chapterTwoCase.stages.reduce((sum, stage) => sum + stage.choices.filter(({ correct }) => correct).length, 0));
-    const proposalA = chapterTwoCase.stages[3].choices.find(({ correct, kind }) => correct && kind === 'proposal')!;
-    expect(result!.bossComment).toContain(`你這次優先提了「${proposalA.label}」`);
-    expect(result!.expertComment).toContain('五輪都達到滿分');
+    expect(result!.bossComment).toMatch(/網頁|網站|介紹頁/);
+    expect(result!.bossComment).toContain('報到');
+    expect(result!.expertComment).toMatch(/提案.*(實際狀況|事實|證據)/);
     expect(result!.satisfaction).toBeTruthy();
     expect(result!.bossComment).toBeTruthy();
     expect(result!.expertComment).toBeTruthy();
@@ -210,8 +220,8 @@ describe('偵探提案遊戲評分', () => {
     expect(allSelected!.score).toBe(0);
     expect(allSelected!.totalWrong).toBeGreaterThan(0);
     expect(allSelected!.totalMissed).toBe(0);
-    const proposalA = chapterTwoCase.stages[3].choices.find(({ correct, kind }) => correct && kind === 'proposal')!;
-    expect(allSelected!.bossComment).toContain(`你這次優先提了「${proposalA.label}」`);
+    expect(allSelected!.bossComment).toMatch(/同時|一邊/);
+    expect(allSelected!.bossComment).toMatch(/人力|人手|忙不過來/);
   });
 
   it('has the fictional client respond to the selected main proposal instead of always naming proposal A', () => {
@@ -220,12 +230,108 @@ describe('偵探提案遊戲評分', () => {
     const proposalA = proposals.find(({ correct }) => correct)!;
     for (const proposal of proposals.filter(({ id }) => id !== proposalA.id)) {
       const result = evaluateDetectiveSession(finishWithProposal(proposal.id))!;
-      expect(result.bossComment).toContain(`你這次優先提了「${proposal.label}」`);
-      expect(result.bossComment).not.toContain(proposalA.label);
+      expect(result.bossComment).not.toContain(proposal.label);
+      expect(result.bossComment).toMatch(/不能.*(承諾|開放)|不敢.*答應/);
+      if (proposal.id === 'ideas-c05') expect(result.bossComment).toMatch(/帶看.*(還沒|未).*排/);
+      if (proposal.id === 'ideas-c06') expect(result.bossComment).toMatch(/人手|班表|接待/);
     }
 
     const withoutProposal = evaluateDetectiveSession(finishWithProposal(null))!;
-    expect(withoutProposal.bossComment).toContain('尚未選定主方案');
+    expect(withoutProposal.bossComment).toMatch(/主方案.*還沒定|還沒定.*主方案|先定下.*方向|先挑一個/);
+    expect(withoutProposal.bossComment).not.toMatch(/照這樣試跑|照著這個方向先跑/);
+    expect(withoutProposal.satisfaction).toContain('尚待定案');
+  });
+
+  it('explains the service impact and staffing concern when a high-scoring plan chooses B', () => {
+    const proposalB = chapterTwoCase.stages[3].choices.find(({ id }) => id === 'ideas-c05')!;
+    const result = evaluateDetectiveSession(finishWithProposal(proposalB.id))!;
+
+    expect(result.score).toBeGreaterThanOrEqual(75);
+    expect(result.satisfaction).toContain('暫不採用');
+    expect(result.bossComment).toMatch(/排班|人手|接待|現場/);
+    expect(result.bossComment).not.toContain(proposalB.label);
+    expect(result.expertComment).toMatch(/人員|時段|負責人/);
+    expect(result.bossComment).toContain('都抓得很準');
+    expect(result.bossComment).not.toContain('抓到一項');
+  });
+
+  it('recognizes a correct A plan even when the overall score is low', () => {
+    let session = startedSession();
+    chapterTwoCase.stages.forEach((stage, index) => {
+      const selected = index === 3
+        ? [stage.choices.find(({ id }) => id === 'ideas-c01')!.id]
+        : stage.choices.filter(({ correct }) => !correct).slice(0, 2).map(({ id }) => id);
+      session = choose(session, index, selected);
+      session = commitDetectiveRound(session, index);
+    });
+    const result = evaluateDetectiveSession(session)!;
+
+    expect(result.score).toBeLessThan(60);
+    expect(result.bossComment).toMatch(/網頁|流程|櫃檯|問題/);
+    expect(result.bossComment).not.toMatch(/方案.*錯|選錯主方案/);
+    expect(result.expertComment).toMatch(/最需要|先補|漏|判斷/);
+  });
+
+  it('describes a missed or mistaken decision in plain language without reading a choice label', () => {
+    const result = evaluateDetectiveSession(finishWith((correct) => !correct))!;
+    const allLabels = chapterTwoCase.stages.flatMap((stage) => stage.choices.map(({ label }) => label));
+
+    expect(result.expertComment).toMatch(/證據|判斷|補問|確認|線索|原話|補足資料/);
+    expect(allLabels.some((label) => result.bossComment.includes(label))).toBe(false);
+    expect(allLabels.some((label) => result.expertComment.includes(label))).toBe(false);
+  });
+
+  it('does not praise customer research when A is the only correct decision in a low-score result', () => {
+    const result = evaluateDetectiveSession(finishWithChoices({
+      0: chapterTwoCase.stages[0].choices.filter(({ correct }) => !correct).slice(0, 2).map(({ id }) => id),
+      1: chapterTwoCase.stages[1].choices.filter(({ correct }) => !correct).slice(0, 2).map(({ id }) => id),
+      2: chapterTwoCase.stages[2].choices.filter(({ correct }) => !correct).slice(0, 2).map(({ id }) => id),
+      3: ['ideas-c01'],
+      4: chapterTwoCase.stages[4].choices.filter(({ correct }) => !correct).slice(0, 2).map(({ id }) => id),
+    }))!;
+
+    expect(result.score).toBeLessThan(60);
+    expect(result.bossComment).toMatch(/網頁|網站/);
+    expect(result.bossComment).toMatch(/人手|人力|同事|既有名額|排好的名額|不用另外找人/);
+    expect(result.bossComment).not.toContain('把談話中已確認的顧客需要整理出來');
+    expect(result.bossComment).not.toMatch(/抓到我們現場的痛點|親口提過的顧慮/);
+  });
+
+  it('does not append a staffing question after perfect play already got staffing right', () => {
+    const result = evaluateDetectiveSession(finishWith((correct) => correct))!;
+
+    expect(result.expertComment.match(/下次/g) ?? []).toHaveLength(0);
+    expect(result.expertComment).toMatch(/追蹤|觀察/);
+    expect(result.expertComment).not.toContain('這週誰能負責');
+  });
+
+  it('calls out the known age contradiction and role mix-up in persona errors', () => {
+    const ageResult = evaluateDetectiveSession(finishWithChoices({ 1: ['persona-c05'] }))!;
+    const roleResult = evaluateDetectiveSession(finishWithChoices({ 1: ['persona-c12'] }))!;
+
+    expect(ageResult.expertComment).toMatch(/十八歲|18歲|22歲/);
+    expect(roleResult.expertComment).toMatch(/小安|林老闆|顧客|排班/);
+    expect(roleResult.expertComment).toMatch(/角色|人物|顧客樣貌/);
+  });
+
+  it('does not describe a missing follow-up call as an abandonment reason', () => {
+    const result = evaluateDetectiveSession(finishWithChoices({ 2: ['journey-c14'] }))!;
+
+    expect(result.expertComment).toMatch(/追蹤|聯絡|電話/);
+    expect(result.expertComment).not.toContain('顧客已因此放棄');
+  });
+
+  it('gives the same focused response when multiple proposals are selected in a different order', () => {
+    const nonProposals = chapterTwoCase.stages[3].choices
+      .filter(({ correct, kind }) => correct && kind !== 'proposal').map(({ id }) => id);
+    const ids = ['ideas-c01', 'ideas-c05', 'ideas-c06'];
+    const first = evaluateDetectiveSession(finishWithChoices({ 3: [...nonProposals, ...ids] }))!;
+    const reordered = evaluateDetectiveSession(finishWithChoices({ 3: [...nonProposals, ...ids].reverse() }))!;
+
+    expect(first.bossComment).toBe(reordered.bossComment);
+    expect(first.satisfaction).toContain('尚待定案');
+    expect(first.bossComment).toMatch(/同時|幾種|集中|一項|一邊/);
+    expect(first.expertComment).toMatch(/一項|聚焦|分開/);
   });
 
   it('counts correct, wrong and missed choices once and applies the specified per-round formula', () => {
@@ -254,7 +360,7 @@ describe('偵探提案遊戲評分', () => {
     expect(result.totalMissed).toBe(5);
     const weakestRound = result.rounds.reduce((lowest, round) => round.points < lowest.points ? round : lowest);
     expect(weakestRound.points).toBeLessThan(weakestRound.maxPoints);
-    expect(result.expertComment).toContain(`優先回看「${weakestRound.title}」`);
+    expect(result.expertComment).toContain(`最需要補強的是${weakestRound.title}`);
   });
 
 });

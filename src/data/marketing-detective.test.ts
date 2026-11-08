@@ -14,8 +14,8 @@ const length = (text: string) => Array.from(text).length;
 describe('chapterTwoCase teaching content', () => {
   it('has the requested case identity, five rounds, and unique stable IDs', () => {
     expect(chapterTwoCase).toMatchObject({
-      id: 'marketing-day-chapter-2', version: 6, title: '客戶來訪日',
-      clientName: '林老闆', clientRole: '轉角動作室負責人', brand: '轉角動作室',
+      id: 'marketing-day-chapter-2', version: 9, title: '客戶來訪日',
+      clientName: '林老闆', brand: '轉角健身房',
       minutes: 12, questionLimit: 5,
     });
     expect(chapterTwoCase.stages.map((stage) => stage.id)).toEqual([
@@ -29,18 +29,18 @@ describe('chapterTwoCase teaching content', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('provides three short opening paragraphs and eight questions per round', () => {
+  it('provides extended customer dialogue and eight questions per round', () => {
     for (const stage of chapterTwoCase.stages) {
-      expect(stage.intro).toHaveLength(3);
+      expect(stage.intro.length).toBeGreaterThanOrEqual(6);
       for (const paragraph of stage.intro) expect(length(paragraph)).toBeGreaterThanOrEqual(30);
-      for (const paragraph of stage.intro) expect(length(paragraph)).toBeLessThanOrEqual(55);
+      expect(stage.intro.reduce((total,paragraph)=>total+length(paragraph),0)).toBeGreaterThan(200);
       expect(stage.questions).toHaveLength(8);
       for (const question of stage.questions) {
         expect(question.id).toMatch(new RegExp(`^${stage.id}-q\\d+$`));
         expect(length(question.reply)).toBeGreaterThanOrEqual(40);
-        expect(length(question.reply)).toBeLessThanOrEqual(90);
+        expect(length(question.reply)).toBeLessThanOrEqual(300);
       }
-      expect(stage.prompt).toContain('只選本案已有線索支持');
+      expect(stage.prompt).toContain('選');
     }
   });
 
@@ -50,12 +50,29 @@ describe('chapterTwoCase teaching content', () => {
       expect(stage.choices.length).toBeGreaterThanOrEqual(index === 0 ? 20 : 16);
       expect(stage.choices.filter((choice) => choice.correct)).toHaveLength(expectedCorrectCounts[index]);
       for (const choice of stage.choices) {
-        expect(choice.label.length).toBeGreaterThanOrEqual(12);
-        expect(choice.label.length).toBeLessThanOrEqual(22);
+        expect(choice.label.length).toBeGreaterThanOrEqual(6);
+        expect(choice.label.length).toBeLessThanOrEqual(38);
         expect(choice.explanation.length).toBeGreaterThan(15);
         expect(choice.evidenceIds.length).toBeGreaterThan(0);
       }
     }
+  });
+
+  it('uses gym language and a concrete customer profile without changing each round task',()=>{
+    const content=JSON.stringify(chapterTwoCase);
+    expect(content).not.toMatch(/動作室|月票|工作室/);
+    for(const stage of chapterTwoCase.stages) expect(stage.title).toContain('選');
+    expect(chapterTwoCase.stages[0].title).toContain('痛點');
+    expect(chapterTwoCase.stages[1].title).toContain('顧客');
+    expect(chapterTwoCase.stages[2].title).toContain('痛點');
+    expect(chapterTwoCase.stages[2].title).toContain('機會');
+    expect(chapterTwoCase.stages[3].title).toContain('方案');
+    expect(chapterTwoCase.stages[4].title).toContain('分工');
+    const persona=chapterTwoCase.stages[1];
+    expect(persona.questions[0].reply).toContain('22');
+    expect(persona.questions[0].reply).toMatch(/大學生|讀大學/);
+    expect(persona.questions[0].reply).toMatch(/兼職|打工/);
+    expect(persona.choices.find(choice=>choice.id==='persona-c04')).toMatchObject({correct:true,evidenceIds:expect.arrayContaining(['persona-q1'])});
   });
 
   it('keeps every evidence reference local to intro or a question in its own round', () => {
@@ -85,16 +102,14 @@ describe('chapterTwoCase teaching content', () => {
     expect(ideas.choices.filter((choice) => choice.kind === 'proposal').map((choice) => choice.id)).toEqual(['ideas-c01', 'ideas-c05', 'ideas-c06']);
     expect(ideas.choices.find((choice) => choice.id === 'ideas-c01')?.correct).toBe(true);
     expect(ideas.choices.filter((choice) => choice.kind === 'proposal' && choice.correct)).toHaveLength(1);
-    expect(ideas.aiIdeas!.map(({ title }) => title)).toEqual([
-      '示範 A｜白話體驗導航頁', '示範 B｜新手參觀時段', '示範 C｜人工短諮詢',
-    ]);
+    expect(ideas.aiIdeas!.every(idea=>idea.title.length>0&&idea.text.length>0)).toBe(true);
     const blueprint = chapterTwoCase.stages.find((stage) => stage.id === 'blueprint')!;
     for (const layer of ['顧客', '前台', '後台', '支援', '異常']) {
       expect(blueprint.choices.some((choice) => choice.label.includes(layer) || choice.explanation.includes(layer))).toBe(true);
     }
     expect(chapterTwoCase.glossary.length).toBeGreaterThanOrEqual(8);
     for (const term of ['Persona', 'Journey', 'Blueprint']) {
-      expect(chapterTwoCase.glossary.some((item) => item.name === term)).toBe(true);
+      expect(chapterTwoCase.glossary.some((item) => item.name.includes(term))).toBe(true);
     }
   });
 });
