@@ -1,0 +1,81 @@
+.md-lobby {
+  position:absolute;
+  inset:var(--md-hud-height,4.4rem) 0 0;
+  z-index:1;
+  display:grid;
+  place-items:center;
+  overflow:auto;
+  padding:1.5rem 1rem 4rem;
+  pointer-events:auto;
+  background:radial-gradient(ellipse at center,#0b1824e8 0%,#0b1824d9 40%,#0b1824a6 76%,#0b182478 100%);
+  color:var(--md-ink,#edf0e9);
+  font-size:1.125rem;
+  line-height:1.8;
+}
+.md-lobby * {box-sizing:border-box}
+.md-lobby-panel {
+  width:min(100%,44rem);
+  max-height:100%;
+  overflow:auto;
+  padding:clamp(1.25rem,4vw,2.25rem);
+  border:1px solid #728891;
+  border-top:3px solid #b9a77e;
+  border-radius:4px;
+  background:#14232bf5;
+  box-shadow:0 20px 70px #0008;
+}
+.md-lobby .md-lobby-choice,
+.md-lobby .md-lobby-primary,
+.md-lobby .md-lobby-secondary,
+.md-lobby .md-lobby-share {
+  min-height:2.9rem;
+  border-radius:3px;
+  font:inherit;
+  color:inherit;
+  letter-spacing:inherit;
+  cursor:pointer;
+}
+.md-lobby button:focus-visible {outline:3px solid var(--md-gold,#edcb81);outline-offset:4px}
+.md-lobby .md-lobby-kicker {display:flex;align-items:center;gap:.65rem;margin:0 0 .65rem;color:var(--md-gold,#edcb81);font-size:1rem;letter-spacing:.12em;line-height:1.6}
+.md-lobby-kicker>span {width:1.1rem;height:1px;background:currentColor}
+.md-lobby .md-lobby-panel h2 {margin:0;font-size:clamp(2rem,5vw,3.1rem);line-height:1.25;letter-spacing:.04em}
+.md-lobby .md-lobby-lede {margin:.65rem 0 1.25rem;color:#d5dfdf;font-size:1.125rem;line-height:1.7}
+.md-lobby-choices {display:flex;gap:.65rem;border-bottom:1px solid #53676d;padding-bottom:.85rem}
+.md-lobby .md-lobby-choice {display:flex;flex:1;align-items:center;gap:.8rem;text-align:left;padding:.55rem .75rem;border:1px solid #53676d;background:#192d35}
+.md-lobby .md-lobby-choice:hover {background:#253d47;border-color:#93a9ac}
+.md-lobby .md-lobby-choice[aria-pressed="true"] {border-color:#d7c79c;background:#314047;box-shadow:inset 0 -2px #edcb81}
+.md-lobby-choice-number {font-family:ui-monospace,SFMono-Regular,monospace;font-size:1.25rem;color:#edcb81}
+.md-lobby-choice strong,.md-lobby-choice small {display:block}
+.md-lobby-choice strong {font-size:1.125rem;font-weight:600;line-height:1.45}
+.md-lobby-choice small {font-size:1rem;color:#c2d0d1;line-height:1.45}
+.md-lobby-detail {padding:1.2rem 0 .2rem}
+.md-lobby-detail-head {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem 1rem;margin-bottom:.65rem;color:#d2c7a8;font-size:1rem}
+.md-lobby-state,.md-lobby-preview {color:#d7e2dd}
+.md-lobby-preview {border:1px solid #a99568;padding:.05rem .5rem;color:#edcb81}
+.md-lobby .md-lobby-detail h3 {margin:0;font-size:1.55rem;line-height:1.4;font-weight:650}
+.md-lobby-detail>p:not(.md-lobby-unlocked) {margin:.65rem 0 0;font-size:1.125rem;line-height:1.8;color:#d5dfdf}
+.md-lobby-meta {display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;margin-top:.85rem;color:#c5d2d2;font-size:1rem}
+.md-lobby-meta span+span {padding-left:1.2rem;border-left:1px solid #657b82}
+.md-lobby .md-lobby-unlocked {margin:.8rem 0 0;color:#edcb81;font-size:1rem;line-height:1.6}
+.md-lobby-actions {display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.1rem}
+.md-lobby .md-lobby-primary,.md-lobby .md-lobby-secondary {padding:.6rem 1.2rem;border:1px solid #ec7380;background:#c32d3e;font-weight:600}
+.md-lobby .md-lobby-primary:hover {background:#dc3548}
+.md-lobby .md-lobby-secondary {border-color:#70838b;background:transparent;font-weight:400}
+.md-lobby .md-lobby-secondary:hover {background:#30434c}
+.md-lobby-footer {display:flex;align-items:center;justify-content:space-between;gap:.75rem 1.25rem;flex-wrap:wrap;margin-top:1.2rem;padding-top:.85rem;border-top:1px solid #435a63}
+.md-lobby .md-lobby-footer p {margin:0;color:#bac9cb;font-size:1rem;line-height:1.6}
+.md-lobby .md-lobby-share {min-height:2.2rem;border:0;border-bottom:1px solid #91a5a8;background:transparent;padding:.2rem 0;color:#e0d4b1;font-size:1rem}
+.md-lobby .md-lobby-share:hover {color:#fff0bb}
+@media(max-width:480px) {
+  .md-lobby {place-items:start center;padding:.85rem .7rem 2rem}
+  .md-lobby-panel {padding:1.15rem .95rem}
+  .md-lobby .md-lobby-panel h2 {font-size:2rem;overflow-wrap:anywhere}
+  .md-lobby-choices {gap:.45rem}
+  .md-lobby-choice {align-items:flex-start;gap:.45rem;padding:.55rem .5rem;min-width:0}
+  .md-lobby-choice-number {display:none}
+  .md-lobby-choice strong {font-size:1rem}
+  .md-lobby .md-lobby-detail h3 {font-size:1.3rem}
+  .md-lobby-meta span+span {padding-left:0;border-left:0}
+  .md-lobby-actions {flex-direction:column;align-items:stretch}
+  .md-lobby .md-lobby-actions button {width:100%;white-space:normal}
+}

@@ -1,0 +1,21 @@
+Overworld Theme — Louswan
+
+License: CC0 1.0 Universal (Public Domain Dedication)
+License deed: https://creativecommons.org/publicdomain/zero/1.0/
+Track page: https://opengameart.org/content/overworld-theme-0
+Original download: https://opengameart.org/sites/default/files/platformer_0.ogg
+
+The OpenGameArt track page marks this work CC0. CC0 permits copying,
+modifying, distributing, and performing the work, including commercially,
+without asking permission. Attribution is not required. The creator is
+Louswan; a courtesy credit is included in src/marketing-day/music-credit.ts.
+
+This project's background.mp3 was converted locally from the original
+platformer_0.ogg (Vorbis, Ogg, stereo, 44.1 kHz, 33.100045 s) using FFmpeg
+8.1.2 and libmp3lame at 192 kbit/s. The recording itself was not synthesized
+or otherwise altered beyond format conversion.
+
+SHA-256 of background.mp3:
+bccb2a28582871fb8f1fbb07d9ba9f5f4a39e075128f8c43241ed5801513222f
+
+Retrieved: 2026-11-07

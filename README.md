@@ -107,3 +107,24 @@ public/qr/                本機產生的分享 QR 圖片
 `main` 推送後，`.github/workflows/pages.yml` 會使用 Node.js 24 安裝鎖定依賴，執行測試、型別檢查及正式建置，成功後部署 `dist`。Pull request 只驗證，不部署。Pages 的發布來源使用 **GitHub Actions**，流程依照 [GitHub 官方文件](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)設定。
 
 本專案保留範例題目與圖片的來源資訊；原始素材的權利歸各自權利人所有。
+
+## 第三個活動：行銷人的一天
+
+第一章以原創 3D 行銷辦公室呈現新品上線日的六個決策，目標約十分鐘。WASD、方向鍵、畫面方向控制或點地板可走動，「帶我去」自動找當前同事；E／紅色按鈕可直接對話。人物對話與決策使用中央彈窗，名詞就地解釋並附完整圖鑑。
+
+獨立入口 `#/quiz/marketing-day/1` 提供自由選章，不需要先通關第一章。第一章開始後使用 `#/quiz/marketing-day/play/1` 至 `play/6`，結案為 `result`。第二章「客戶來訪日」沿用辦公室走動與中央對話，直接入口為 `#/quiz/marketing-day/chapter-2/brief`。每輪先聽林老闆說明，從八種追問中最多問五次，再把判斷卡由左側候選池移到右側；五輪提案後顯示老闆滿意度、專家講評與逐輪證據解析。目標時間10–15分鐘，仍待學生試玩校正。遊戲特別採**無登入、無存檔**：只使用當次記憶體，重新整理、關閉或新分頁後重來，與原兩份測驗的自動存檔分開。
+
+六題各 0–2 分，共 12 分換算為 100；策略與實驗、數據判讀、查證與協作各依 4 分滿分正規化。結案提供實際分數、三軸圖與分數表、六題回顧和練習建議。修改舊題前先確認，再清除後續答案；重玩不改動其他測驗進度。WebGL 失敗時仍可用文字完成。
+
+正式資料在 `src/data/marketing-day.ts`，由 `src/data/quizzes.ts` 註冊；獨立引擎、場景與 UI 位於 `src/marketing-day/`。遊戲不加入既有測驗持久化迴圈。短址與 QR 已快取，學生載入時不呼叫縮址服務；正式網址須待發布後使用。
+
+正式入口：[行銷人的一天](https://shoung.github.io/teaching-quizzes/#/quiz/marketing-day/1)，分享短網址為 [is.gd/7UAEhN](https://is.gd/7UAEhN)。操作、評分與驗證紀錄見[第一章試玩說明](./docs/marketing-day-playtest.md)及[第二章偵探玩法試玩](./docs/marketing-day-detective-playtest.md)。
+
+
+## 第四個活動：沙龍夫人的經營筆記
+
+玩家扮演約 1900 年巴黎的克萊爾夫人，以六場一季的經營模擬練習行銷與企管。選擇主受眾、主題與規模，再以四個準備時段自由組合研究、體驗、人手、設施與關係經營行動。現金、熟客、口碑、知名度與設施跨場延續；路易斯在前兩場引導，之後可點人物詢問。沒有逐題正解分數，季末以真實經營紀錄、趨勢與教學筆記回顧。
+
+正式入口：[沙龍夫人的經營筆記](https://shoung.github.io/teaching-quizzes/#/quiz/paris-salon/1)，分享短網址為 [is.gd/4YcrCZ](https://is.gd/4YcrCZ)。兩款遊戲的 QR 圖片均預先產生於 `public/qr/`，不會在學生載入時呼叫縮址服務。
+
+沙龍專注桌面操作，沿用原有插畫與音效；v3 進度使用獨立、版本化的本機儲存，儲存不可用時仍可在分頁中遊玩。實作與驗收見[六場規格](./docs/paris-salon-season-spec.md)、[試玩驗收](./docs/paris-salon-season-playtest.md)及[資深遊戲企劃總監複核](./docs/paris-salon-season-planning-review.md)。

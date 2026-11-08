@@ -8,5 +8,15 @@
     "longUrl": "https://shoung.github.io/teaching-quizzes/#/quiz/ai-consulting/1",
     "shortUrl": "https://is.gd/SpjRZt",
     "qrImage": "qr/ai-consulting.png"
+  },
+  "marketing-day": {
+    "longUrl": "https://shoung.github.io/teaching-quizzes/#/quiz/marketing-day/1",
+    "shortUrl": "https://is.gd/7UAEhN",
+    "qrImage": "qr/marketing-day.png"
+  },
+  "paris-salon": {
+    "longUrl": "https://shoung.github.io/teaching-quizzes/#/quiz/paris-salon/1",
+    "shortUrl": "https://is.gd/4YcrCZ",
+    "qrImage": "qr/paris-salon.png"
   }
 }

@@ -8,7 +8,10 @@ let sharing = {};
 try { sharing = JSON.parse(await readFile(dataPath, 'utf8')); } catch { /* First generation. */ }
 await mkdir(new URL('public/qr/', root), { recursive: true });
 
-for (const id of ['chromatic-intuition', 'ai-consulting']) {
+const supported = ['chromatic-intuition', 'ai-consulting', 'marketing-day', 'paris-salon'];
+const requested = process.argv.slice(2);
+if (requested.some(id => !supported.includes(id))) throw new Error('Unknown activity ID');
+for (const id of requested.length ? requested : supported) {
   const longUrl = `https://shoung.github.io/teaching-quizzes/#/quiz/${id}/1`;
   let shortUrl = sharing[id]?.longUrl === longUrl ? sharing[id].shortUrl : null;
   if (!shortUrl) {

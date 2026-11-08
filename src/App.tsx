@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { quizzes } from './data/quizzes';
 import { Catalog } from './components/Catalog';
 import { QuizLanding } from './components/QuizLanding';
@@ -8,6 +8,10 @@ import { Icon } from './components/Icon';
 import { shareLinks } from './components/ShareCard';
 import { newSession, restoreSession, resumeQuestion } from './quiz-engine';
 import type { Quiz, Session } from './types';
+import { PreviewBoundary } from './marketing-day/PreviewBoundary';
+
+const MarketingDayGame = lazy(() => import('./marketing-day/MarketingDayGame'));
+const SalonGame = lazy(() => import('./paris-salon/SalonGame'));
 
 export const quizPath = (quiz: Quiz, page: number | 'result') => `#/quiz/${quiz.id}/${page === 'result' ? 'result' : `play/${page}`}`;
 export const landingPath = (quiz: Quiz) => `#/quiz/${quiz.id}/1`;
@@ -39,6 +43,8 @@ export default function App() {
   const quiz = route ? quizzes.find((q) => q.id === route[1]) : undefined;
   const session = quiz ? sessions[quiz.id] ?? newSession(quiz) : undefined;
   const isHome = hash === '#/' || hash === '#' || !hash;
+  const isMarketingGame = /^#\/quiz\/marketing-day(?:\/.*)?$/.test(hash);
+  const isSalonGame = /^#\/quiz\/paris-salon(?:\/.*)?$/.test(hash);
   const requested = route?.[2];
   const isLanding = requested === '1';
   const resume = session ? resumeQuestion(session) : 0;
@@ -52,13 +58,14 @@ export default function App() {
   }, []);
   useEffect(() => { if (canonical && canonical !== hash) navigate(canonical, true); }, [canonical, hash]);
   useEffect(() => {
-    document.title = quiz ? `${quiz.title}｜${isLanding ? '測驗介紹' : session?.completed ? '測驗結果' : `第 ${index + 1} / ${quiz.questions.length} 題`}`
+    if (isMarketingGame || isSalonGame) { previousHash.current = hash; return; }
+    document.title = isMarketingGame ? '行銷人的一天｜新品上線日' : quiz ? `${quiz.title}｜${isLanding ? '測驗介紹' : session?.completed ? '測驗結果' : `第 ${index + 1} / ${quiz.questions.length} 題`}`
       : isHome ? '學習小測所｜讓理解多走一步' : '測驗網址確認';
     if (previousHash.current !== null && previousHash.current !== hash) {
       document.getElementById('page-title')?.focus();
     }
     previousHash.current = hash;
-  }, [hash, quiz, isHome, session?.completed, isLanding, index]);
+  }, [hash, quiz, isHome, isMarketingGame, isSalonGame, session?.completed, isLanding, index]);
 
   function updateSession(activeQuiz: Quiz, next: Session) {
     setSessions((previous) => ({ ...previous, [activeQuiz.id]: next }));
@@ -73,6 +80,8 @@ export default function App() {
     } catch { setShareMessage(`請複製網址：${url.href}`); }
   }
 
+  if (isMarketingGame) return <PreviewBoundary><Suspense fallback={<main style={{ minHeight: '100dvh', display: 'grid', placeItems: 'center', background: '#14232b', color: '#edf0e9' }}><p role="status">正在打開行銷部的大門…</p></main>}><MarketingDayGame /></Suspense></PreviewBoundary>;
+  if (isSalonGame) return <Suspense fallback={<main style={{ padding: '3rem', color: '#2d493d', background: '#f5efdf', minHeight: '100dvh' }}><p role="status">正在打開沙龍的門…</p></main>}><SalonGame /></Suspense>;
 
   return <div className={quiz?.mode === 'consulting' ? 'adventure-theme' : undefined}>
     <a className="skip-link" href="#main-content" onClick={(event) => { event.preventDefault(); document.getElementById('main-content')?.focus(); }}>跳至主要內容</a>
