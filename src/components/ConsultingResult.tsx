@@ -2,8 +2,9 @@ import type { Quiz, Session } from '../types';
 import { careerTiers, getConsultingReport } from '../consulting-engine';
 import { Icon } from './Icon';
 import { RadarChart } from './RadarChart';
+import { ResultShareButton } from './ResultShareButton';
 
-export function ConsultingResult({ quiz, session, onRestart, onShare }: { quiz: Quiz; session: Session; onRestart: () => void; onShare: () => void }) {
+export function ConsultingResult({ quiz, session, onRestart }: { quiz: Quiz; session: Session; onRestart: () => void; onShare: () => void }) {
   const report = getConsultingReport(quiz, session);
   if (!report) return null;
   const weakest = report.axes.slice().sort((a,b)=>a.score-b.score).slice(0,2);
@@ -18,6 +19,6 @@ export function ConsultingResult({ quiz, session, onRestart, onShare }: { quiz: 
     <section className="adventure-levels"><span className="landing-kicker">不只一條職涯路</span><h2>還沒到麥肯錫，可以先挑戰哪裡？</h2><p>下面是依本次表現安排的企業任務練習方向。由上往下符合的第一層，就是本次位置；企業規模不等於個人價值。</p><ol>{careerTiers.map((tier,i)=><li key={tier.id} className={tier.id===report.tier.id?'selected-tier':''}><span className="level-number">0{i+1}</span><div><h3>{tier.label}{tier.id===report.tier.id && <span className="current-level">本次位置</span>}</h3><p>{tier.target}</p><p className="level-rule">{rules[i]}</p></div></li>)}</ol></section>
     <section className="answer-review"><div className="section-heading"><div><span className="landing-kicker">拆開陷阱，你就多一招</span><h2>答案揭曉時間</h2></div><p>每題都有理由。展開看看，哪一步可以想得更穩。</p></div>{quiz.questions.map((q,index)=>{const selected=session.answers[index] as number; const points=q.optionScores?.[selected]??0;return <details className="review-item" key={q.id}><summary><span className="review-number">{String(index+1).padStart(2,'0')}</span><span>{q.prompt}</span><span className={`review-status ${points===3?'matched':'learn'}`}>{points} / 3 分</span><span className="review-expand" aria-hidden="true">+</span></summary><div className="review-content"><p className="review-scenario">{q.scenario}</p><p><strong>你的選擇：</strong>{q.options[selected]}</p><p><strong>本題較完整的判斷：</strong>{q.options[q.correctAnswer!]}</p><p className="review-explanation">{q.explanation}</p></div></details>})}</section>
     <aside className="adventure-scoring"><h3>這張入場券，怎麼算？</h3><p>每題依判斷完整度給 0–3 分，共 84 分，再換算成 100 分。3 分為本題最完整判斷，2 分為有用但未完整回應，1 分為片面線索或錯誤推論，0 分為明顯偏離；數字題也依推理完整度給部分分數，不代表算錯的結果正確。六項技能各依自己的滿分換算。</p><p>趣味模擬，非官方招募。分級是課堂自訂規則，代表這次選擇題表現，不能判定麥肯錫或其他企業的錄取資格。真實求職還要看履歷、語言、案例面試與實作。</p></aside>
-    <div className="result-actions"><button className="button primary" onClick={onRestart}><Icon name="refresh" />重新測驗</button><button className="text-button" onClick={onShare}><Icon name="share" />分享這份測驗</button><button className="text-button print-button" onClick={()=>window.print()}>列印闖關筆記</button></div>
+    <div className="result-actions"><button className="button primary" onClick={onRestart}><Icon name="refresh" />重新測驗</button><ResultShareButton quiz={quiz} report={report} /><button className="text-button print-button" onClick={()=>window.print()}>列印闖關筆記</button></div>
   </div>;
 }
