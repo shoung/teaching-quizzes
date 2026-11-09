@@ -13,7 +13,7 @@ const context: ConversationContext = {
     before: { cash: 45, regulars: 7, reputation: 62, awareness: 51, seats: 24, assistants: 2, training: 1, ambience: 0, insight: 0, tested: false },
     after: { cash: 44, regulars: 7, reputation: 62, awareness: 51, seats: 24, assistants: 2, training: 1, ambience: 0, insight: 0, tested: false },
     reach: 20, inquiries: 16, reservations: 12, attendance: 12, waiting: 2, returning: 4, newGuests: 8, retained: 5, newRegulars: 2,
-    satisfaction: 70, awarenessChange: -1, safeCapacity: 10, seatCapacity: 24, income: { support: 0, members: 0, sponsor: 0, total: 0 },
+    satisfaction: 70, awarenessChange: -1, awarenessDrivers: { response: 2, overload: -2, waiting: -1 }, safeCapacity: 10, seatCapacity: 24, income: { support: 0, members: 0, sponsor: 0, total: 0 },
     costs: { base: 0, actions: 0, total: 0 }, profit: 0, notes: [], lessons: [] },
 };
 

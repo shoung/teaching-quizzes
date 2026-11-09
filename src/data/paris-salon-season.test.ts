@@ -10,10 +10,10 @@ const actionIds = [
   'ambience', 'experiment', 'promotion', 'membership', 'sponsor',
 ] as const;
 
-describe('V5 沙龍六場內容', () => {
+describe('V6 沙龍六場內容', () => {
   it('保留分享識別並以六場作為遊戲規模', () => {
     expect(seasonGame).toMatchObject({
-      id: 'paris-salon', version: 5, title: '沙龍夫人的經營筆記', scenarioCount: SEASON_LENGTH,
+      id: 'paris-salon', version: 6, title: '沙龍夫人的經營筆記', scenarioCount: SEASON_LENGTH,
     });
     expect(seasonGame.description).toContain('六場');
     expect(seasonGame.description).toContain('經營方式由你決定');

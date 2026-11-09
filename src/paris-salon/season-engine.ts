@@ -1,6 +1,6 @@
 import { seasonActions, seasonAudiences, seasonMarkets, seasonScales, seasonThemes } from '../data/paris-salon-season';
 import { seasonScenes } from '../data/paris-salon-rpg';
-import type { ActionId, Audience, Scale, SeasonAction, SeasonAssets, SeasonEvent, SeasonForecast, SeasonPlan, SeasonReplay, SeasonRoute, SeasonSession, Theme } from './season-types';
+import type { ActionId, Audience, Scale, SeasonAction, SeasonAssets, SeasonEvent, SeasonForecast, SeasonPlan, SeasonReplay, SeasonRoute, SeasonSession, SeasonVersion, Theme } from './season-types';
 import { SEASON_ENDING, SEASON_INTRO, SEASON_LENGTH, SEASON_PLAY, SEASON_RESULT, SEASON_VERSION } from './season-types';
 export { SEASON_ENDING, SEASON_INTRO, SEASON_LENGTH, SEASON_PLAY, SEASON_RESULT, SEASON_STORAGE_KEY, SEASON_VERSION } from './season-types';
 export type { SeasonPlan, SeasonSession } from './season-types';
@@ -29,7 +29,7 @@ function clonePlan(plan: SeasonPlan): SeasonPlan {
   return { audience: plan.audience, theme: plan.theme, scale: plan.scale, actions: [...plan.actions] };
 }
 
-function validatePlan(plan: unknown, assets: SeasonAssets): { plan?: SeasonPlan; issues: string[]; cost: number; staffRequired: number; staffAvailable: number } {
+function validatePlan(plan: unknown, assets: SeasonAssets, version: SeasonVersion): { plan?: SeasonPlan; issues: string[]; cost: number; staffRequired: number; staffAvailable: number } {
   const issues: string[] = [];
   if (!plan || typeof plan !== 'object' || Array.isArray(plan)) return { issues: ['請選擇本場受眾、主題與規模。'], cost: 0, staffRequired: 0, staffAvailable: assets.assistants };
   const value = plan as Record<string, unknown>;
@@ -41,6 +41,9 @@ function validatePlan(plan: unknown, assets: SeasonAssets): { plan?: SeasonPlan;
   }
   const actions = Array.isArray(value.actions) ? value.actions as string[] : [];
   if (new Set(actions).size !== actions.length) issues.push('每項準備行動每場只能安排一次。');
+  if (version === SEASON_VERSION && assets.insight > 0 && actions.includes('research')) {
+    issues.push('本季已完成來客研究，預估會沿用到季末。請把助手分配給其他工作。');
+  }
   const selected = actions.map(id => actionById.get(id as ActionId)).filter((item): item is SeasonAction => Boolean(item));
   if (assets.assistants >= 6 && actions.includes('recruit')) issues.push('固定助手已有 6 人，這場先安排其他工作。');
   if (assets.training >= 3 && actions.includes('training')) issues.push('助手培訓最多累積三階，這次先改用其他準備。');
@@ -60,7 +63,18 @@ function marketFor(eventNumber: number) { return seasonMarkets[eventNumber - 1];
 function hasAction(plan: SeasonPlan, id: ActionId) { return plan.actions.includes(id); }
 function themeFit(plan: SeasonPlan) { return themeById.get(plan.theme)?.audience === plan.audience; }
 
-function estimate(before: SeasonAssets, plan: SeasonPlan, eventNumber: number) {
+export function awarenessResponse(satisfaction: number, promoted: boolean, version: SeasonVersion = SEASON_VERSION): number {
+  if (satisfaction < 60) return -2;
+  if (version === 5) {
+    return satisfaction >= 70 ? 3 + (promoted ? 2 : 0) : 1;
+  }
+
+  // Increase the combined reward gradually across the old 70-point threshold.
+  const progress = (clamp(satisfaction, 65, 75) - 65) / 10;
+  return Math.round(1 + progress * (promoted ? 4 : 2));
+}
+
+function estimate(before: SeasonAssets, plan: SeasonPlan, eventNumber: number, version: SeasonVersion) {
   const market = marketFor(eventNumber);
   const matched = market.preferred === plan.audience;
   const fit = themeFit(plan);
@@ -88,24 +102,31 @@ function estimate(before: SeasonAssets, plan: SeasonPlan, eventNumber: number) {
   const baseSatisfaction = 58 + (matched ? 9 : -3) + (fit ? 7 : 0) + before.ambience * 4 + before.training * 2;
   const participation = hasAction(plan, 'participation');
   const satisfaction = clamp(baseSatisfaction + (participation ? 9 : 0) + (artist ? 3 : 0) - serviceOverload * 2);
-  const recommendation = satisfaction >= 70 ? 3 : satisfaction >= 60 ? 1 : -2;
-  const awarenessChange = recommendation + (promo && satisfaction >= 70 ? 2 : 0)
-    - Math.ceil(serviceOverload / 3) * 2 - Math.ceil(Math.max(0, arrived + returning - seatCapacity) / 4);
+  const waiting = Math.max(0, arrived + returning - attendance);
+  const awarenessDrivers = {
+    response: awarenessResponse(satisfaction, promo, version),
+    overload: -Math.ceil(serviceOverload / 3) * 2,
+    waiting: -Math.ceil(waiting / 4),
+  };
+  const awarenessChange = awarenessDrivers.response + awarenessDrivers.overload + awarenessDrivers.waiting;
   const retainedRate = clamp(0.48 + (satisfaction - 60) / 100 + (hasAction(plan, 'membership') ? 0.12 : 0), 0.2, 0.9);
   const retained = Math.min(before.regulars, Math.floor(before.regulars * retainedRate));
   const newRegulars = Math.min(newGuests, Math.floor(newGuests * clamp(0.12 + (satisfaction - 55) / 120, 0.05, 0.5)));
-  return { reach, inquiries, reservations, attendance, waiting: Math.max(0, arrived + returning - attendance), returning: returningPresent, newGuests, retained, newRegulars, satisfaction, awarenessChange, safeCapacity, seatCapacity, matched, fit, experimentalFit };
+  return { reach, inquiries, reservations, attendance, waiting, returning: returningPresent, newGuests, retained, newRegulars, satisfaction, awarenessChange, awarenessDrivers, safeCapacity, seatCapacity, matched, fit, experimentalFit };
 }
 
-function applyPlan(before: SeasonAssets, plan: SeasonPlan, eventNumber: number): SeasonEvent {
-  const measure = estimate(before, plan, eventNumber);
+function applyPlan(before: SeasonAssets, plan: SeasonPlan, eventNumber: number, version: SeasonVersion): SeasonEvent {
+  const measure = estimate(before, plan, eventNumber, version);
   const scale = scaleById.get(plan.scale)!;
   const selected = plan.actions.map(id => actionById.get(id)!);
   const actionCost = selected.reduce((sum, action) => sum + action.cost, 0);
   const baseCost = scale.cost;
   const support = measure.attendance * (measure.matched ? 2 : 1);
   const members = measure.returning * (hasAction(plan, 'membership') ? 3 : 1);
-  const sponsor = hasAction(plan, 'sponsor') && measure.fit ? Math.max(4, measure.attendance) : 0;
+  const sponsorPerGuest = version === 5 ? 1 : 0.5;
+  const sponsor = hasAction(plan, 'sponsor') && measure.fit
+    ? Math.max(4, Math.round(measure.attendance * sponsorPerGuest))
+    : 0;
   const totalIncome = support + members + sponsor;
   const totalCost = baseCost + actionCost;
   let after: SeasonAssets = {
@@ -120,9 +141,10 @@ function applyPlan(before: SeasonAssets, plan: SeasonPlan, eventNumber: number):
   if (hasAction(plan, 'ambience')) after.ambience = Math.min(3, after.ambience + 1);
   if (hasAction(plan, 'seats')) after.seats = Math.min(48, after.seats + 8);
   const notes: string[] = [];
+  if (!measure.fit) notes.push('主題與主要來客的期待不合，少了 7 分滿意度加成。');
   if (!measure.matched) notes.push("這場主邀的來客和附近較有興趣的人不同，詢問後預約的人較少。");
   if (measure.waiting > 0) notes.push(`有 ${measure.waiting} 位客人想來，卻因本場席位不足沒能入場。`);
-  if (measure.attendance > measure.safeCapacity) notes.push(`到場人數超過舒適接待量 ${measure.safeCapacity} 人，助手忙不過來，影響了客人的體驗。`);
+  if (measure.attendance > measure.safeCapacity) notes.push(`到場人數超過舒適接待量 ${measure.safeCapacity} 人，助手忙不過來，滿意度扣了 ${(measure.attendance - measure.safeCapacity) * 2} 分。`);
   else if (measure.attendance < measure.safeCapacity * 0.55) notes.push("人手還照顧得過來。下場先看看有多少人想參加，再決定要不要添椅子。");
   if (hasAction(plan, 'sponsor')) notes.push(measure.fit ? "洽談成功，這場主題符合主要來客，支持者提供了贊助。" : "這場主題和主要來客不合，沒有取得贊助。");
   if (hasAction(plan, 'research')) {
@@ -137,7 +159,7 @@ function applyPlan(before: SeasonAssets, plan: SeasonPlan, eventNumber: number):
   }
   if (measure.experimentalFit) notes.push("你把測試過的說法用在合適的來客和宣傳上，這次看到消息的人略有增加。");
   if (after.cash === 0 && totalIncome < totalCost) notes.push("現金已用完。下場先辦基本支出 0 點的小聚，收回要花錢的卡牌。");
-  const lessons = selected.map(action => ({ action: action.id, concept: action.concept, text: `${action.lesson} 本場結果：${lessonResult(action, measure, after, before)}。` }));
+  const lessons = selected.map(action => ({ action: action.id, concept: action.concept, text: `${action.lesson} 本場結果：${lessonResult(action, measure, after, before, sponsor)}。` }));
   const event: SeasonEvent = {
     number: eventNumber, plan: clonePlan(plan), before: { ...before }, after, ...measure,
     income: { support, members, sponsor, total: totalIncome },
@@ -149,7 +171,7 @@ function applyPlan(before: SeasonAssets, plan: SeasonPlan, eventNumber: number):
   return event;
 }
 
-function lessonResult(action: SeasonAction, event: ReturnType<typeof estimate>, after: SeasonAssets, before: SeasonAssets): string {
+function lessonResult(action: SeasonAction, event: ReturnType<typeof estimate>, after: SeasonAssets, before: SeasonAssets, sponsor: number): string {
   switch (action.id) {
     case 'research': return `取得 ${after.insight - before.insight} 點研究線索`;
     case 'participation': return `體驗評價 ${event.satisfaction} 分`;
@@ -162,18 +184,18 @@ function lessonResult(action: SeasonAction, event: ReturnType<typeof estimate>, 
     case 'experiment': return "記下兩種說法各收到多少回信";
     case 'promotion': return `看到消息 ${event.reach} 人，實際到場 ${event.attendance} 人`;
     case 'membership': return `前場熟客中 ${event.retained} 人留下，另有 ${event.newRegulars} 位新熟客`;
-    case 'sponsor': return `本場獲得贊助支持金 ${event.fit ? Math.max(4, event.attendance) : 0} 點`;
+    case 'sponsor': return `本場獲得贊助支持金 ${sponsor} 點`;
   }
 }
 
-export function replaySeason(plans: readonly SeasonPlan[]): SeasonReplay | null {
+export function replaySeason(plans: readonly SeasonPlan[], version: SeasonVersion = SEASON_VERSION): SeasonReplay | null {
   if (!Array.isArray(plans) || plans.length > SEASON_LENGTH) return null;
   let assets = freshAssets();
   const events: SeasonEvent[] = [];
   for (let index = 0; index < plans.length; index++) {
-    const checked = validatePlan(plans[index], assets);
+    const checked = validatePlan(plans[index], assets, version);
     if (!checked.plan) return null;
-    const event = applyPlan(assets, checked.plan, index + 1);
+    const event = applyPlan(assets, checked.plan, index + 1, version);
     assets = { ...event.after };
     events.push(event);
   }
@@ -183,11 +205,12 @@ export function replaySeason(plans: readonly SeasonPlan[]): SeasonReplay | null 
 export function forecastSeason(session: SeasonSession, plan?: SeasonPlan): SeasonForecast {
   const restored = restoreSeason(session);
   const source = plan ?? restored?.draft ?? defaultPlan();
-  const replay = restored ? replaySeason(restored.plans) : null;
+  const replay = restored ? replaySeason(restored.plans, restored.version) : null;
   const assets = replay?.assets ?? freshAssets();
   const eventNumber = (restored?.plans.length ?? 0) + 1;
-  const checked = validatePlan(source, assets);
-  const measured = checked.plan && eventNumber <= SEASON_LENGTH ? estimate(assets, checked.plan, eventNumber) : null;
+  const version = restored?.version ?? SEASON_VERSION;
+  const checked = validatePlan(source, assets, version);
+  const measured = checked.plan && eventNumber <= SEASON_LENGTH ? estimate(assets, checked.plan, eventNumber, version) : null;
   const baseCost = scaleById.get((source as SeasonPlan)?.scale)?.cost ?? 0;
   const insights: string[] = [];
   if (assets.insight > 0 && eventNumber <= SEASON_LENGTH) {
@@ -223,8 +246,8 @@ export function forecastSeason(session: SeasonSession, plan?: SeasonPlan): Seaso
 export function setSeasonDraft(session: SeasonSession, plan: SeasonPlan): SeasonSession {
   const restored = restoreSeason(session);
   if (!restored || !restored.started || restored.plans.length >= SEASON_LENGTH || !canPlanSeason(restored)) return session;
-  const assets = replaySeason(restored.plans)!.assets;
-  if (restored.acknowledged !== restored.plans.length || !validatePlan(plan, assets).plan) return session;
+  const assets = replaySeason(restored.plans, restored.version)!.assets;
+  if (restored.acknowledged !== restored.plans.length || !validatePlan(plan, assets, restored.version).plan) return session;
   return { ...restored, draft: clonePlan(plan) };
 }
 
@@ -237,8 +260,8 @@ export function holdSeason(session: SeasonSession, expectedEvent: number): Seaso
   const restored = restoreSeason(session);
   if (!restored || !restored.started || !Number.isInteger(expectedEvent) || expectedEvent < 1 || expectedEvent > SEASON_LENGTH
     || expectedEvent !== restored.plans.length + 1 || restored.acknowledged !== restored.plans.length || !canPlanSeason(restored)) return session;
-  const assets = replaySeason(restored.plans)!.assets;
-  const checked = validatePlan(restored.draft, assets);
+  const assets = replaySeason(restored.plans, restored.version)!.assets;
+  const checked = validatePlan(restored.draft, assets, restored.version);
   if (!checked.plan) return session;
   return { ...restored, plans: [...restored.plans.map(clonePlan), clonePlan(checked.plan)], draft: defaultPlan() };
 }
@@ -282,12 +305,13 @@ export function completeSeasonEnding(session: SeasonSession): SeasonSession {
 function restoreValue(raw: unknown): SeasonSession | null {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
   const value = raw as Record<string, unknown>;
-  if (value.version !== SEASON_VERSION || typeof value.started !== 'boolean' || !Array.isArray(value.plans)
+  if ((value.version !== 5 && value.version !== SEASON_VERSION) || typeof value.started !== 'boolean' || !Array.isArray(value.plans)
     || !Number.isInteger(value.acknowledged) || (value.acknowledged as number) < 0 || (value.acknowledged as number) > value.plans.length
     || value.plans.length > SEASON_LENGTH || value.plans.length - (value.acknowledged as number) > 1
     || !value.heard || typeof value.heard !== 'object' || Array.isArray(value.heard) || typeof value.endingSeen !== 'boolean') return null;
   const plans = value.plans as SeasonPlan[];
-  const replay = replaySeason(plans);
+  const version = value.version;
+  const replay = replaySeason(plans, version);
   if (!replay || (!value.started && (plans.length > 0 || Object.keys(value.heard as object).length > 0))
     || (value.endingSeen && (plans.length !== SEASON_LENGTH || value.acknowledged !== SEASON_LENGTH))) return null;
   const acknowledged = value.acknowledged as number;
@@ -305,10 +329,10 @@ function restoreValue(raw: unknown): SeasonSession | null {
   const draftRaw = value.draft;
   let draft = defaultPlan();
   if (draftRaw && typeof draftRaw === 'object' && !Array.isArray(draftRaw) && plans.length < SEASON_LENGTH) {
-    const checked = validatePlan(draftRaw, replay.assets);
+    const checked = validatePlan(draftRaw, replay.assets, version);
     if (checked.plan) draft = checked.plan;
   }
-  return { version: SEASON_VERSION, started: value.started, plans: plans.map(clonePlan), acknowledged, draft, heard, endingSeen: value.endingSeen };
+  return { version, started: value.started, plans: plans.map(clonePlan), acknowledged, draft, heard, endingSeen: value.endingSeen };
 }
 
 export function restoreSeason(raw: unknown): SeasonSession | null {

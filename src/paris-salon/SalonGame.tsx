@@ -8,7 +8,7 @@ import { RpgDialogue } from './RpgDialogue';
 import { HostingSequence } from './HostingSequence';
 import { useSalonAudio } from './use-salon-audio';
 import { resolveSeasonRoute, initialSeason, restoreSeason, replaySeason, forecastSeason, startSeason, setSeasonDraft, holdSeason, acknowledgeSeason, heardSeasonNpc, canPlanSeason, completeSeasonEnding } from './season-engine';
-import { SEASON_INTRO, SEASON_LENGTH, SEASON_PLAY, SEASON_RESULT, SEASON_ENDING, SEASON_STORAGE_KEY, type SeasonSession } from './season-types';
+import { SEASON_INTRO, SEASON_LENGTH, SEASON_PLAY, SEASON_RESULT, SEASON_ENDING, SEASON_STORAGE_KEY, LEGACY_SEASON_STORAGE_KEY, type SeasonSession } from './season-types';
 import type { DialogueLine, HudMetricKey, SalonNpcId } from './rpg-types';
 import { SeasonPanels, type SeasonPanelKind } from './SeasonPanels';
 import './game.css';
@@ -21,10 +21,17 @@ interface Conversation { kind:'opening'|'npc'|'ending'; lines:DialogueLine[]; np
 function loadSeason() {
   try {
     const raw=localStorage.getItem(SEASON_STORAGE_KEY);
-    const restored=raw ? restoreSeason(raw) : null;
+    const current = restoreSeason(raw);
+    const legacy = raw === null ? restoreSeason(localStorage.getItem(LEGACY_SEASON_STORAGE_KEY)) : null;
+    const restored = current?.version === 6 ? current : legacy?.version === 5 && legacy.started ? legacy : null;
     return { session:restored ?? initialSeason(), failed:false, notice:raw&&!restored?'進度無法讀取，已準備新的一季。':'' };
   } catch { return { session:initialSeason(), failed:true, notice:'' }; }
 }
+function saveSeason(session: SeasonSession) {
+  const key = session.version === 5 ? LEGACY_SEASON_STORAGE_KEY : SEASON_STORAGE_KEY;
+  localStorage.setItem(key, JSON.stringify(session));
+}
+
 export default function SalonGame() {
   const [initial]=useState(loadSeason);
   const [session,setSession]=useState<SeasonSession>(initial.session);
@@ -43,7 +50,7 @@ export default function SalonGame() {
   const inspectTime=useRef(0);
   const sound=useSalonAudio(false);
   const route=resolveSeasonRoute(hash,session);
-  const replay=replaySeason(session.plans)!;
+  const replay=replaySeason(session.plans, session.version)!;
   const pending=replay.events.length>session.acknowledged;
   const round=Math.min(SEASON_LENGTH,session.plans.length+(pending?0:1));
   const scene=seasonScenes[Math.max(0,round-1)];
@@ -63,11 +70,11 @@ export default function SalonGame() {
   useEffect(()=>{if(route.canonical!==hash)navigate(route.canonical,true);},[route.canonical,hash]);
   useEffect(()=>{document.title=`${seasonGame.title}｜${route.kind==='intro'?'巴黎 1900':route.kind==='result'?'六場經營報告':route.kind==='ending'?'季末對話':`第 ${round}／6 場`}`;},[route.kind,round]);
   useEffect(()=>{
-    const save=()=>{try{localStorage.setItem(SEASON_STORAGE_KEY,JSON.stringify(latest.current));}catch{setStorageFailed(true);}};
+    const save=()=>{try{saveSeason(latest.current);}catch{setStorageFailed(true);}};
     save();window.addEventListener('beforeunload',save);
     return()=>window.removeEventListener('beforeunload',save);
   },[session]);
-  useEffect(()=>()=>{try{localStorage.setItem(SEASON_STORAGE_KEY,JSON.stringify(latest.current));}catch{/* Memory-only play. */}},[]);
+  useEffect(()=>()=>{try{saveSeason(latest.current);}catch{/* Memory-only play. */}},[]);
   useEffect(()=>{const img=new Image();img.onload=()=>setArtFailed(false);img.onerror=()=>setArtFailed(true);img.src=sceneUrl;return()=>{img.onload=null;img.onerror=null;};},[sceneUrl]);
   useEffect(()=>{
     if(route.kind==='ending'&&!conversation) setConversation({kind:'ending',lines:getEndingDialogue(replay),round:6});

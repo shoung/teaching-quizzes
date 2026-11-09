@@ -9,7 +9,7 @@ export interface EventVoices { guest: string; mentor: string; assistant: string;
 export type HudMetricKey = 'cash'|'regulars'|'reputation'|'awareness'|'seats'|'assistants'|'training'|'ambience';
 export interface MetricHelp { label: string; incoming: string; outgoing: string }
 export interface RpgDialogueProps { lines: DialogueLine[]; reducedMotion: boolean; onComplete: () => void; onClose?: () => void; onAdvance?: () => void; label?: string }
-export interface SalonCardHandProps { actions: SeasonAction[]; selected: ActionId[]; staffAvailable: number; onToggle: (id: ActionId) => void; getIssue: (id: ActionId) => string | null; reducedMotion: boolean; onInspect?: () => void }
+export interface SalonCardHandProps { actions: SeasonAction[]; selected: ActionId[]; staffAvailable: number; researchCompleted?: boolean; onToggle: (id: ActionId) => void; getIssue: (id: ActionId) => string | null; reducedMotion: boolean; onInspect?: () => void }
 export interface HostingSequenceProps { eventNumber: number; reducedMotion: boolean; onComplete: () => void }
 /* Data exports from ../data/paris-salon-rpg.ts:
  seasonScenes: RoundScene[];

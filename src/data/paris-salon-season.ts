@@ -1,10 +1,10 @@
 import type { QuizPreview, SalonStoryBeat } from '../types';
 import type { Audience, Scale, SeasonAction, SeasonMarket, Theme } from '../paris-salon/season-types';
 
-/** V5 的資源數字是簡化的課堂模型點數，不代表巴黎歷史帳目或真實預測。 */
-export const seasonGame: QuizPreview & { version: 5 } = {
+/** V6 的資源數字是簡化的課堂模型點數，不代表巴黎歷史帳目或真實預測。 */
+export const seasonGame: QuizPreview & { version: 6 } = {
   id: 'paris-salon',
-  version: 5,
+  version: 6,
   title: '沙龍夫人的經營筆記',
   subtitle: 'LE SALON DE CLAIRE',
   description: "在約 1900 年的巴黎，扮演克萊爾夫人籌辦六場沙龍。和來客聊天，選主題、分配助手與經費，再看回饋調整下一場。熟客、口碑和設施會留下來，經營方式由你決定。",

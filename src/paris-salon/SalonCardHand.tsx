@@ -6,7 +6,7 @@ import './salon-card-hand.css';
 
 const categoryLabels = { insight: '洞察', experience: '體驗', operations: '營運', growth: '成長' } as const;
 
-export function SalonCardHand({ actions, selected, staffAvailable, onToggle, getIssue, reducedMotion, onInspect }: SalonCardHandProps) {
+export function SalonCardHand({ actions, selected, staffAvailable, researchCompleted, onToggle, getIssue, reducedMotion, onInspect }: SalonCardHandProps) {
   const pendingFocus = useRef<ActionId | null>(null);
   const root = useRef<HTMLElement>(null);
   const [statusMessage, setStatusMessage] = useState('');
@@ -53,13 +53,13 @@ export function SalonCardHand({ actions, selected, staffAvailable, onToggle, get
         {selectedActions.length ? selectedActions.map(action => <button key={action.id} type="button" data-action-id={action.id} className={`salon-card-picked salon-card-category-${action.category}`} aria-label={`移回手牌：${action.title}`} onClick={() => toggle(action.id)} onFocus={onInspect}><span>{categoryLabels[action.category]}</span><strong>{action.title}</strong><small>{action.cost} 點・{action.staff ? `${action.staff} 位助手` : '克萊爾辦理'}</small></button>) : <p className="salon-card-empty">選擇卡牌後會放在這裡</p>}
       </div>
     </div>
-    <div className="salon-card-hand-heading"><div><span className="salon-card-eyebrow">點選卡牌加入上方牌池</span><strong>經營卡牌</strong></div><span>{handActions.length} 張可選</span></div>
+    <div className="salon-card-hand-heading"><div><span className="salon-card-eyebrow">點選卡牌加入上方牌池</span><strong>經營卡牌</strong></div><span>{handActions.length} 張手牌</span></div>
     <div className="salon-card-hand-scroll" role="region" tabIndex={0} aria-label="可選經營卡牌，使用左右方向鍵瀏覽">
       <div className="salon-card-hand-list">
         {handActions.map((action, index) => {
           const issue = getIssue(action.id);
           return <button key={action.id} type="button" data-action-id={action.id} className={`salon-card-hand-card salon-card-category-${action.category}`} style={{ zIndex: index + 1 }} aria-label={`選擇：${action.title}`} aria-disabled={issue ? 'true' : undefined} aria-describedby={issue ? `salon-card-issue-${action.id}` : undefined} onClick={() => { if (issue) { setStatusMessage(issue); return; } toggle(action.id); }} onFocus={() => inspect(issue)} onMouseEnter={() => inspect(issue)} onKeyDown={event => focusNeighbor(event, action.id, issue)}>
-            <span className="salon-card-category-label">{categoryLabels[action.category]}</span><strong className="salon-card-title">{action.title}</strong>
+            <span className="salon-card-category-label">{action.id === 'research' && researchCompleted ? '已完成' : categoryLabels[action.category]}</span><strong className="salon-card-title">{action.title}</strong>
             <span className="salon-card-expanded"><span className="salon-card-price">費用 {action.cost} 點・{action.staff ? `需 ${action.staff} 位助手` : '克萊爾辦理'}</span><span><b>會做什麼</b>{action.basis}</span><span><b>要留意</b>{action.tradeoff}</span><span><b>經營知識</b>{action.concept}</span></span>
             {issue && <span id={`salon-card-issue-${action.id}`} className="salon-card-issue">{issue}</span>}
           </button>;

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { seasonActions, seasonMarkets, seasonThemes } from '../data/paris-salon-season';
 import { seasonScenes } from '../data/paris-salon-rpg';
 import {
-  acknowledgeSeason, canPlanSeason, completeSeasonEnding, defaultPlan, forecastSeason, heardSeasonNpc, holdSeason, initialSeason, replaySeason,
+  acknowledgeSeason, awarenessResponse, canPlanSeason, completeSeasonEnding, defaultPlan, forecastSeason, heardSeasonNpc, holdSeason, initialSeason, replaySeason,
   resolveSeasonRoute, restoreSeason, SEASON_STORAGE_KEY, setSeasonDraft, startSeason,
 } from './season-engine';
 import type { ActionId, Scale, SeasonPlan } from './season-types';
@@ -27,9 +27,9 @@ function hearRoundNonMentor(session: ReturnType<typeof initialSeason>, round = s
 const quietPlan = (): SeasonPlan => ({ ...defaultPlan(), scale: 'small', actions: [] });
 
 describe('沙龍六場：規劃與財務', () => {
-  it('新季使用 v5 儲存欄位，知名度以 50 起步', () => {
+  it('新季使用 v6 儲存欄位，知名度以 50 起步', () => {
     expect(initialSeason()).toEqual({
-      version: 5,
+      version: 6,
       started: false,
       plans: [],
       acknowledged: 0,
@@ -38,7 +38,7 @@ describe('沙龍六場：規劃與財務', () => {
       endingSeen: false,
     });
     expect(replaySeason([])?.assets.awareness).toBe(50);
-    expect(SEASON_STORAGE_KEY).toBe('learning-lab:quiz:paris-salon:v5');
+    expect(SEASON_STORAGE_KEY).toBe('learning-lab:quiz:paris-salon:v6');
   });
 
   it('初始知名度不會造成首場必然候補，良好體驗累積推薦而宣傳不能抵銷失望', () => {
@@ -54,7 +54,7 @@ describe('沙龍六場：規劃與財務', () => {
   it('初始資產可支撐低成本恢復方案，預測列出實際限制且不改動存檔', () => {
     const fresh = initialSeason();
     const forecast = forecastSeason(fresh, quietPlan());
-    expect(fresh).toMatchObject({ version: 5, started: false, plans: [], acknowledged: 0 });
+    expect(fresh).toMatchObject({ version: 6, started: false, plans: [], acknowledged: 0 });
     expect(forecast.cost).toBe(0);
     expect(forecast.staffRequired).toBe(0);
     expect(forecast.staffAvailable).toBe(2);
@@ -74,6 +74,31 @@ describe('沙龍六場：規劃與財務', () => {
     expect(setSeasonDraft(session, invalidScale)).toBe(session);
     expect(forecastSeason(session, highCost).issues.length).toBeGreaterThan(0);
     expect(forecastSeason(session, tooMany).issues.length).toBeGreaterThan(0);
+  });
+
+  it('新季的贊助按實到人數折半並反映在帳目和行動回顧', () => {
+    const sponsored: SeasonPlan = { ...quietPlan(), actions: ['sponsor'] };
+    const current = replaySeason([sponsored])!.events[0];
+    const legacy = replaySeason([sponsored], 5)!.events[0];
+    expect(current.attendance).toBe(12);
+    expect(current.income.sponsor).toBe(6);
+    expect(current.after.cash).toBe(132);
+    expect(current.lessons[0].text).toContain('贊助支持金 6 點');
+    expect(legacy.income.sponsor).toBe(12);
+    expect(legacy.after.cash).toBe(138);
+    expect(replaySeason([{ ...sponsored, theme: 'discovery' }])!.events[0].income.sponsor).toBe(0);
+  });
+
+  it('70 分附近逐步增加知名度加成，並保留最高加成', () => {
+    for (const promoted of [false, true]) {
+      for (let satisfaction = 65; satisfaction < 75; satisfaction += 1) {
+        const change = awarenessResponse(satisfaction + 1, promoted) - awarenessResponse(satisfaction, promoted);
+        expect(change).toBeGreaterThanOrEqual(0);
+        expect(change).toBeLessThanOrEqual(1);
+      }
+    }
+    expect(awarenessResponse(75, true)).toBe(5);
+    expect(awarenessResponse(70, true, 5) - awarenessResponse(69, true, 5)).toBe(4);
   });
 
   it('每場財務分列且現金不為負；第二次舉辦同一場不會重複結算', () => {
@@ -101,6 +126,9 @@ describe('沙龍六場：規劃與財務', () => {
     expect(researched.events[0].after.awareness).toBe(quiet.events[0].after.awareness);
     const nextForecast = forecastSeason({ ...first, acknowledged: 1 }, quietPlan());
     expect(nextForecast.insights.length).toBeGreaterThan(0);
+    expect(forecastSeason({ ...first, acknowledged: 1 }, research).issues[0]).toContain('本季已完成來客研究');
+    expect(replaySeason([research, research])).toBeNull();
+    expect(replaySeason([research, research], 5)?.assets.insight).toBe(2);
     const withoutResearch = runSeason([quietPlan()]);
     const broadForecast = forecastSeason(withoutResearch, quietPlan());
     expect(nextForecast.attendance[1] - nextForecast.attendance[0]).toBeLessThan(broadForecast.attendance[1] - broadForecast.attendance[0]);

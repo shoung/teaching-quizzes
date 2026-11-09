@@ -302,6 +302,11 @@
   .season-result-overlay .paper-heading { margin:4px 0 18px; }
   .season-result-overlay .paper-heading h2 { color:#324a3b; }
   .season-report .season-actions-row { position:static; z-index:auto; background:linear-gradient(180deg,#f8efda,#f1e4c5); padding:12px 0 4px; }
+  .season-goals { margin:0 0 12px; padding:10px 14px; background:#eee5d1; color:#3c443a; }
+  .season-goals h3 { margin:0 0 6px; font-size:1.0625rem; }
+  .season-goals dl { display:flex; flex-wrap:wrap; gap:6px 22px; margin:0; }
+  .season-goals dl>div { display:flex; flex-wrap:wrap; gap:4px 8px; min-width:0; }
+  .season-goals dd { margin:0; overflow-wrap:anywhere; }
   .season-report .season-assets { max-width:100%; }
   .season-table-wrap { max-width:100%; overflow-x:auto; border:1px solid #b8a578; background:#fbf7eb; }
   .season-table-wrap table { width:100%; min-width:720px; border-collapse:collapse; color:#303a31; font-size:1rem; }

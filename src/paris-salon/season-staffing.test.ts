@@ -35,7 +35,7 @@ describe('助手分工取代四時段', () => {
     expect(replay.assets.assistants).toBe(3);
     expect(replay.events[0].costs.actions).toBe(38);
     expect(replay.assets.cash).toBe(100 - replay.events[0].costs.total + replay.events[0].income.total);
-    expect(replaySeason([recruit, plan(['research', 'participation', 'promotion'])])).not.toBeNull();
+    expect(replaySeason([recruit, plan(['experiment', 'participation', 'promotion'])])).not.toBeNull();
   });
 
   it('助手最多六人，培訓提升技能而不增加人數', () => {
@@ -54,7 +54,7 @@ describe('助手分工取代四時段', () => {
   });
 
   it('新版獨立保存，不用新規則重算 v4 存檔', () => {
-    expect(SEASON_STORAGE_KEY).toBe('learning-lab:quiz:paris-salon:v5');
+    expect(SEASON_STORAGE_KEY).toBe('learning-lab:quiz:paris-salon:v6');
     expect(restoreSeason({ ...initialSeason(), version: 4 })).toBeNull();
     expect(restoreSeason(JSON.stringify(initialSeason()))).toEqual(initialSeason());
   });

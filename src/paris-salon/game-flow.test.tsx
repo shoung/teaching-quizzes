@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import SalonGame from './SalonGame';
 import { SEASON_PLAY, SEASON_STORAGE_KEY, initialSeason, startSeason, heardSeasonNpc, holdSeason } from './season-engine';
+import { LEGACY_SEASON_STORAGE_KEY } from './season-types';
 import { seasonScenes } from '../data/paris-salon-rpg';
 
 beforeEach(() => {
@@ -42,6 +43,13 @@ describe('六場 RPG 經營循環', () => {
     for (let round=1; round<=6; round++) {
       await hearGuest(user, round);
       await user.click(screen.getByRole('button', { name: '沙龍計劃' }));
+      const research = screen.getByRole('button', { name: '選擇：詢問來客需求' });
+      if (round === 1) {
+        await user.click(research);
+      } else {
+        expect(research).toHaveAttribute('aria-disabled', 'true');
+        expect(research).toHaveTextContent('已完成');
+      }
       await user.click(screen.getByRole('button', { name: '舉辦沙龍' }));
       expect(screen.getByLabelText(`第 ${round} 場沙龍演出`)).toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: '略過演出' }));
@@ -54,8 +62,34 @@ describe('六場 RPG 經營循環', () => {
     await finishDialogue(user);
     expect(window.location.hash).toBe('#/quiz/paris-salon/result');
     expect(screen.getByRole('table', { name: '六場趨勢與資源變化' })).toBeInTheDocument();
+    const goals = screen.getByRole('region', { name: '本季成長目標' });
+    expect(goals).toHaveTextContent('累計到場');
+    expect(goals).toHaveTextContent('未達成');
     await waitFor(() => expect(JSON.parse(localStorage.getItem(SEASON_STORAGE_KEY)!).endingSeen).toBe(true));
   }, 20000);
+  it('從舊版存檔接續原帳目，重新開季才換用新版規則', async () => {
+    const user = userEvent.setup();
+    const legacy = {
+      ...startSeason(initialSeason()),
+      version: 5,
+      plans: [{ audience: 'creators', theme: 'workshop', scale: 'small', actions: ['sponsor'] }],
+      heard: { '1': [2] },
+    };
+    localStorage.removeItem(SEASON_STORAGE_KEY);
+    localStorage.setItem(LEGACY_SEASON_STORAGE_KEY, JSON.stringify(legacy));
+    render(<SalonGame />);
+    const recap = await screen.findByRole('dialog');
+    expect(recap).toHaveTextContent('贊助收入+12');
+    expect(recap).toHaveTextContent('138點');
+    await user.keyboard('{Escape}');
+    await user.click(screen.getByRole('button', { name: '返回標題' }));
+    await user.click(screen.getByRole('button', { name: '返回標題頁' }));
+    await user.click(screen.getByRole('button', { name: '重新開始一季' }));
+    await user.click(screen.getByRole('button', { name: '清除此季並重新開始' }));
+    expect(JSON.parse(localStorage.getItem(SEASON_STORAGE_KEY)!)).toEqual(initialSeason());
+    expect(JSON.parse(localStorage.getItem(LEGACY_SEASON_STORAGE_KEY)!)).toEqual(legacy);
+  });
+
   it('重新整理已舉辦的場次只開回顧；返回標題需確認且保留進度', async () => {
     const user=userEvent.setup();
     const held=holdSeason(heardSeasonNpc(startSeason(initialSeason()),2),1);
