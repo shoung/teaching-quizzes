@@ -12,7 +12,7 @@ const length = (text: string) => Array.from(text).length;
 
 describe('chapterThreeCase coffee shop teaching content', () => {
   it('uses the approved identity and five stable, unique rounds', () => {
-    expect(chapterThreeCase).toMatchObject({ id: 'marketing-day-chapter-3', version: 1, title: '咖啡店提案日', clientName: '陳店長', brand: '日常咖啡', clientRole: '日常咖啡負責人', minutes: 12, questionLimit: 5 });
+    expect(chapterThreeCase).toMatchObject({ id: 'marketing-day-chapter-3', version: 2, title: '咖啡店提案日', clientName: '陳店長', brand: '日常咖啡', clientRole: '日常咖啡負責人', minutes: 12, questionLimit: 5 });
     expect(chapterThreeCase.stages.map(({ id }) => id)).toEqual(['needs', 'persona', 'journey', 'ideas', 'blueprint']);
     const ids = [chapterThreeCase.id];
     for (const stage of chapterThreeCase.stages) ids.push(stage.id, ...stage.questions.map(({ id }) => id), ...stage.choices.map(({ id }) => id));

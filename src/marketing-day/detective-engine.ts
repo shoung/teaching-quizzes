@@ -36,10 +36,13 @@ export function createDetectiveEngine(detectiveCase: DetectiveCase) {
       const choiceIds = new Set(stage.choices.map(({ id }) => id));
       const validSubmission = round.submittedIds === null
         || (validIdList(round.submittedIds, choiceIds) && round.submittedIds.length > 0);
+      const validChoiceOrder = round.choiceOrder === undefined
+        || (validIdList(round.choiceOrder, choiceIds) && round.choiceOrder.length === choiceIds.size);
       return validIdList(round.askedIds, questionIds)
         && round.askedIds.length <= detectiveCase.questionLimit
         && validIdList(round.selectedIds, choiceIds)
-        && validSubmission;
+        && validSubmission
+        && validChoiceOrder;
     });
     if (!roundsValid) return false;
     if (value.started && !value.completed && rounds.every((round) => isRecord(round) && round.submittedIds !== null)) return false;
@@ -52,12 +55,9 @@ export function createDetectiveEngine(detectiveCase: DetectiveCase) {
     return true;
   }
 
-  function emptyRound() {
-    return { askedIds: [] as string[], selectedIds: [] as string[], submittedIds: null as string[] | null };
-  }
-
   function cloneSession(session: DetectiveSession): DetectiveSession {
     return { ...session, rounds: session.rounds.map((round) => ({
+      ...round,
       askedIds: [...round.askedIds],
       selectedIds: [...round.selectedIds],
       submittedIds: round.submittedIds === null ? null : [...round.submittedIds],
@@ -77,7 +77,14 @@ export function createDetectiveEngine(detectiveCase: DetectiveCase) {
       caseId: detectiveCase.id,
       caseVersion: detectiveCase.version,
       started: false,
-      rounds: stages.map(() => emptyRound()),
+      rounds: stages.map(({ choices }) => {
+        const choiceOrder = choices.map(({ id }) => id);
+        for (let index = choiceOrder.length - 1; index > 0; index -= 1) {
+          const swap = Math.floor(Math.random() * (index + 1));
+          [choiceOrder[index], choiceOrder[swap]] = [choiceOrder[swap], choiceOrder[index]];
+        }
+        return { choiceOrder, askedIds: [], selectedIds: [], submittedIds: null };
+      }),
       completed: false,
     };
   }
@@ -138,6 +145,11 @@ export function createDetectiveEngine(detectiveCase: DetectiveCase) {
       }
     }
     next.completed = next.rounds.every(({ submittedIds }) => submittedIds !== null);
+    if (next.completed) {
+      for (const completedRound of next.rounds) {
+        completedRound.selectedIds = [...completedRound.submittedIds!];
+      }
+    }
     return next;
   }
 
@@ -430,9 +442,11 @@ export function createDetectiveEngine(detectiveCase: DetectiveCase) {
     const totalHits = rounds.reduce((sum, round) => sum + round.hits.length, 0);
     const totalWrong = rounds.reduce((sum, round) => sum + round.wrong.length, 0);
     const totalMissed = rounds.reduce((sum, round) => sum + round.missed.length, 0);
+    const grade = gradeForScore(score);
+    const eligibleForTopGrade = proposals.length === 1 && proposals[0].correct;
     return {
       score,
-      grade: gradeForScore(score),
+      grade: grade === 'S' && !eligibleForTopGrade ? 'A' : grade,
       satisfaction,
       bossComment: bossComment(score, rounds),
       expertComment: expertComment(rounds, score),

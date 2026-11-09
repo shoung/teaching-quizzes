@@ -9,7 +9,8 @@ export function DetectiveResult({ result, detectiveCase, chapterLabel='第二章
   return <section className="dd-result" aria-labelledby="dd-result-title">
     <p className="dd-eyebrow">五輪提案 · 教學角色回饋</p><h2 id="dd-result-title" tabIndex={-1} data-initial-focus>{confirmRestart?'重新接案？':`這次提案得到 ${result.score} 分`}</h2>
     {confirmRestart ? <><p className="dd-restart-copy">確認後只會重設{chapterLabel}的本次進度；你可以取消並保留眼前結果。</p><footer className="dd-result-actions"><button type="button" className="dd-secondary" onClick={()=>setConfirmRestart(false)}>保留本次結果</button><button type="button" className="dd-primary" onClick={onRestart}>確認重新接案</button></footer></> : <>
-    <div className="dd-score-strip"><strong>{result.grade}<small>等級</small></strong><strong>{result.score}<small>／100 分</small></strong><strong>{result.satisfaction.split('（')[0]}<small>{detectiveCase.clientName}滿意度</small></strong></div>
+    <div className="dd-score-strip"><strong>{result.grade}<small>教學等級</small></strong><strong>{result.score}<small>／100 分</small></strong><strong>{result.satisfaction.split('（')[0]}<small>{detectiveCase.clientName}評價</small></strong></div>
+    {result.score >= 90 && result.grade === 'A' && <p className="dd-note">主方案尚未定案或本週不可行，教學等級最高為 A。五輪得分照原計算。</p>}
     <p className="dd-counts">抓中 {result.totalHits} 項 · 誤選 {result.totalWrong} 項 · 漏掉 {result.totalMissed} 項</p>
     <nav className="dd-result-tabs" aria-label="結算內容">{(['boss','expert','rounds'] as const).map(item => <button key={item} type="button" aria-pressed={section === item} onClick={() => setSection(item)}>{item === 'boss' ? `${detectiveCase.clientName}回應` : item === 'expert' ? '專家教學' : '逐輪解析'}</button>)}</nav>
     {section === 'boss' && <article className="dd-quote"><h3>{detectiveCase.clientName}｜{detectiveCase.brand}</h3><blockquote>「{result.bossComment.replace(/^【[^】]+】/,'')}」</blockquote><p>{result.satisfaction.split('（')[0]}</p></article>}
@@ -19,7 +20,7 @@ export function DetectiveResult({ result, detectiveCase, chapterLabel='第二章
       const evidenceLabel=(id:string) => stage.questions.find(question=>question.id===id)?.label ?? (()=>{const match=id.match(/(?:intro|opening|客戶)[-_]?(\d+)/i);const introIndex=match?Number(match[1])-1:-1;return introIndex>=0&&stage.intro[introIndex]?`客戶原句：「${stage.intro[introIndex]}」`:'本案相關客戶線索';})();
       return <details key={round.stageId}><summary>第 {index + 1} 輪解析 · {round.title}</summary><p><b>抓中的線索：</b>{round.hits.length ? round.hits.map(item => item.label).join('、') : '尚無'}</p><p><b>誤選的線索：</b>{round.wrong.length ? round.wrong.map(item => item.label).join('、') : '無'}</p><p><b>漏掉的線索：</b>{round.missed.length ? round.missed.map(item => item.label).join('、') : '無'}</p>{[...round.hits,...round.wrong,...round.missed].map(item => <article className="dd-choice-review" key={item.id}><p><b>{item.label}</b>：{item.explanation}</p><p className="dd-source-note"><b>線索來源：</b>{item.evidenceIds.length?item.evidenceIds.map(evidenceLabel).join('；'):'本輪客戶敘述'}</p></article>)}<p className="dd-source-note">本輪已問：{round.askedIds.length ? round.askedIds.map(id => stage.questions.find(question => question.id === id)?.label ?? id).join('、') : '無；依客戶開場敘述判斷'}</p></details>;
     })}</div>}
-    <p className="dd-score-rule">計分方式：每輪 20 分，以命中正確線索數扣除誤選數後按本輪正確線索總數換算；漏選不加分，全選也會因誤選扣分。這是課堂練習規則。</p>
+    <p className="dd-score-rule">每輪 20 分，以命中數扣掉誤選數，再按本輪正確線索總數換算。漏選不加分。S 級須達 90 分並選出本週可行的主方案。客戶會另外評估提案能否試做。</p>
     <footer className="dd-result-actions"><button type="button" className="dd-secondary" onClick={onChapters}>選擇章節</button><button type="button" className="dd-primary" onClick={()=>setConfirmRestart(true)}>重新挑戰{chapterLabel}</button></footer>
     </>}
   </section>;

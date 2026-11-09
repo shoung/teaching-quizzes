@@ -103,6 +103,23 @@ describe('完整單章遊玩流程', () => {
     expect(screen.getAllByRole('radio').every(r=>!(r as HTMLInputElement).checked)).toBe(true);
   });
 
+  it('原樣重送上一題後，保留下一題尚未提交的草稿', async () => {
+    const user = userEvent.setup();
+    render(<MarketingDayGame />);
+    await user.click(screen.getByRole('button', { name: '開始上班' }));
+    await decide(user, 0, 2);
+    await openDecision(user);
+    const draft = marketingDayGame.decisions[1].options[2].label;
+    await user.click(screen.getByRole('radio', { name: draft }));
+    await user.click(screen.getByRole('button', { name: '上一頁' }));
+    await user.click(screen.getByRole('button', { name: '確認選擇' }));
+    await user.click(screen.getByRole('button', { name: '下一頁' }));
+    await user.click(await screen.findByRole('button', { name: /繼續目前決策|與.+對話/ }));
+    const continueToChoices = screen.queryByRole('button', { name: '我會怎麼做？' });
+    if (continueToChoices) await user.click(continueToChoices);
+    expect(screen.getByRole('radio', { name: draft })).toBeChecked();
+  });
+
   it('新載入與直接結果網址不會還原進度，也不能跳題', async () => {
     const user=userEvent.setup();const first=render(<MarketingDayGame/>);
     await user.click(screen.getByRole('button',{name:'開始上班'}));await decide(user,0,2);

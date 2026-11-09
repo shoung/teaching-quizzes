@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction, MouseEvent } from 'react';
-import type { DetectiveCase, DetectiveSession } from '../types';
+import type { DetectiveCase, DetectiveRoundState, DetectiveSession } from '../types';
 import { chapterTwoCase } from '../data/marketing-detective';
 import { createDetectiveEngine } from './detective-engine';
 import type { useGameSound } from './use-game-sound';
@@ -16,14 +16,15 @@ import './detective.css';
 const OfficeScene = lazy(() => import('./OfficeScene'));
 type AudioControls = ReturnType<typeof useGameSound>;
 type Props = { audio: AudioControls; session: DetectiveSession; onSessionChange: Dispatch<SetStateAction<DetectiveSession>>; view: string; onNavigate: (view: string) => void; onChooseChapters: () => void; onMovingChange: (moving: boolean) => void; onPausedChange: (paused: boolean) => void; detectiveCase?: DetectiveCase; chapterLabel?: string };
-type Panel = 'intro'|'questions'|'board'|'notes'|'glossary'|'settings'|'help'|'result'|'confirm-reset'|null;
+type Panel = 'handoff'|'intro'|'questions'|'board'|'notes'|'glossary'|'settings'|'help'|'result'|'confirm-reset'|null;
 
 export default function DetectiveChapter({audio,session,onSessionChange,view,onNavigate,onChooseChapters,onMovingChange,onPausedChange,detectiveCase=chapterTwoCase,chapterLabel='第二章'}:Props) {
   const engine=useMemo(()=>createDetectiveEngine(detectiveCase),[detectiveCase]);
   const root=useRef<HTMLDivElement>(null);
   const hud=useRef<HTMLElement>(null);
   const reply=useRef<HTMLQuoteElement>(null);
-  const [panel,setPanel]=useState<Panel>(null);
+  const [requestedPanel,setPanel]=useState<Panel>(null);
+  const [acceptedHandoff,setAcceptedHandoff]=useState<string|null>(null);
   const [introLine,setIntroLine]=useState(0);
   const [activeTerm,setActiveTerm]=useState<string|null>(null);
   const [utilityReturn,setUtilityReturn]=useState<Panel>(null);
@@ -35,12 +36,26 @@ export default function DetectiveChapter({audio,session,onSessionChange,view,onN
   const scene=useRef<OfficeControls>(null);
   const [sceneRun,setSceneRun]=useState(0);
   const currentRound=engine.currentDetectiveRound(session);
+  const activeRound=Math.min(currentRound,detectiveCase.stages.length-1);
   const roundFromView:Record<string,number>={research:0,persona:1,journey:2,ideas:3,blueprint:4};
   const requestedRound=roundFromView[view];
-  const round=Math.min(Number.isInteger(requestedRound)?requestedRound:currentRound,Math.max(0,Math.min(currentRound,detectiveCase.stages.length-1)));
+  const round=Math.min(Number.isInteger(requestedRound)?requestedRound:currentRound,activeRound);
   const stage=detectiveCase.stages[round] ?? detectiveCase.stages.at(-1)!;
   const result=useMemo(()=>engine.evaluateDetectiveSession(session),[engine,session]);
-  const roundState=session.rounds[round] ?? {askedIds:[],selectedIds:[],submittedIds:null};
+  const roundState:DetectiveRoundState=session.rounds[round] ?? {askedIds:[],selectedIds:[],submittedIds:null};
+  const choicesById=new Map(stage.choices.map(choice=>[choice.id,choice]));
+  const orderedChoices=roundState.choiceOrder?.flatMap(id=>{
+    const choice=choicesById.get(id);
+    return choice ? [choice] : [];
+  }) ?? stage.choices;
+  const proposalRound=detectiveCase.stages.findIndex(item=>item.id==='ideas');
+  const submittedProposalIds=session.rounds[proposalRound]?.submittedIds;
+  const rejectedProposal=stage.id==='blueprint' && detectiveCase.stages[proposalRound]?.choices.find(
+    choice=>choice.kind==='proposal' && !choice.correct && submittedProposalIds?.includes(choice.id),
+  );
+  const handoff=rejectedProposal && detectiveCase.blueprintHandoffs?.[rejectedProposal.id];
+  const pendingHandoff=Boolean(handoff && acceptedHandoff!==handoff);
+  const panel=requestedPanel==='handoff' && !pendingHandoff ? null : requestedPanel;
   const hasEngaged=Boolean(roundState?.askedIds.length||roundState?.selectedIds.length||roundState?.submittedIds);
   useLayoutEffect(()=>{
     const header=hud.current;if(!header)return;
@@ -65,8 +80,16 @@ export default function DetectiveChapter({audio,session,onSessionChange,view,onN
     suppressNextOpenCue.current=false;
     if(session.completed){setPanel('result');return;}
     if(!session.started)onSessionChange(previous=>engine.beginDetectiveSession(previous));
+    if(pendingHandoff){setPanel('handoff');return;}
+    resumeConversation();
+  }
+  function resumeConversation() {
     setPanel(roundState.selectedIds.length||roundState.submittedIds?'board':roundState.askedIds.length||introSeen.current.has(round)?'questions':'intro');
     if(!hasEngaged&&!introSeen.current.has(round))setIntroLine(introProgress.current[round]??0);
+  }
+  function returnToProgress() {
+    setPanel(session.completed?'result':null);
+    onNavigate(session.completed?'review':engine.detectiveViewForRound(currentRound));
   }
   function nextIntroLine(){setIntroLine(value=>{const next=Math.min(stage.intro.length-1,value+1);introProgress.current[round]=next;return next;});}
   function previousIntroLine(){setIntroLine(value=>{const next=Math.max(0,value-1);introProgress.current[round]=next;return next;});}
@@ -79,7 +102,9 @@ export default function DetectiveChapter({audio,session,onSessionChange,view,onN
   function close(){audio.unlock();audio.play('close');setPanel(panel==='glossary'||panel==='settings'||panel==='help'?utilityReturn:null);}
   function openUtility(next:'glossary'|'settings'|'help'){if(panel!=='glossary'&&panel!=='settings'&&panel!=='help')setUtilityReturn(panel);setPanel(next);}
   function submitRound(){
-    if(session.rounds.slice(round+1).some(item=>item.submittedIds!==null)){setPanel('confirm-reset');return;}
+    const { submittedIds, selectedIds } = roundState;
+    const changed = submittedIds !== null && (submittedIds.length !== selectedIds.length || submittedIds.some(id=>!selectedIds.includes(id)));
+    if(changed && session.rounds.slice(round+1).some(item=>item.selectedIds.length>0 || item.submittedIds!==null)){setPanel('confirm-reset');return;}
     commitRound();
   }
   function commitRound(){
@@ -113,20 +138,36 @@ export default function DetectiveChapter({audio,session,onSessionChange,view,onN
     <div className="md-scene-shade" aria-hidden="true"/>
     <header ref={hud} className="md-hud dd-hud"><div className="md-clock"><span className="md-clock-light"/>{detectiveCase.title}<span className="md-day-label">{session.completed?'已結案':`第 ${round+1} 輪／${detectiveCase.stages.length} 輪`}</span></div><h1>{detectiveCase.title}</h1><div className="md-tools"><button className="md-tool" aria-label="選擇章節" onClick={onChooseChapters}><Glyph name="chapters"/><span>章節</span></button><button className="md-icon-button" aria-label={audio.muted?'音效：關':'音效：開'} aria-pressed={audio.muted} onClick={()=>{audio.unlock();audio.toggle();}}><Glyph name={audio.muted?'mute':'volume'}/></button><button className="md-tool" onClick={()=>openUtility('glossary')}><Glyph name="book"/><span>名詞</span></button></div></header>
     <main className="md-main dd-main" aria-label={`${detectiveCase.title}任務`}>
-      <div className="md-next dd-next"><span className="md-next-tag">第 {round+1} 輪</span><p>{session.completed?`提案已交給${detectiveCase.clientName}。打開結算查看回饋。`:stage.task}</p>{round>0&&<button type="button" className="dd-world-secondary" onClick={()=>onNavigate(engine.detectiveViewForRound(round-1))}>回看上一輪</button>}{round<currentRound-1&&<button type="button" className="dd-world-secondary" onClick={()=>onNavigate(engine.detectiveViewForRound(currentRound===detectiveCase.stages.length?currentRound-1:currentRound))}>回到目前進度</button>}</div>
+      <div className="md-next dd-next">
+        <span className="md-next-tag">第 {round+1} 輪</span>
+        <p>{session.completed?`提案已交給${detectiveCase.clientName}。打開結算查看回饋。`:stage.task}</p>
+        {round>0&&<button type="button" className="dd-world-secondary" onClick={()=>onNavigate(engine.detectiveViewForRound(round-1))}>回看上一輪</button>}
+        {round<activeRound&&<button type="button" className="dd-world-secondary" onClick={returnToProgress}>回到目前進度</button>}
+      </div>
       <div className="md-bottom-hud dd-bottom-hud"><div className="md-movement" aria-label="移動角色"><span/><button type="button" aria-label="往上走" onClick={()=>scene.current?.step('up')}>↑</button><span/>{(['left','down','right'] as const).map(direction=><button type="button" key={direction} aria-label={direction==='left'?'往左走':direction==='down'?'往下走':'往右走'} onClick={()=>scene.current?.step(direction)}>{direction==='left'?'←':direction==='down'?'↓':'→'}</button>)}</div><button type="button" className="md-primary md-interact dd-interact" data-world-interact onClick={openConversation}>{session.completed?'查看結算':hasEngaged?`繼續與${detectiveCase.clientName}對話`:`與${detectiveCase.clientName}對話`} <kbd>E</kbd></button><span className="md-scene-hint">WASD／方向鍵移動 · G 帶路 · E 直接對話 · 點擊地板移動</span></div>
     </main>
     {panel&&<PreviewDialog key={`${panel}-${round}`} titleId={panel==='result'?'dd-result-title':'dd-title'} onClose={close} className="dd-dialog">
       <div className="dd-dialog-tools"><button type="button" className="md-secondary" onClick={()=>openUtility('help')}>操作說明</button><button type="button" className="md-secondary" onClick={()=>openUtility('settings')}>音訊設定</button><button type="button" className="md-secondary" onClick={onChooseChapters}><Glyph name="chapters"/>選擇章節</button><button type="button" className="md-icon-button" aria-label={audio.muted?'音效：關':'音效：開'} aria-pressed={audio.muted} onClick={()=>{audio.unlock();audio.toggle();}}><Glyph name={audio.muted?'mute':'volume'}/></button><button type="button" className="md-icon-button" aria-label="收合視窗" onClick={close}><Glyph name="close"/></button></div>
+      {panel==='handoff'&&handoff&&<section className="dd-conversation">
+        <span className="md-section-label">第五輪 · 客戶回應</span>
+        <h2 id="dd-title" tabIndex={-1} data-initial-focus>這週先改個做法</h2>
+        <div className="dd-speaker"><Portrait/><p>{detectiveCase.clientName}｜{detectiveCase.brand}</p></div>
+        <blockquote className="dd-verbatim">{handoff}</blockquote>
+        <p className="dd-note">若接著做藍圖，第四輪仍按你原先提交的方案計分。</p>
+        <div className="dd-dialog-actions">
+          <button type="button" className="md-secondary" onClick={()=>{setPanel('board');onNavigate(engine.detectiveViewForRound(proposalRound));}}>回去比較主方案</button>
+          <button type="button" className="md-primary" onClick={()=>{setAcceptedHandoff(handoff);resumeConversation();}}>繼續做藍圖</button>
+        </div>
+      </section>}
       {panel==='intro'&&<section className="dd-conversation"><span className="md-section-label">客戶說明 · {introLine+1}／{stage.intro.length}</span><h2 id="dd-title" tabIndex={-1} data-initial-focus>{stage.title}</h2><div className="dd-speaker"><Portrait/><p>{detectiveCase.clientName}｜{detectiveCase.brand}</p></div><blockquote className="dd-verbatim">{stage.intro[introLine]}</blockquote><div className="dd-dialog-actions">{introLine>0&&<button className="md-secondary" onClick={previousIntroLine}>上一段</button>}<button className="md-primary" onClick={()=>introLine<stage.intro.length-1?nextIntroLine():startQuestions()}>{introLine<stage.intro.length-1?'繼續聽':'開始追問'}</button></div></section>}
       {panel==='questions'&&<section className="dd-conversation"><span className="md-section-label">追問額度 · {roundState.askedIds.length}／{detectiveCase.questionLimit}</span><h2 id="dd-title" tabIndex={-1} data-initial-focus>{stage.title}</h2><p className="dd-note">你想先問{detectiveCase.clientRole}什麼？聽完回答後，再整理這一輪的選擇。</p>{questionReply&&<blockquote ref={reply} tabIndex={0} className="dd-reply dd-verbatim">{questionReply}</blockquote>}<ul className="dd-question-list">{stage.questions.map((question,index)=>{const asked=roundState.askedIds.includes(question.id);const disabled=asked||roundState.askedIds.length>=detectiveCase.questionLimit;return <li key={question.id}><button type="button" disabled={disabled} aria-pressed={asked} onClick={()=>ask(question.id)}><span>{index+1}</span><span>{question.label}</span><small>{asked?'已問過':disabled?'本輪額度已用完':'詢問'}</small></button></li>;})}</ul><p className="dd-note">已問過的問題可在筆記重讀，不會再次扣除額度或新增線索。</p><div className="dd-dialog-actions"><button className="md-secondary" onClick={replayIntro}>重聽客戶說明</button><button className="md-secondary" onClick={()=>setPanel('notes')}>查看筆記</button><button className="md-primary" onClick={startBoard}>開始整理判斷</button></div></section>}
-      {panel==='board'&&<><div className="dd-board-context"><h2 id="dd-title" tabIndex={-1} data-initial-focus>{stage.title}</h2><p>{stage.prompt}</p><p className="dd-note">追問剩餘 {Math.max(0,detectiveCase.questionLimit-roundState.askedIds.length)} 次；你可以先回去問客戶，也可先提交判斷。</p></div><DetectiveBoard choices={stage.choices} selectedIds={roundState.selectedIds} onToggle={toggleChoice} onSubmit={submitRound} onAsk={()=>setPanel('notes')} canAsk onBack={()=>setPanel('questions')} round={round} total={detectiveCase.stages.length}/></>}
+      {panel==='board'&&<><div className="dd-board-context"><h2 id="dd-title" tabIndex={-1} data-initial-focus>{stage.title}</h2><p>{stage.prompt}</p><p className="dd-note">追問剩餘 {Math.max(0,detectiveCase.questionLimit-roundState.askedIds.length)} 次；你可以先回去問客戶，也可先提交判斷。</p></div><DetectiveBoard choices={orderedChoices} selectedIds={roundState.selectedIds} onToggle={toggleChoice} onSubmit={submitRound} onAsk={()=>setPanel('notes')} canAsk onBack={()=>setPanel('questions')} round={round} total={detectiveCase.stages.length}/></>}
       {panel==='notes'&&<section className="dd-conversation"><span className="md-section-label">{detectiveCase.clientName}的筆記</span><h2 id="dd-title" tabIndex={-1} data-initial-focus>已確認的客戶線索</h2><ol className="dd-notes">{stage.intro.map((text,index)=><li key={`intro-${index}`}>客戶敘述：{text}</li>)}{roundState.askedIds.map(id=>{const q=stage.questions.find(item=>item.id===id)!;return <li key={id}><b>問：{q.label}</b><p className="dd-verbatim">答：{q.reply}</p></li>;})}</ol>{stage.aiIdeas&&stage.aiIdeas.length>0&&<section className="dd-ai-examples" aria-labelledby="dd-ai-title"><h3 id="dd-ai-title">客戶帶來的三個 AI 草案</h3><p>這些是案例內的合成提案，用來比較取捨；沒有連接即時 AI。</p>{stage.aiIdeas.map(idea=><article key={idea.title}><h4>{idea.title}</h4><p>{idea.text}</p></article>)}</section>}<div className="dd-dialog-actions"><button className="md-secondary" onClick={()=>setPanel('questions')}>回到追問</button><button className="md-primary" onClick={()=>setPanel('board')}>回到判斷</button></div></section>}
-      {panel==='glossary'&&<section className="dd-conversation"><span className="md-section-label">隨時可查，不扣追問</span><h2 id="dd-title" tabIndex={-1} data-initial-focus>行銷名詞圖鑑</h2><div className="dd-glossary-list">{detectiveCase.glossary.map(term=><button key={term.name} type="button" aria-pressed={activeTerm===term.name} onClick={()=>setActiveTerm(term.name)}>{term.name}</button>)}</div>{activeTerm&&(()=>{const term=detectiveCase.glossary.find(item=>item.name===activeTerm)!;return <article className="dd-term-definition"><h3>{term.name}</h3><p>{term.definition}</p><p>{term.example}</p></article>;})()}<div className="dd-dialog-actions"><button className="md-primary" onClick={()=>setPanel(utilityReturn??(hasEngaged?'board':'intro'))}>回到委託</button></div></section>}
+      {panel==='glossary'&&<section className="dd-conversation"><span className="md-section-label">隨時可查，不扣追問</span><h2 id="dd-title" tabIndex={-1} data-initial-focus>行銷名詞圖鑑</h2><div className="dd-glossary-list">{detectiveCase.glossary.map(term=><button key={term.name} type="button" aria-pressed={activeTerm===term.name} onClick={()=>setActiveTerm(term.name)}>{term.name}</button>)}</div>{activeTerm&&(()=>{const term=detectiveCase.glossary.find(item=>item.name===activeTerm)!;return <article className="dd-term-definition"><h3>{term.name}</h3><p>{term.definition}</p><p>{term.example}</p></article>;})()}<div className="dd-dialog-actions"><button className="md-primary" onClick={()=>utilityReturn ? setPanel(utilityReturn) : openConversation()}>回到委託</button></div></section>}
       {panel==='settings'&&<section className="dd-conversation"><span className="md-section-label">可隨時調整播放方式</span><h2 id="dd-title" tabIndex={-1} data-initial-focus>音效與音樂設定</h2><button className="md-secondary" aria-pressed={audio.muted} onClick={()=>audio.toggle()}>{audio.muted?'開啟音效':'關閉音效'}</button><label className="md-audio-toggle"><input type="checkbox" checked={audio.musicEnabled} onChange={()=>{audio.unlock();audio.toggleMusic();}}/>播放背景音樂</label><label className="md-audio-volume">音樂音量 <span>{Math.round(audio.musicVolume*100)}%</span><input aria-label="音樂音量" type="range" min="0" max="1" step="0.01" value={audio.musicVolume} onChange={event=>audio.setMusicVolume(Number(event.currentTarget.value))} onPointerDown={audio.unlock}/></label><label className="md-audio-volume">音效音量 <span>{Math.round(audio.effectsVolume*100)}%</span><input aria-label="音效音量" type="range" min="0" max="1" step="0.01" value={audio.effectsVolume} onChange={event=>audio.setEffectsVolume(Number(event.currentTarget.value))} onPointerDown={audio.unlock}/></label><p className="md-audio-credit">背景音樂：{musicCredit.title}，{musicCredit.artist}。<a href={musicCredit.sourceUrl} target="_blank" rel="noreferrer">音樂來源</a> · <a href={musicCredit.licenseUrl} target="_blank" rel="noreferrer">{musicCredit.license}</a></p><p className="md-note">音訊狀態：{audio.status==='locked'?'第一次操作後啟用':audio.status==='ready'?'已就緒':'此瀏覽器無法播放音訊'}</p></section>}
       {panel==='help'&&<section className="dd-conversation"><span className="md-section-label">沒有倒數，照自己的節奏</span><h2 id="dd-title" tabIndex={-1} data-initial-focus>下一步，就在眼前。</h2><p>WASD、方向鍵或點擊地板移動；手機可用畫面左下方向鍵。也可以直接點{detectiveCase.clientName}的 3D 角色，自動走近後開啟對話。</p><p><b>G</b>：帶你走到{detectiveCase.clientName}旁並開啟對話。<b> E</b>：不必走近，直接對話。紅色客戶按鈕也能直接互動。</p><p><b>Esc</b>：收合中央視窗；重新對話會回到這輪進度。每輪最多問五個不同問題，已問問題可在筆記重讀。沒有登入、倒數或存檔。</p><div className="dd-dialog-actions"><button className="md-primary" onClick={()=>setPanel(utilityReturn)}>回到委託</button></div></section>}
       {panel==='confirm-reset'&&<section className="dd-conversation"><span className="md-section-label">修改已提交的前輪判斷</span><h2 id="dd-title" tabIndex={-1} data-initial-focus>重新推演後面的輪次？</h2><p className="dd-large-copy">確認後會清除後續輪次已選與已提交的判斷；各輪已用追問額度會保留。</p><div className="dd-dialog-actions"><button className="md-secondary" onClick={()=>setPanel('board')}>取消，保留原進度</button><button className="md-primary" onClick={commitRound}>確認修改並重算</button></div></section>}
-      {panel==='result'&&result&&<DetectiveResult result={result} detectiveCase={detectiveCase} chapterLabel={chapterLabel} onRestart={()=>{onSessionChange(engine.newDetectiveSession());introSeen.current.clear();introProgress.current={};setSceneRun(value=>value+1);setPanel(null);onNavigate('brief');}} onChapters={onChooseChapters}/>}
+      {panel==='result'&&result&&<DetectiveResult result={result} detectiveCase={detectiveCase} chapterLabel={chapterLabel} onRestart={()=>{onSessionChange(engine.newDetectiveSession());introSeen.current.clear();introProgress.current={};setAcceptedHandoff(null);setSceneRun(value=>value+1);setPanel(null);onNavigate('brief');}} onChapters={onChooseChapters}/>}
     </PreviewDialog>}
   </div>;
 }

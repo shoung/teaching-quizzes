@@ -265,7 +265,11 @@ const blueprint = round({
 
 export const chapterThreeCase: DetectiveCase = {
   id: 'marketing-day-chapter-3',
-  version: 1,
+  version: 2,
+  blueprintHandoffs: {
+    'coffee-ideas-c09': 'App 可以留著以後做，但這週沒有人能做或測試。我想先用現有的 LINE 表單，由店員確認接單和取餐時段。你能先幫我把這個流程排出來嗎？',
+    'coffee-ideas-c11': '外送我想再看看，但我們尖峰就兩個人，也還沒有人能配送。我想先把 LINE 預訂和到店取餐做順。你能先幫我把這個流程排出來嗎？',
+  },
   title: '咖啡店提案日',
   clientName: '陳店長',
   clientRole: '日常咖啡負責人',

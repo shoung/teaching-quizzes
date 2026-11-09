@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ComponentProps } from 'react';
@@ -95,8 +95,16 @@ describe('第三章入口', () => {
     await user.click(screen.getByRole('button', { name: '開始追問' }));
     await user.click(screen.getByRole('button', { name: '開始整理判斷' }));
     const secondChoice = secondStage.choices.find(choice => choice.correct)!;
+    const clueOrder = () => within(screen.getByRole('region', { name: '線索池' })).getAllByRole('button').map(button => button.getAttribute('aria-label'));
     await user.click(screen.getByRole('button', { name: `加入判斷：${secondChoice.label}` }));
+    const firstOrder = clueOrder();
     await user.click(screen.getByRole('button', { name: '提交本輪，進入下一輪' }));
+    await user.click(screen.getByRole('button', { name: '回看上一輪' }));
+    await user.click(screen.getByRole('button', { name: /與林老闆對話/ }));
+    expect(clueOrder()).toEqual(firstOrder);
+    await user.click(screen.getByRole('button', { name: '收合視窗' }));
+    await user.click(screen.getByRole('button', { name: '回到目前進度' }));
+    expect(window.location.hash).toBe('#/quiz/marketing-day/chapter-2/persona');
     await act(async () => {
       window.history.pushState(null, '', '#/quiz/marketing-day/chapter-3/brief');
       window.dispatchEvent(new HashChangeEvent('hashchange'));
@@ -109,10 +117,19 @@ describe('第三章入口', () => {
       const choices = stage.choices;
       const proposal = choices.find(choice => choice.kind === 'proposal' && choice.correct);
       const support = choices.find(choice => choice.correct && choice.kind !== 'proposal');
-      const first = proposal ?? support!;
+      const wrongProposal = choices.find(choice => choice.kind === 'proposal' && !choice.correct);
+      const first = wrongProposal ?? support!;
       await user.click(screen.getByRole('button', { name: `加入判斷：${first.label}` }));
       if (proposal && support) await user.click(screen.getByRole('button', { name: `加入判斷：${support.label}` }));
       await user.click(screen.getByRole('button', { name: roundIndex === 4 ? '提交並查看結算' : '提交本輪，進入下一輪' }));
+      if (wrongProposal && proposal) {
+        await user.click(screen.getByRole('button', { name: /與陳店長對話/ }));
+        expect(screen.getByText(/這週.*App|App.*這週/)).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: '回去比較主方案' }));
+        expect(screen.getByRole('button', { name: `移回線索池：${wrongProposal.label}` })).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: `加入判斷：${proposal.label}` }));
+        await user.click(screen.getByRole('button', { name: '提交本輪，進入下一輪' }));
+      }
     }
     expect(await screen.findByRole('heading', { name: /這次提案得到/ })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: '陳店長｜日常咖啡' })).toBeInTheDocument();

@@ -86,9 +86,11 @@ export interface DetectiveCase {
   minutes: number;
   questionLimit: number;
   stages: DetectiveStage[];
+  blueprintHandoffs?: Record<string, string>;
   glossary: { name: string; definition: string; example: string }[];
 }
 export interface DetectiveRoundState {
+  choiceOrder?: string[];
   askedIds: string[];
   selectedIds: string[];
   submittedIds: string[] | null;

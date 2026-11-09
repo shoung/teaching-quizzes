@@ -14,7 +14,7 @@ const length = (text: string) => Array.from(text).length;
 describe('chapterTwoCase teaching content', () => {
   it('has the requested case identity, five rounds, and unique stable IDs', () => {
     expect(chapterTwoCase).toMatchObject({
-      id: 'marketing-day-chapter-2', version: 9, title: '客戶來訪日',
+      id: 'marketing-day-chapter-2', version: 10, title: '客戶來訪日',
       clientName: '林老闆', brand: '轉角健身房',
       minutes: 12, questionLimit: 5,
     });

@@ -2,7 +2,11 @@ import type { DetectiveCase } from '../types';
 
 export const chapterTwoCase: DetectiveCase = {
   "id": "marketing-day-chapter-2",
-  "version": 9,
+  "version": 10,
+  "blueprintHandoffs": {
+    "ideas-c05": "固定參觀可以留著，但我這週還沒排好誰帶看、什麼時候帶。要是先把體驗介紹頁補齊，櫃檯照原本的班表就能接。我們先把這個流程排出來，好嗎？",
+    "ideas-c06": "一對一聊聊是個好主意，但教練這週的課都排好了，沒有人能固定接待。我想先把新客常問的流程、時段和報到方式放上介紹頁。你能先幫我把這個流程排好嗎？"
+  },
   "title": "客戶來訪日",
   "clientName": "林老闆",
   "clientRole": "轉角健身房負責人",

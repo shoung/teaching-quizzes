@@ -56,6 +56,7 @@ export default function MarketingDayGame() {
   const sound = useGameSound({moving:secondChapter?chapterTwoMoving:thirdChapter?chapterThreeMoving:moving,paused:secondChapter?chapterTwoPaused:thirdChapter?chapterThreePaused:(panel!==null||route.kind!=='play')});
   const question = marketingDayGame.decisions[route.index];
   const selected = drafts[route.index] ?? session.answers[route.index];
+  const earlierChanged = session.answers[route.index] !== null && session.answers[route.index] !== selected;
   const confirmed = question.options.find(o => o.id===session.answers[route.index]);
   const result = getMarketingResult(session);
   const worldVisible = route.kind!=='intro' && panel===null;
@@ -141,13 +142,17 @@ export default function MarketingDayGame() {
     if(selected===null)return;
     const next=submitMarketingDecision(session,route.index,selected);
     setSession(next);
-    setDrafts(previous=>Object.fromEntries(Object.entries(previous).filter(([key])=>Number(key)<route.index)));
+    setDrafts(previous => Object.fromEntries(Object.entries(previous).filter(([key]) => {
+      const index = Number(key);
+      return index !== route.index && (!earlierChanged || index < route.index);
+    })));
     setPendingFeedback(route.index);setActiveTerm(null);setPanel('feedback');
   }
   function submit() {
     if(selected===null)return;
-    const earlierChanged=session.answers[route.index]!==null && session.answers[route.index]!==selected;
-    if(earlierChanged&&session.answers.slice(route.index+1).some(answer=>answer!==null)){setPanel('change');return;}
+    const hasLaterChoices = session.answers.slice(route.index + 1).some(answer => answer !== null)
+      || Object.keys(drafts).some(key => Number(key) > route.index);
+    if (earlierChanged && hasLaterChoices) {setPanel('change');return;}
     commit();
   }
   function next() {

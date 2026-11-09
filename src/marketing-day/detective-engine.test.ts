@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { chapterTwoCase } from '../data/marketing-detective';
 import {
   askDetectiveQuestion,
@@ -66,6 +66,38 @@ const firstQuestion = chapterTwoCase.stages[0].questions[0].id;
 const firstChoice = chapterTwoCase.stages[0].choices[0].id;
 
 describe('偵探提案遊戲 session lifecycle', () => {
+  it('settles using submitted answers when a past round has unsubmitted edits', () => {
+    let session = viewSession(4);
+    const submitted = session.rounds[0].submittedIds!;
+    session = setDetectiveChoice(session, 0, submitted[0], false);
+    const finalChoice = chapterTwoCase.stages[4].choices.find(({ correct }) => correct)!;
+    session = commitDetectiveRound(choose(session, 4, [finalChoice.id]), 4);
+
+    const result = evaluateDetectiveSession(session);
+    expect(result?.rounds[0].selectedIds).toEqual(submitted);
+  });
+
+  it('shuffles every round per new session and keeps the same card order during play', () => {
+    const random = vi.spyOn(Math, 'random');
+    let first: DetectiveSession;
+    let second: DetectiveSession;
+    try {
+      random.mockReturnValue(0);
+      first = startedSession();
+      random.mockReturnValue(0.5);
+      second = startedSession();
+    } finally {
+      random.mockRestore();
+    }
+    for (const [index, stage] of chapterTwoCase.stages.entries()) {
+      expect(first.rounds[index].choiceOrder).toHaveLength(stage.choices.length);
+      expect(new Set(first.rounds[index].choiceOrder)).toEqual(new Set(stage.choices.map(({ id }) => id)));
+      expect(first.rounds[index].choiceOrder).not.toEqual(second.rounds[index].choiceOrder);
+    }
+    const progressed = commitDetectiveRound(choose(first, 0, [firstChoice]), 0);
+    expect(progressed.rounds.map(({ choiceOrder }) => choiceOrder)).toEqual(first.rounds.map(({ choiceOrder }) => choiceOrder));
+  });
+
   it('starts at the brief, then begins on the first round without mutating the original session', () => {
     const fresh = newDetectiveSession();
     const started = beginDetectiveSession(fresh);
@@ -246,7 +278,8 @@ describe('偵探提案遊戲評分', () => {
     const proposalB = chapterTwoCase.stages[3].choices.find(({ id }) => id === 'ideas-c05')!;
     const result = evaluateDetectiveSession(finishWithProposal(proposalB.id))!;
 
-    expect(result.score).toBeGreaterThanOrEqual(75);
+    expect(result.score).toBe(90);
+    expect(result.grade).toBe('A');
     expect(result.satisfaction).toContain('暫不採用');
     expect(result.bossComment).toMatch(/排班|人手|接待|現場/);
     expect(result.bossComment).not.toContain(proposalB.label);
